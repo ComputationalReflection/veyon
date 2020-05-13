@@ -92,7 +92,9 @@ void ScreenshotFeaturePlugin::record()
 			//This is a simplified version of the code in Screenshot::take(). In this case no label is added to png image
 			const auto dir = VeyonCore::filesystem().expandPath( VeyonCore::config().screenshotDirectory() );
 			QString fileName = dir + QDir::separator() + Screenshot::constructFileName( controlInterface->userLoginName(), controlInterface->computer().hostAddress() );
-			QImage image = controlInterface->screen().scaled(width, heigth, Qt::IgnoreAspectRatio, Qt::FastTransformation);
+			QImage image = controlInterface->screen();
+			if(width != 0 && heigth != 0)
+				image = image.scaled(width, heigth, Qt::IgnoreAspectRatio, Qt::FastTransformation);
 			image.save( fileName, "PNG", 50 );
 			QTextStream(stdout) << fileName << endl;
 		}
