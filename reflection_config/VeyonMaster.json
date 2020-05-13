@@ -1,0 +1,29 @@
+{
+    "UI": {
+        "CheckedNetworkObjects": {
+            "JsonStoreArray": [
+                "{5805c34b-5ee0-4aad-87a6-8b0182af3bfd}",
+                "{b93a860e-1104-4a21-8c72-f92d45eace8e}"
+            ]
+        },
+        "ComputerPositions": {
+            "JsonStoreArray": [
+            ]
+        },
+        "FilterPoweredOnComputers": false,
+        "MonitoringScreenSize": 439,
+        "ToolButtonIconOnlyMode": true,
+        "UseCustomComputerPositions": false,
+        "WindowGeometry": "AdnQywACAAAAAABDAAAAGwAABj8AAAODAAAAQwAAADkAAAVTAAAC7AAAAAACAAAABkA=",
+        "WindowState": "AAAA/wAAAAD9AAAAAAAABf0AAAL1AAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAOAHQAbwBvAGwAQgBhAHIBAAAAAP////8AAAAAAAAAAA=="
+    },
+    "Uniovi.Reflection": {
+        "EndDateTime": "",
+        "SaveScreenshots": true,
+        "SaveVideo": true,
+        "StartDateTime": "",
+        "VideoFrameInterval": 2500,
+        "VideoResX": 1024,
+        "VideoResY": 768
+    }
+}
