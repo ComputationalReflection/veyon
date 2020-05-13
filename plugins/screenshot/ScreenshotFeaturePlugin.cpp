@@ -74,6 +74,8 @@ void ScreenshotFeaturePlugin::record()
 	}
 */
 	//Debugging configured values
+	int width = m_lastMaster->userConfigurationObject()->value(tr("VideoResX"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
+	int heigth = m_lastMaster->userConfigurationObject()->value(tr("VideoResY"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
 	qDebug() << tr("x:") << m_lastMaster->userConfigurationObject()->value(tr("VideoResX"), tr("Uniovi.Reflection"), QVariant(0)).toString() << endl;
 	qDebug() << tr("y:") << m_lastMaster->userConfigurationObject()->value(tr("VideoResY"), tr("Uniovi.Reflection"), QVariant(0)).toString() << endl;
 
@@ -90,7 +92,7 @@ void ScreenshotFeaturePlugin::record()
 			//This is a simplified version of the code in Screenshot::take(). In this case no label is added to png image
 			const auto dir = VeyonCore::filesystem().expandPath( VeyonCore::config().screenshotDirectory() );
 			QString fileName = dir + QDir::separator() + Screenshot::constructFileName( controlInterface->userLoginName(), controlInterface->computer().hostAddress() );
-			QImage image = controlInterface->screen();
+			QImage image = controlInterface->screen().scaled(width, heigth, Qt::IgnoreAspectRatio, Qt::FastTransformation);
 			image.save( fileName, "PNG", 50 );
 			QTextStream(stdout) << fileName << endl;
 		}
@@ -110,7 +112,7 @@ bool ScreenshotFeaturePlugin::startFeature( VeyonMasterInterface& master, const 
 		{
 			m_recordEnabled = true;
 			int interval = m_lastMaster->userConfigurationObject()->value(tr("VideoFrameInterval"), tr("Uniovi.Reflection"), QVariant(10000)).toInt();
-			qDebug() << tr("VideoFrameInterval") << fileName << endl;
+			qDebug() << tr("VideoFrameInterval") << interval << endl;
 			m_recordTimer->start(interval);
 			QMessageBox::information(nullptr, tr("recording"), tr("recording enabled"));
 		}
