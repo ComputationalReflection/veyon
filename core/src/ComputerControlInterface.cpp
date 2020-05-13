@@ -21,7 +21,7 @@
  * Boston, MA 02111-1307, USA.
  *
  */
-
+#include <QMessageBox>
 #include "BuiltinFeatures.h"
 #include "ComputerControlInterface.h"
 #include "Computer.h"
@@ -46,6 +46,7 @@ ComputerControlInterface::ComputerControlInterface( const Computer& computer,
 	m_userUpdateTimer( this ),
 	m_activeFeaturesUpdateTimer( this )
 {
+	//QMessageBox::critical(nullptr, tr("Estoy en un ComputerControl Inteface"), tr("Hola mundo"));
 	m_connectionWatchdogTimer.setInterval( ConnectionWatchdogTimeout );
 	m_connectionWatchdogTimer.setSingleShot( true );
 	connect( &m_connectionWatchdogTimer, &QTimer::timeout, this, &ComputerControlInterface::restartConnection );
