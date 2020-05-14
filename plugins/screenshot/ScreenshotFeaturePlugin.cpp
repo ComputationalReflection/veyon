@@ -96,8 +96,8 @@ void ScreenshotFeaturePlugin::record_video()
 	//Debugging configured values
 	int width = m_lastMaster->userConfigurationObject()->value(tr("VideoResX"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
 	int heigth = m_lastMaster->userConfigurationObject()->value(tr("VideoResY"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
-	qDebug() << tr("x:") << m_lastMaster->userConfigurationObject()->value(tr("VideoResX"), tr("Uniovi.Reflection"), QVariant(0)).toString() << endl;
-	qDebug() << tr("y:") << m_lastMaster->userConfigurationObject()->value(tr("VideoResY"), tr("Uniovi.Reflection"), QVariant(0)).toString() << endl;
+	qDebug() << tr("x:") << width << endl;
+	qDebug() << tr("y:") << heigth << endl;
 
 	if(m_lastMaster->userConfigurationObject()->value(tr("SaveVideo"), tr("Uniovi.Reflection"), QVariant(false)).toBool())
 	    qDebug() << "Save Video" << endl;
@@ -111,7 +111,7 @@ void ScreenshotFeaturePlugin::record_video()
 		{
 			//This is a simplified version of the code in Screenshot::take(). In this case no label is added to png image
 			const auto dir = VeyonCore::filesystem().expandPath( VeyonCore::config().screenshotDirectory() );
-			QString fileName = dir + QDir::separator() + Screenshot::constructFileName( controlInterface->userLoginName(), controlInterface->computer().hostAddress() );
+			QString fileName = dir + QDir::separator() + Screenshot::constructFileName( controlInterface->computer().name(), controlInterface->computer().hostAddress() );
 			QImage image = controlInterface->screen();
 			if(width != 0 && heigth != 0)
 				image = image.scaled(width, heigth, Qt::IgnoreAspectRatio, Qt::FastTransformation);
