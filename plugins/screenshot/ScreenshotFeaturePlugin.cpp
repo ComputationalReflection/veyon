@@ -57,7 +57,7 @@ ScreenshotFeaturePlugin::ScreenshotFeaturePlugin( QObject* parent ) :
 {
 	m_recordEnabled = false;
 	m_recordTimer = new QTimer(this);
-	connect(m_recordTimer, SIGNAL(timeout()), this, SLOT(record_video()));
+	connect(m_recordTimer, SIGNAL(timeout()), this, SLOT(record()));
 	m_lastMaster = nullptr;
 
 }
@@ -120,6 +120,8 @@ void ScreenshotFeaturePlugin::initializeRecordingParameters()
 			QTextStream(stdout) << tr("Could not made the video frame data writable.") << endl;
 
 
+		m_swsContext = sws_getContext(m_recordingWidth, m_recordingHeight, AV_PIX_FMT_ARGB, m_recordingWidth, m_recordingHeight, AV_PIX_FMT_YUV420P, SWS_BICUBIC, 0, 0, 0 );
+
 		m_frameCount = 0;
 		m_outFile = fopen(tr("Stadyn_user.mp4").toLocal8Bit().data(), "wb");
 	}
@@ -152,6 +154,23 @@ void ScreenshotFeaturePlugin::record()
 	{
 		for( const auto& controlInterface : m_lastComputerControlInterfaces )
 		{
+			QImage image = controlInterface->screen();
+			image = image.scaled(m_recordingWidth, m_recordingHeight, Qt::IgnoreAspectRatio, Qt::FastTransformation);
+
+
+			AVFrame* inpic = av_frame_alloc();
+			avpicture_fill((AVPicture*)inpic, image.bits(), AV_PIX_FMT_ARGB, image.width(), image.height());
+			sws_scale(m_swsContext, inpic->data, inpic->linesize, 0, image.height(), m_currentVideoframe->data, m_currentVideoframe->linesize);
+
+
+			//avpicture_fill((AVPicture *)m_currentVideoframe, image.bits(), AV_PIX_FMT_RGB24, m_codecContext->width, m_codecContext->height);
+
+			//av_frame_copy(copyFrame, frame);
+			//int rgb_stride[3]={3, 0, 0};
+			//sws_scale(m_swsContext, (const uint8_t * const *)image.bits(), rgb_stride, 0, m_codecContext->height, m_currentVideoframe->data, m_currentVideoframe->linesize);
+
+			//m_currentVideoframe->data
+			m_currentVideoframe->pts = m_frameCount++;			
 			int ret = avcodec_send_frame(m_codecContext, m_currentVideoframe);
 			if (ret < 0)
         			QTextStream(stdout) << tr("Error sending a frame for encoding") << endl;
@@ -165,6 +184,7 @@ void ScreenshotFeaturePlugin::record()
 					QTextStream(stdout) << tr("Error during encoding") << endl;
 
 				fwrite(m_pkt->data, 1, m_pkt->size, m_outFile);
+				QTextStream(stdout) << tr("Size written: ") << m_pkt->pts << endl;
 				av_packet_unref(m_pkt);
 			}
 		}
@@ -215,6 +235,21 @@ bool ScreenshotFeaturePlugin::startFeature( VeyonMasterInterface& master, const 
 			{
 				/* flush the encoder */
 				//encode(c, NULL, pkt, f);
+				int ret = avcodec_send_frame(m_codecContext, NULL);
+				if (ret < 0)
+					QTextStream(stdout) << tr("Error sending a frame for encoding") << endl;
+
+				while (ret >= 0)
+				{
+					ret = avcodec_receive_packet(m_codecContext, m_pkt);
+					if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+						QTextStream(stdout) << tr("AVERROR or AVERROR_EOF") << endl;
+					else if (ret < 0)
+						QTextStream(stdout) << tr("Error during encoding") << endl;
+
+					fwrite(m_pkt->data, 1, m_pkt->size, m_outFile);
+					av_packet_unref(m_pkt);
+				}
 
 				fclose(m_outFile);
 

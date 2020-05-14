@@ -97,6 +97,7 @@ private:
 	AVPacket *m_pkt;
 	FILE *m_outFile;
 	AVFrame *m_currentVideoframe;
+	SwsContext *m_swsContext;
 
 	//Reflection.Uniovi configuration parameters
 	int m_recordingWidth;

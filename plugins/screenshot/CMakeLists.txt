@@ -9,5 +9,5 @@ build_veyon_plugin(screenshot
 	screenshot.qrc
 )
 
-TARGET_LINK_LIBRARIES(screenshot -lavformat -lavcodec -lavutil)
+TARGET_LINK_LIBRARIES(screenshot -lavformat -lavcodec -lavutil -lswscale)
 
