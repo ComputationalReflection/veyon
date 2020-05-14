@@ -28,6 +28,16 @@
 #include "Feature.h"
 #include "SimpleFeatureProvider.h"
 
+#ifdef __cplusplus
+extern "C"
+{
+    #include <libavcodec/avcodec.h>
+    #include <libavformat/avformat.h>
+    #include <libswscale/swscale.h>
+}
+#endif
+
+
 class ScreenshotFeaturePlugin : public QObject, SimpleFeatureProvider, PluginInterface
 {
 	Q_OBJECT
@@ -73,7 +83,7 @@ public:
 					   const ComputerControlInterfaceList& computerControlInterfaces ) override;
 
 public Q_SLOTS:
-	void record();
+	void record_video();
 
 private:
 	const Feature m_screenshotFeature;
@@ -82,5 +92,6 @@ private:
 	QTimer *m_recordTimer;
 	VeyonMasterInterface* m_lastMaster;
 	ComputerControlInterfaceList m_lastComputerControlInterfaces;
+	AVCodec *m_codec;
 
 };

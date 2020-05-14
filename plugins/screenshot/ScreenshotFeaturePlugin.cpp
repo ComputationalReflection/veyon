@@ -34,6 +34,14 @@
 #include "Computer.h"
 #include "ComputerControlInterface.h"
 #include "Filesystem.h"
+#ifdef __cplusplus
+extern "C"
+{
+    #include <libavcodec/avcodec.h>
+    #include <libavformat/avformat.h>
+    #include <libswscale/swscale.h>
+}
+#endif
 
 
 ScreenshotFeaturePlugin::ScreenshotFeaturePlugin( QObject* parent ) :
@@ -49,8 +57,20 @@ ScreenshotFeaturePlugin::ScreenshotFeaturePlugin( QObject* parent ) :
 {
 	m_recordEnabled = false;
 	m_recordTimer = new QTimer(this);
-	connect(m_recordTimer, SIGNAL(timeout()), this, SLOT(record()));
+	connect(m_recordTimer, SIGNAL(timeout()), this, SLOT(record_video()));
 	m_lastMaster = nullptr;
+
+	
+	QString codec_name = tr("libx264");
+
+	av_register_all();
+	m_codec = avcodec_find_encoder_by_name(codec_name.toLocal8Bit().data());
+	if (!m_codec) {
+	    QTextStream(stdout) << tr("Codec ") << codec_name << tr(" not found") << endl;
+	}
+	else {
+	    QTextStream(stdout) << tr("Codec ") << codec_name << tr(" found") << endl;
+	}
 }
 
 
@@ -60,7 +80,7 @@ const FeatureList &ScreenshotFeaturePlugin::featureList() const
 	return m_features;
 }
 
-void ScreenshotFeaturePlugin::record()
+void ScreenshotFeaturePlugin::record_video()
 {
 	//QMessageBox::information(nullptr, tr("hola"), tr("mundo"));
 	//qDebug() << "recording event";
