@@ -94,6 +94,7 @@ private:
 	ComputerControlInterfaceList m_lastComputerControlInterfaces;
 	AVCodec *m_codec;
 	AVCodecContext *m_codecContext;
+	AVPacket *m_pkt;
 	FILE *m_outFile;
 	AVFrame *m_currentVideoframe;
 

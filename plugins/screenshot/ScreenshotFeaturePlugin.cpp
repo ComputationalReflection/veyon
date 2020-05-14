@@ -86,6 +86,10 @@ void ScreenshotFeaturePlugin::initializeRecordingParameters()
 		if (!m_codecContext)
 		    QTextStream(stdout) << tr("Codec Context couldn't be allocated.") << endl;
 
+		m_pkt = av_packet_alloc();
+		if (!m_pkt)
+		    QTextStream(stdout) << tr("AV packet couldn't be allocated.") << endl;
+
 		//Initilize basic encoding context: based on https://github.com/FFmpeg/FFmpeg/blob/master/doc/examples/encode_video.c
 		m_codecContext->bit_rate = 400000;
 		m_codecContext->width = m_recordingWidth;
@@ -148,7 +152,21 @@ void ScreenshotFeaturePlugin::record()
 	{
 		for( const auto& controlInterface : m_lastComputerControlInterfaces )
 		{
-			
+			int ret = avcodec_send_frame(m_codecContext, m_currentVideoframe);
+			if (ret < 0)
+        			QTextStream(stdout) << tr("Error sending a frame for encoding") << endl;
+
+			while (ret >= 0)
+			{
+        			ret = avcodec_receive_packet(m_codecContext, m_pkt);
+        			if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+					QTextStream(stdout) << tr("AVERROR or AVERROR_EOF") << endl;
+        			else if (ret < 0)
+					QTextStream(stdout) << tr("Error during encoding") << endl;
+
+				fwrite(m_pkt->data, 1, m_pkt->size, m_outFile);
+				av_packet_unref(m_pkt);
+			}
 		}
 	}
 	else
@@ -193,6 +211,17 @@ bool ScreenshotFeaturePlugin::startFeature( VeyonMasterInterface& master, const 
 			m_recordEnabled = false;
 			m_recordTimer->stop();
 			QMessageBox::information(nullptr, tr("Stopping recording"), tr("Recording is now disabled"));
+			if (m_recordingVideo)
+			{
+				/* flush the encoder */
+				//encode(c, NULL, pkt, f);
+
+				fclose(m_outFile);
+
+				avcodec_free_context(&m_codecContext);
+				av_frame_free(&m_currentVideoframe);
+				av_packet_free(&m_pkt);
+			}
 		}
 
 
