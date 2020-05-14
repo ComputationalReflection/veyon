@@ -120,7 +120,7 @@ void ScreenshotFeaturePlugin::initializeRecordingParameters()
 			QTextStream(stdout) << tr("Could not made the video frame data writable.") << endl;
 
 
-		m_swsContext = sws_getContext(m_recordingWidth, m_recordingHeight, AV_PIX_FMT_ARGB, m_recordingWidth, m_recordingHeight, AV_PIX_FMT_YUV420P, SWS_BICUBIC, 0, 0, 0 );
+		m_swsContext = sws_getContext(m_recordingWidth, m_recordingHeight, AV_PIX_FMT_RGB32, m_recordingWidth, m_recordingHeight, AV_PIX_FMT_YUV420P, SWS_BICUBIC, 0, 0, 0 );
 
 		m_frameCount = 0;
 		m_outFile = fopen(tr("Stadyn_user.mp4").toLocal8Bit().data(), "wb");
@@ -159,7 +159,7 @@ void ScreenshotFeaturePlugin::record()
 
 
 			AVFrame* inpic = av_frame_alloc();
-			avpicture_fill((AVPicture*)inpic, image.bits(), AV_PIX_FMT_ARGB, image.width(), image.height());
+			avpicture_fill((AVPicture*)inpic, image.bits(), AV_PIX_FMT_RGB32, image.width(), image.height());
 			sws_scale(m_swsContext, inpic->data, inpic->linesize, 0, image.height(), m_currentVideoframe->data, m_currentVideoframe->linesize);
 
 
