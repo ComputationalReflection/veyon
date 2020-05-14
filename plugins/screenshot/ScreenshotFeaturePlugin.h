@@ -83,7 +83,7 @@ public:
 					   const ComputerControlInterfaceList& computerControlInterfaces ) override;
 
 public Q_SLOTS:
-	void record_video();
+	void record();
 
 private:
 	const Feature m_screenshotFeature;
@@ -93,5 +93,16 @@ private:
 	VeyonMasterInterface* m_lastMaster;
 	ComputerControlInterfaceList m_lastComputerControlInterfaces;
 	AVCodec *m_codec;
+	AVCodecContext *m_codecContext;
+	FILE *m_outFile;
+	AVFrame *m_currentVideoframe;
 
+	//Reflection.Uniovi configuration parameters
+	int m_recordingWidth;
+	int m_recordingHeight;
+	bool m_recordingVideo;
+	int m_recordingFrameInterval;
+	long m_frameCount;
+	void initializeRecordingParameters();
+	
 };

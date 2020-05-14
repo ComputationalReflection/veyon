@@ -60,27 +60,74 @@ ScreenshotFeaturePlugin::ScreenshotFeaturePlugin( QObject* parent ) :
 	connect(m_recordTimer, SIGNAL(timeout()), this, SLOT(record_video()));
 	m_lastMaster = nullptr;
 
-	
-	QString codec_name = tr("libx264");
-
-	av_register_all();
-	m_codec = avcodec_find_encoder_by_name(codec_name.toLocal8Bit().data());
-	if (!m_codec) {
-	    QTextStream(stdout) << tr("Codec ") << codec_name << tr(" not found") << endl;
-	}
-	else {
-	    QTextStream(stdout) << tr("Codec ") << codec_name << tr(" found") << endl;
-	}
 }
 
+void ScreenshotFeaturePlugin::initializeRecordingParameters()
+{
+	m_recordingWidth = m_lastMaster->userConfigurationObject()->value(tr("VideoResX"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
+	m_recordingHeight = m_lastMaster->userConfigurationObject()->value(tr("VideoResY"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
+	m_recordingVideo = m_lastMaster->userConfigurationObject()->value(tr("VideoResX"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
+	m_recordingFrameInterval = m_lastMaster->userConfigurationObject()->value(tr("SaveVideo"), tr("Uniovi.Reflection"), QVariant(false)).toBool();
 
+	
+	if(m_recordingVideo)
+	{
+		QString codec_name = tr("libx264");
+
+		av_register_all();
+		m_codec = avcodec_find_encoder_by_name(codec_name.toLocal8Bit().data());
+		if (!m_codec) {
+		    QTextStream(stdout) << tr("Codec ") << codec_name << tr(" not found") << endl;
+		}
+		else {
+		    QTextStream(stdout) << tr("Codec ") << codec_name << tr(" found") << endl;
+		}
+		m_codecContext = avcodec_alloc_context3(m_codec);
+		if (!m_codecContext)
+		    QTextStream(stdout) << tr("Codec Context couldn't be allocated.") << endl;
+
+		//Initilize basic encoding context: based on https://github.com/FFmpeg/FFmpeg/blob/master/doc/examples/encode_video.c
+		m_codecContext->bit_rate = 400000;
+		m_codecContext->width = m_recordingWidth;
+		m_codecContext->height = m_recordingHeight;
+//		m_codecContext->time_base = (AVRational){1, m_recordingFrameInterval/1000.0};
+//		m_codecContext->framerate = (AVRational){m_recordingFrameInterval/1000.0, 1};
+		m_codecContext->time_base = (AVRational){1, 1};
+		m_codecContext->framerate = (AVRational){1, 1};
+		m_codecContext->gop_size = 10;
+		m_codecContext->max_b_frames = 1;
+		m_codecContext->pix_fmt = AV_PIX_FMT_YUV420P;
+
+		if (avcodec_open2(m_codecContext, m_codec, NULL) < 0)
+			QTextStream(stdout) << tr("Could not open codec.") << endl;
+
+		m_currentVideoframe = av_frame_alloc();
+		if (!m_currentVideoframe)
+			QTextStream(stdout) << tr("Could not allocate video frame.") << endl;
+		m_currentVideoframe->format = m_codecContext->pix_fmt;
+		m_currentVideoframe->width  = m_codecContext->width;
+		m_currentVideoframe->height = m_codecContext->height;
+
+
+		if (av_frame_get_buffer(m_currentVideoframe, 32) < 0) 
+			QTextStream(stdout) << tr("Could not allocate the video frame data.") << endl;
+
+		if (av_frame_make_writable(m_currentVideoframe) < 0) 
+			QTextStream(stdout) << tr("Could not made the video frame data writable.") << endl;
+
+
+		m_frameCount = 0;
+		m_outFile = fopen(tr("Stadyn_user.mp4").toLocal8Bit().data(), "wb");
+	}
+	
+}
 
 const FeatureList &ScreenshotFeaturePlugin::featureList() const
 {
 	return m_features;
 }
 
-void ScreenshotFeaturePlugin::record_video()
+void ScreenshotFeaturePlugin::record()
 {
 	//QMessageBox::information(nullptr, tr("hola"), tr("mundo"));
 	//qDebug() << "recording event";
@@ -94,32 +141,30 @@ void ScreenshotFeaturePlugin::record_video()
 	}
 */
 	//Debugging configured values
-	int width = m_lastMaster->userConfigurationObject()->value(tr("VideoResX"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
-	int heigth = m_lastMaster->userConfigurationObject()->value(tr("VideoResY"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
-	qDebug() << tr("x:") << width << endl;
-	qDebug() << tr("y:") << heigth << endl;
+	qDebug() << tr("x:") << m_recordingWidth << endl;
+	qDebug() << tr("y:") << m_recordingHeight << endl;
 
-	if(m_lastMaster->userConfigurationObject()->value(tr("SaveVideo"), tr("Uniovi.Reflection"), QVariant(false)).toBool())
-	    qDebug() << "Save Video" << endl;
-	else
-    	    qDebug() << "Do not save Video" << endl;
-
-
-	if(m_lastMaster->userConfigurationObject()->value(tr("SaveScreenshots"), tr("Uniovi.Reflection"), QVariant(false)).toBool())
+	if(m_recordingVideo)
 	{
 		for( const auto& controlInterface : m_lastComputerControlInterfaces )
+		{
+			
+		}
+	}
+	else
+	{
+    	    	for( const auto& controlInterface : m_lastComputerControlInterfaces )
 		{
 			//This is a simplified version of the code in Screenshot::take(). In this case no label is added to png image
 			const auto dir = VeyonCore::filesystem().expandPath( VeyonCore::config().screenshotDirectory() );
 			QString fileName = dir + QDir::separator() + Screenshot::constructFileName( controlInterface->computer().name(), controlInterface->computer().hostAddress() );
 			QImage image = controlInterface->screen();
-			if(width != 0 && heigth != 0)
-				image = image.scaled(width, heigth, Qt::IgnoreAspectRatio, Qt::FastTransformation);
+			if(m_recordingWidth != 0 && m_recordingHeight != 0)
+				image = image.scaled(m_recordingWidth, m_recordingHeight, Qt::IgnoreAspectRatio, Qt::FastTransformation);
 			image.save( fileName, "PNG", 50 );
 			QTextStream(stdout) << fileName << endl;
 		}
 	}
-
 //	m_lastMaster->userConfigurationObject()->data()[tr("Uniovi.Reflection")];
 }
 
@@ -128,7 +173,12 @@ bool ScreenshotFeaturePlugin::startFeature( VeyonMasterInterface& master, const 
 {
 	if( feature.uid() == m_screenshotFeature.uid() )
 	{
-		m_lastMaster = &master;
+		if(m_lastMaster == nullptr)
+		{
+			m_lastMaster = &master;
+			initializeRecordingParameters();
+		}
+
 		m_lastComputerControlInterfaces = computerControlInterfaces;
 		if( m_recordEnabled == false)
 		{
@@ -136,13 +186,13 @@ bool ScreenshotFeaturePlugin::startFeature( VeyonMasterInterface& master, const 
 			int interval = m_lastMaster->userConfigurationObject()->value(tr("VideoFrameInterval"), tr("Uniovi.Reflection"), QVariant(10000)).toInt();
 			qDebug() << tr("VideoFrameInterval") << interval << endl;
 			m_recordTimer->start(interval);
-			QMessageBox::information(nullptr, tr("recording"), tr("recording enabled"));
+			QMessageBox::information(nullptr, tr("Starting recording"), tr("Recording parameters: TODO"));
 		}
 		else
 		{
 			m_recordEnabled = false;
 			m_recordTimer->stop();
-			QMessageBox::information(nullptr, tr("recording"), tr("recording disabled"));
+			QMessageBox::information(nullptr, tr("Stopping recording"), tr("Recording is now disabled"));
 		}
 
 
