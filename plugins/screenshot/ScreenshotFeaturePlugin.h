@@ -99,6 +99,10 @@ private:
 	AVFrame *m_currentVideoframe;
 	AVFrame *m_intermediate;
 	SwsContext *m_swsContext;
+	AVOutputFormat *m_outputFormat;
+	AVFormatContext *m_outputContext;
+	AVStream *m_st;
+
 
 	//Reflection.Uniovi configuration parameters
 	int m_recordingWidth;

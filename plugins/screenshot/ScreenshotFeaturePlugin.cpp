@@ -128,7 +128,30 @@ void ScreenshotFeaturePlugin::initializeRecordingParameters()
 		m_swsContext = sws_getContext(m_recordingWidth, m_recordingHeight, AV_PIX_FMT_RGB32, m_recordingWidth, m_recordingHeight, AV_PIX_FMT_YUV420P, SWS_BICUBIC, 0, 0, 0 );
 
 		m_frameCount = 0;
-		m_outFile = fopen(tr("Stadyn_user.mp4").toLocal8Bit().data(), "wb");
+		//m_outFile = fopen(tr("Stadyn_user.mp4").toLocal8Bit().data(), "wb");
+		//m_outputFormat = av_guess_format(NULL, tr("Stadyn_user.mp4").toLocal8Bit().data(), NULL);
+		//if (!m_outputFormat)
+			//QTextStream(stdout) << tr("Error av_guess_format.") << endl;
+		
+		if (avformat_alloc_output_context2(&m_outputContext, NULL, NULL, "Stadyn_user.mp4") < 0)
+			QTextStream(stdout) << tr("Error avformat_alloc_output_context2()") << endl;
+
+
+		m_outputFormat = m_outputContext->oformat;
+		QTextStream(stdout) << tr("N streams ") << m_outputContext->nb_streams << endl;
+		m_st = avformat_new_stream(m_outputContext, NULL);
+		if (!m_st)
+			QTextStream(stdout) << tr("Could not allocate stream") << endl;
+		QTextStream(stdout) << tr("N streams ") << m_outputContext->nb_streams << endl;
+
+		m_st->id = m_outputContext->nb_streams-1;
+		avcodec_parameters_from_context(m_st->codecpar, m_codecContext);
+
+		av_dump_format(m_outputContext, 0, "Stadyn_user.mp4", 1);
+		avio_open(&m_outputContext->pb, "Stadyn_user.mp4", AVIO_FLAG_WRITE);
+		if (avformat_write_header(m_outputContext, NULL) < 0)
+		        QTextStream(stdout) << tr("Error avformat_write_header()") << endl;
+
 	}
 	
 }
@@ -174,8 +197,12 @@ void ScreenshotFeaturePlugin::record()
 			//sws_scale(m_swsContext, (const uint8_t * const *)image.bits(), rgb_stride, 0, m_codecContext->height, m_currentVideoframe->data, m_currentVideoframe->linesize);
 
 			//m_currentVideoframe->data
-			m_currentVideoframe->pts = m_frameCount++;			
+			m_currentVideoframe->pts = m_frameCount++;
 			QTextStream(stdout) << tr("current frame ") << m_currentVideoframe->pts << endl;
+			//m_pkt->stream_index = m_st->index;
+			av_packet_rescale_ts(m_pkt, m_codecContext->time_base, m_st->time_base);
+			m_pkt->stream_index = m_st->index;
+
 			int ret = avcodec_send_frame(m_codecContext, m_currentVideoframe);
 			if (ret < 0)
         			QTextStream(stdout) << tr("Error sending a frame for encoding") << endl;
@@ -183,14 +210,15 @@ void ScreenshotFeaturePlugin::record()
 			while (ret >= 0)
 			{
         			ret = avcodec_receive_packet(m_codecContext, m_pkt);
-				m_pkt->dts = m_packetCount++;
+				//m_pkt->dts = m_packetCount++;
 				//QTextStream(stdout) << m_pkt->pts << endl;//= m_packetCount++;
         			if (ret == AVERROR(EAGAIN))
 					;//QTextStream(stdout) << tr("AVERROR") << endl;
         			else 
 				{
-					fwrite(m_pkt->data, 1, m_pkt->size, m_outFile);
-					QTextStream(stdout) << tr("pkt pts: ") << m_pkt->pts << tr("pkt size: ") << m_pkt->size << endl;
+					//fwrite(m_pkt->data, 1, m_pkt->size, m_outFile);
+					av_interleaved_write_frame(m_outputContext, m_pkt);
+//					QTextStream(stdout) << tr("pkt pts: ") << m_pkt->pts << tr("pkt size: ") << m_pkt->size << endl;
 					av_packet_unref(m_pkt);
 				}
 
@@ -257,17 +285,22 @@ bool ScreenshotFeaturePlugin::startFeature( VeyonMasterInterface& master, const 
 					else if (ret < 0)
 						QTextStream(stdout) << tr("Error during encoding") << endl;
 					else {
-						fwrite(m_pkt->data, 1, m_pkt->size, m_outFile);
+						//fwrite(m_pkt->data, 1, m_pkt->size, m_outFile);
+						av_interleaved_write_frame(m_outputContext, m_pkt);
+
 						av_packet_unref(m_pkt);
 					}
 				}
 
-				fclose(m_outFile);
+				//fclose(m_outFile);
+				av_write_trailer(m_outputContext);
+				avio_close(m_outputContext->pb);
 
 				avcodec_free_context(&m_codecContext);
 				av_frame_free(&m_currentVideoframe);
 				av_frame_free(&m_intermediate);
 				av_packet_free(&m_pkt);
+				avformat_free_context(m_outputContext);
 			}
 		}
 
