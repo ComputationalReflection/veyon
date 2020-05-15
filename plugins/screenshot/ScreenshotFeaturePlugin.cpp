@@ -38,6 +38,7 @@
 extern "C"
 {
     #include <libavcodec/avcodec.h>
+    #include <libavutil/opt.h>
     #include <libavformat/avformat.h>
     #include <libswscale/swscale.h>
 }
@@ -66,8 +67,8 @@ void ScreenshotFeaturePlugin::initializeRecordingParameters()
 {
 	m_recordingWidth = m_lastMaster->userConfigurationObject()->value(tr("VideoResX"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
 	m_recordingHeight = m_lastMaster->userConfigurationObject()->value(tr("VideoResY"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
-	m_recordingVideo = m_lastMaster->userConfigurationObject()->value(tr("VideoResX"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
-	m_recordingFrameInterval = m_lastMaster->userConfigurationObject()->value(tr("SaveVideo"), tr("Uniovi.Reflection"), QVariant(false)).toBool();
+	m_recordingVideo = m_lastMaster->userConfigurationObject()->value(tr("SaveVideo"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
+	m_recordingFrameInterval = m_lastMaster->userConfigurationObject()->value(tr("VideoFrameInterval"), tr("Uniovi.Reflection"), QVariant(false)).toBool();
 
 	
 	if(m_recordingVideo)
@@ -96,11 +97,14 @@ void ScreenshotFeaturePlugin::initializeRecordingParameters()
 		m_codecContext->height = m_recordingHeight;
 //		m_codecContext->time_base = (AVRational){1, m_recordingFrameInterval/1000.0};
 //		m_codecContext->framerate = (AVRational){m_recordingFrameInterval/1000.0, 1};
-		m_codecContext->time_base = (AVRational){1, 1};
-		m_codecContext->framerate = (AVRational){1, 1};
+		m_codecContext->time_base = (AVRational){1, 25};
+		m_codecContext->framerate = (AVRational){25, 1};
 		m_codecContext->gop_size = 10;
 		m_codecContext->max_b_frames = 1;
+		m_codecContext->frame_size = 1;
 		m_codecContext->pix_fmt = AV_PIX_FMT_YUV420P;
+
+		av_opt_set(m_codecContext->priv_data, "preset", "slow", 0);
 
 		if (avcodec_open2(m_codecContext, m_codec, NULL) < 0)
 			QTextStream(stdout) << tr("Could not open codec.") << endl;
@@ -119,6 +123,7 @@ void ScreenshotFeaturePlugin::initializeRecordingParameters()
 		if (av_frame_make_writable(m_currentVideoframe) < 0) 
 			QTextStream(stdout) << tr("Could not made the video frame data writable.") << endl;
 
+		m_intermediate = av_frame_alloc();
 
 		m_swsContext = sws_getContext(m_recordingWidth, m_recordingHeight, AV_PIX_FMT_RGB32, m_recordingWidth, m_recordingHeight, AV_PIX_FMT_YUV420P, SWS_BICUBIC, 0, 0, 0 );
 
@@ -158,9 +163,8 @@ void ScreenshotFeaturePlugin::record()
 			image = image.scaled(m_recordingWidth, m_recordingHeight, Qt::IgnoreAspectRatio, Qt::FastTransformation);
 
 
-			AVFrame* inpic = av_frame_alloc();
-			avpicture_fill((AVPicture*)inpic, image.bits(), AV_PIX_FMT_RGB32, image.width(), image.height());
-			sws_scale(m_swsContext, inpic->data, inpic->linesize, 0, image.height(), m_currentVideoframe->data, m_currentVideoframe->linesize);
+			avpicture_fill((AVPicture*)m_intermediate, image.bits(), AV_PIX_FMT_RGB32, image.width(), image.height());
+			sws_scale(m_swsContext, m_intermediate->data, m_intermediate->linesize, 0, image.height(), m_currentVideoframe->data, m_currentVideoframe->linesize);
 
 
 			//avpicture_fill((AVPicture *)m_currentVideoframe, image.bits(), AV_PIX_FMT_RGB24, m_codecContext->width, m_codecContext->height);
@@ -171,6 +175,7 @@ void ScreenshotFeaturePlugin::record()
 
 			//m_currentVideoframe->data
 			m_currentVideoframe->pts = m_frameCount++;			
+			QTextStream(stdout) << tr("current frame ") << m_currentVideoframe->pts << endl;
 			int ret = avcodec_send_frame(m_codecContext, m_currentVideoframe);
 			if (ret < 0)
         			QTextStream(stdout) << tr("Error sending a frame for encoding") << endl;
@@ -178,14 +183,19 @@ void ScreenshotFeaturePlugin::record()
 			while (ret >= 0)
 			{
         			ret = avcodec_receive_packet(m_codecContext, m_pkt);
-        			if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
-					QTextStream(stdout) << tr("AVERROR or AVERROR_EOF") << endl;
-        			else if (ret < 0)
-					QTextStream(stdout) << tr("Error during encoding") << endl;
+				m_pkt->dts = m_packetCount++;
+				//QTextStream(stdout) << m_pkt->pts << endl;//= m_packetCount++;
+        			if (ret == AVERROR(EAGAIN))
+					;//QTextStream(stdout) << tr("AVERROR") << endl;
+        			else 
+				{
+					fwrite(m_pkt->data, 1, m_pkt->size, m_outFile);
+					QTextStream(stdout) << tr("pkt pts: ") << m_pkt->pts << tr("pkt size: ") << m_pkt->size << endl;
+					av_packet_unref(m_pkt);
+				}
 
-				fwrite(m_pkt->data, 1, m_pkt->size, m_outFile);
-				QTextStream(stdout) << tr("Size written: ") << m_pkt->pts << endl;
-				av_packet_unref(m_pkt);
+				
+				
 			}
 		}
 	}
@@ -242,19 +252,21 @@ bool ScreenshotFeaturePlugin::startFeature( VeyonMasterInterface& master, const 
 				while (ret >= 0)
 				{
 					ret = avcodec_receive_packet(m_codecContext, m_pkt);
-					if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
-						QTextStream(stdout) << tr("AVERROR or AVERROR_EOF") << endl;
+					if (ret == AVERROR_EOF)
+						QTextStream(stdout) << tr("AVERROR_EOF") << endl;
 					else if (ret < 0)
 						QTextStream(stdout) << tr("Error during encoding") << endl;
-
-					fwrite(m_pkt->data, 1, m_pkt->size, m_outFile);
-					av_packet_unref(m_pkt);
+					else {
+						fwrite(m_pkt->data, 1, m_pkt->size, m_outFile);
+						av_packet_unref(m_pkt);
+					}
 				}
 
 				fclose(m_outFile);
 
 				avcodec_free_context(&m_codecContext);
 				av_frame_free(&m_currentVideoframe);
+				av_frame_free(&m_intermediate);
 				av_packet_free(&m_pkt);
 			}
 		}

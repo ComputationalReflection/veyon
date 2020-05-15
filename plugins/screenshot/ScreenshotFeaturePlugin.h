@@ -97,6 +97,7 @@ private:
 	AVPacket *m_pkt;
 	FILE *m_outFile;
 	AVFrame *m_currentVideoframe;
+	AVFrame *m_intermediate;
 	SwsContext *m_swsContext;
 
 	//Reflection.Uniovi configuration parameters
@@ -105,6 +106,7 @@ private:
 	bool m_recordingVideo;
 	int m_recordingFrameInterval;
 	long m_frameCount;
+	long m_packetCount;
 	void initializeRecordingParameters();
 	
 };
