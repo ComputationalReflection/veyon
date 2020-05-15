@@ -1,0 +1,712 @@
+vpncmd command - SoftEther VPN Command Line Management Utility
+SoftEther VPN Command Line Management Utility (vpncmd command)
+Version 4.34 Build 9745   (English)
+Compiled 2020/04/05 23:39:56 by buildsan at crosswin
+Copyright (c) SoftEther VPN Project. All Rights Reserved.
+
+Connection has been established with VPN Server "156.35.95.36" (port 443).
+
+You have administrator privileges for the entire VPN Server.
+
+VPN Server>Hub VPN
+Hub command - Select Virtual Hub to Manage
+The Virtual Hub "VPN" has been selected.
+The command completed successfully.
+
+VPN Server/VPN>SessionGet SID-SECURENAT-268
+SessionGet command - Get Session Information
+Item                                      |Value
+------------------------------------------+----------------------------------------
+User Name (Authentication)                |SecureNAT
+VLAN ID                                   |-
+Server Product Name                       |SoftEther VPN Server (64 bit)
+Server Version                            |4.34
+Server Build                              |Build 9745
+Connection Started at                     |2020-04-24 (Fri) 23:33:01
+First Session has been Established since  |2020-04-24 (Fri) 23:33:01
+Current Session has been Established since|2020-04-24 (Fri) 23:33:01
+Half Duplex TCP Connection Mode           |No (Full Duplex Mode)
+VoIP / QoS Function                       |Enabled
+Number of TCP Connections                 |0
+Maximum Number of TCP Connections         |0
+Encryption                                |Disabled (No Encryption)
+Use of Compression                        |No (No Compression)
+UDP Acceleration is Supported             |No
+UDP Acceleration is Active                |No
+Session Name                              |SID-SECURENAT-268
+Session Key (160 bit)                     |99E3717974E79226C52D661AEF8B1AEF776D40F5
+Bridge / Router Mode                      |Yes
+Monitoring Mode                           |No
+Outgoing Data Size                        |0 bytes
+Incoming Data Size                        |0 bytes
+Outgoing Unicast Packets                  |7,307,439 packets
+Outgoing Unicast Total Size               |3,693,292,460 bytes
+Outgoing Broadcast Packets                |132,822 packets
+Outgoing Broadcast Total Size             |8,073,864 bytes
+Incoming Unicast Packets                  |3,598,898 packets
+Incoming Unicast Total Size               |928,972,863 bytes
+Incoming Broadcast Packets                |27,954 packets
+Incoming Broadcast Total Size             |4,863,480 bytes
+The command completed successfully.
+
+VPN Server/VPN>SessionGet SID-MASTER-[L2TP]-341
+SessionGet command - Get Session Information
+Item                                      |Value
+------------------------------------------+-----------------------------------------------
+Client IP Address                         |156.35.163.171
+Client Host Name                          |156.35.163.171
+User Name (Authentication)                |master
+User Name (Database)                      |Master
+Group Name                                |TPP
+VLAN ID                                   |-
+Server Product Name                       |SoftEther VPN Server (64 bit)
+Server Version                            |4.34
+Server Build                              |Build 9745
+Connection Started at                     |2020-04-28 (Tue) 16:57:08
+First Session has been Established since  |2020-04-28 (Tue) 16:57:08
+Current Session has been Established since|2020-04-28 (Tue) 16:57:08
+Half Duplex TCP Connection Mode           |No (Full Duplex Mode)
+VoIP / QoS Function                       |Disabled
+Number of TCP Connections                 |1
+Maximum Number of TCP Connections         |1
+Encryption                                |Enabled (Algorithm: IPsec - AES-CBC (256 bits))
+Use of Compression                        |No (No Compression)
+Physical Underlay Protocol                |Legacy VPN - L2TP
+                                          |InProc AdjustMSS=1314
+UDP Acceleration is Supported             |No
+UDP Acceleration is Active                |No
+Session Name                              |SID-MASTER-[L2TP]-341
+Connection Name                           |CID-873-3B2DC236A7
+Session Key (160 bit)                     |9EA3FFE6749B2F52B1F733071F57068238107ED7
+Bridge / Router Mode                      |No
+Monitoring Mode                           |No
+Outgoing Data Size                        |10,274,183 bytes
+Incoming Data Size                        |240,874,494 bytes
+Outgoing Unicast Packets                  |167,474 packets
+Outgoing Unicast Total Size               |10,271,335 bytes
+Outgoing Broadcast Packets                |24 packets
+Outgoing Broadcast Total Size             |2,848 bytes
+Incoming Unicast Packets                  |219,981 packets
+Incoming Unicast Total Size               |240,338,126 bytes
+Incoming Broadcast Packets                |4,677 packets
+Incoming Broadcast Total Size             |536,368 bytes
+Client Product Name (Reported)            |L2TP VPN Client - Microsoft
+Client Version (Reported)                 |4.34
+Client Build (Reported)                   |Build 9745
+Client OS Name (Reported)                 |L2TP VPN Client - Microsoft
+Client OS Version (Reported)              |-
+Client OS Product ID (Reported)           |-
+Client Host Name (Reported)               |template
+Client IP Address  (Reported)             |156.35.163.171
+Client Port (Reported)                    |1701
+Server Host Name (Reported)               |156.35.95.36
+Server IP Address (Reported)              |156.35.95.36
+Server Port (Reported)                    |1701
+The command completed successfully.
+
+VPN Server/VPN>SessionGet SID-UO270115-[L2TP]-342
+SessionGet command - Get Session Information
+Item                                      |Value
+------------------------------------------+-----------------------------------------------
+Client IP Address                         |188.171.210.171
+Client Host Name                          |cm-188-171-210-171.telecable.es
+User Name (Authentication)                |uo270115
+User Name (Database)                      |UO270115
+Group Name                                |L-I4
+VLAN ID                                   |-
+Server Product Name                       |SoftEther VPN Server (64 bit)
+Server Version                            |4.34
+Server Build                              |Build 9745
+Connection Started at                     |2020-04-28 (Tue) 17:37:43
+First Session has been Established since  |2020-04-28 (Tue) 17:37:43
+Current Session has been Established since|2020-04-28 (Tue) 17:37:43
+Half Duplex TCP Connection Mode           |No (Full Duplex Mode)
+VoIP / QoS Function                       |Disabled
+Number of TCP Connections                 |1
+Maximum Number of TCP Connections         |1
+Encryption                                |Enabled (Algorithm: IPsec - AES-CBC (256 bits))
+Use of Compression                        |No (No Compression)
+Physical Underlay Protocol                |Legacy VPN - L2TP
+                                          |InProc AdjustMSS=1314
+UDP Acceleration is Supported             |No
+UDP Acceleration is Active                |No
+Session Name                              |SID-UO270115-[L2TP]-342
+Connection Name                           |CID-874-3A0491B52D
+Session Key (160 bit)                     |C3ED5636AEA113A4EDCDBBEF1D16412EE7CD4E19
+Bridge / Router Mode                      |No
+Monitoring Mode                           |No
+Outgoing Data Size                        |27,754,435 bytes
+Incoming Data Size                        |21,479,353 bytes
+Outgoing Unicast Packets                  |53,929 packets
+Outgoing Unicast Total Size               |27,715,837 bytes
+Outgoing Broadcast Packets                |264 packets
+Outgoing Broadcast Total Size             |38,598 bytes
+Incoming Unicast Packets                  |129,434 packets
+Incoming Unicast Total Size               |21,040,663 bytes
+Incoming Broadcast Packets                |3,454 packets
+Incoming Broadcast Total Size             |438,690 bytes
+Client Product Name (Reported)            |L2TP VPN Client - Microsoft
+Client Version (Reported)                 |4.34
+Client Build (Reported)                   |Build 9745
+Client OS Name (Reported)                 |L2TP VPN Client - Microsoft
+Client OS Version (Reported)              |-
+Client OS Product ID (Reported)           |-
+Client Host Name (Reported)               |DESKTOP-IKHLGSV
+Client IP Address  (Reported)             |188.171.210.171
+Client Port (Reported)                    |1701
+Server Host Name (Reported)               |156.35.95.36
+Server IP Address (Reported)              |156.35.95.36
+Server Port (Reported)                    |1701
+The command completed successfully.
+
+VPN Server/VPN>SessionGet SID-UO270803-[L2TP]-343
+SessionGet command - Get Session Information
+Item                                      |Value
+------------------------------------------+-----------------------------------------------
+Client IP Address                         |89.141.119.2
+Client Host Name                          |89.141.119.2.dyn.user.ono.com
+User Name (Authentication)                |uo270803
+User Name (Database)                      |UO270803
+Group Name                                |L-I4
+VLAN ID                                   |-
+Server Product Name                       |SoftEther VPN Server (64 bit)
+Server Version                            |4.34
+Server Build                              |Build 9745
+Connection Started at                     |2020-04-28 (Tue) 17:51:54
+First Session has been Established since  |2020-04-28 (Tue) 17:51:54
+Current Session has been Established since|2020-04-28 (Tue) 17:51:54
+Half Duplex TCP Connection Mode           |No (Full Duplex Mode)
+VoIP / QoS Function                       |Disabled
+Number of TCP Connections                 |1
+Maximum Number of TCP Connections         |1
+Encryption                                |Enabled (Algorithm: IPsec - AES-CBC (256 bits))
+Use of Compression                        |No (No Compression)
+Physical Underlay Protocol                |Legacy VPN - L2TP
+                                          |InProc AdjustMSS=1314
+UDP Acceleration is Supported             |No
+UDP Acceleration is Active                |No
+Session Name                              |SID-UO270803-[L2TP]-343
+Connection Name                           |CID-875-EFEAE0ED46
+Session Key (160 bit)                     |C25FDE0207A02AF264B452E40DCE71C9CEEF0FFD
+Bridge / Router Mode                      |No
+Monitoring Mode                           |No
+Outgoing Data Size                        |56,140,964 bytes
+Incoming Data Size                        |22,197,745 bytes
+Outgoing Unicast Packets                  |67,408 packets
+Outgoing Unicast Total Size               |56,106,035 bytes
+Outgoing Broadcast Packets                |259 packets
+Outgoing Broadcast Total Size             |34,929 bytes
+Incoming Unicast Packets                  |133,500 packets
+Incoming Unicast Total Size               |21,792,276 bytes
+Incoming Broadcast Packets                |2,993 packets
+Incoming Broadcast Total Size             |405,469 bytes
+Client Product Name (Reported)            |L2TP VPN Client - Microsoft
+Client Version (Reported)                 |4.34
+Client Build (Reported)                   |Build 9745
+Client OS Name (Reported)                 |L2TP VPN Client - Microsoft
+Client OS Version (Reported)              |-
+Client OS Product ID (Reported)           |-
+Client Host Name (Reported)               |PortatildMARCOS
+Client IP Address  (Reported)             |89.141.119.2
+Client Port (Reported)                    |1701
+Server Host Name (Reported)               |156.35.95.36
+Server IP Address (Reported)              |156.35.95.36
+Server Port (Reported)                    |1701
+The command completed successfully.
+
+VPN Server/VPN>SessionGet SID-UO270374-[L2TP]-345
+SessionGet command - Get Session Information
+Item                                      |Value
+------------------------------------------+-----------------------------------------------
+Client IP Address                         |93.156.79.54
+Client Host Name                          |cm-93-156-79-54.telecable.es
+User Name (Authentication)                |uo270374
+User Name (Database)                      |UO270374
+Group Name                                |L-I4
+VLAN ID                                   |-
+Server Product Name                       |SoftEther VPN Server (64 bit)
+Server Version                            |4.34
+Server Build                              |Build 9745
+Connection Started at                     |2020-04-28 (Tue) 17:52:56
+First Session has been Established since  |2020-04-28 (Tue) 17:52:56
+Current Session has been Established since|2020-04-28 (Tue) 17:52:56
+Half Duplex TCP Connection Mode           |No (Full Duplex Mode)
+VoIP / QoS Function                       |Disabled
+Number of TCP Connections                 |1
+Maximum Number of TCP Connections         |1
+Encryption                                |Enabled (Algorithm: IPsec - AES-CBC (256 bits))
+Use of Compression                        |No (No Compression)
+Physical Underlay Protocol                |Legacy VPN - L2TP
+                                          |InProc AdjustMSS=1314
+UDP Acceleration is Supported             |No
+UDP Acceleration is Active                |No
+Session Name                              |SID-UO270374-[L2TP]-345
+Connection Name                           |CID-877-1CADCFFEEB
+Session Key (160 bit)                     |9B1A5936AE359551922C6815166DAEC4A534F91F
+Bridge / Router Mode                      |No
+Monitoring Mode                           |No
+Outgoing Data Size                        |34,577,680 bytes
+Incoming Data Size                        |20,044,789 bytes
+Outgoing Unicast Packets                  |51,143 packets
+Outgoing Unicast Total Size               |34,566,235 bytes
+Outgoing Broadcast Packets                |61 packets
+Outgoing Broadcast Total Size             |11,445 bytes
+Incoming Unicast Packets                  |124,370 packets
+Incoming Unicast Total Size               |19,633,297 bytes
+Incoming Broadcast Packets                |3,051 packets
+Incoming Broadcast Total Size             |411,492 bytes
+Client Product Name (Reported)            |L2TP VPN Client - Microsoft
+Client Version (Reported)                 |4.34
+Client Build (Reported)                   |Build 9745
+Client OS Name (Reported)                 |L2TP VPN Client - Microsoft
+Client OS Version (Reported)              |-
+Client OS Product ID (Reported)           |-
+Client Host Name (Reported)               |DESKTOP-4C2UTLT
+Client IP Address  (Reported)             |93.156.79.54
+Client Port (Reported)                    |1701
+Server Host Name (Reported)               |156.35.95.36
+Server IP Address (Reported)              |156.35.95.36
+Server Port (Reported)                    |1701
+The command completed successfully.
+
+VPN Server/VPN>SessionGet SID-UO269911-[L2TP]-346
+SessionGet command - Get Session Information
+Item                                      |Value
+------------------------------------------+-----------------------------------------------
+Client IP Address                         |83.97.233.99
+Client Host Name                          |cm-83-97-233-99.telecable.es
+User Name (Authentication)                |uo269911
+User Name (Database)                      |UO269911
+Group Name                                |L-I4
+VLAN ID                                   |-
+Server Product Name                       |SoftEther VPN Server (64 bit)
+Server Version                            |4.34
+Server Build                              |Build 9745
+Connection Started at                     |2020-04-28 (Tue) 17:53:05
+First Session has been Established since  |2020-04-28 (Tue) 17:53:05
+Current Session has been Established since|2020-04-28 (Tue) 17:53:05
+Half Duplex TCP Connection Mode           |No (Full Duplex Mode)
+VoIP / QoS Function                       |Disabled
+Number of TCP Connections                 |1
+Maximum Number of TCP Connections         |1
+Encryption                                |Enabled (Algorithm: IPsec - AES-CBC (256 bits))
+Use of Compression                        |No (No Compression)
+Physical Underlay Protocol                |Legacy VPN - L2TP
+                                          |InProc AdjustMSS=1314
+UDP Acceleration is Supported             |No
+UDP Acceleration is Active                |No
+Session Name                              |SID-UO269911-[L2TP]-346
+Connection Name                           |CID-878-D30D3D4908
+Session Key (160 bit)                     |41B28CE243960B15741E0B09548087732CEEB4BF
+Bridge / Router Mode                      |No
+Monitoring Mode                           |No
+Outgoing Data Size                        |18,490,268 bytes
+Incoming Data Size                        |19,723,173 bytes
+Outgoing Unicast Packets                  |39,153 packets
+Outgoing Unicast Total Size               |18,485,244 bytes
+Outgoing Broadcast Packets                |45 packets
+Outgoing Broadcast Total Size             |5,024 bytes
+Incoming Unicast Packets                  |116,825 packets
+Incoming Unicast Total Size               |19,311,047 bytes
+Incoming Broadcast Packets                |3,024 packets
+Incoming Broadcast Total Size             |412,126 bytes
+Client Product Name (Reported)            |L2TP VPN Client - Microsoft
+Client Version (Reported)                 |4.34
+Client Build (Reported)                   |Build 9745
+Client OS Name (Reported)                 |L2TP VPN Client - Microsoft
+Client OS Version (Reported)              |-
+Client OS Product ID (Reported)           |-
+Client Host Name (Reported)               |PcCom-PC
+Client IP Address  (Reported)             |83.97.233.99
+Client Port (Reported)                    |1701
+Server Host Name (Reported)               |156.35.95.36
+Server IP Address (Reported)              |156.35.95.36
+Server Port (Reported)                    |1701
+The command completed successfully.
+
+VPN Server/VPN>SessionGet SID-UO270835-[L2TP]-347
+SessionGet command - Get Session Information
+Item                                      |Value
+------------------------------------------+----------------------------------------
+Client IP Address                         |5.40.145.149
+Client Host Name                          |5.40.145.149.static.user.ono.com
+User Name (Authentication)                |uo270835
+User Name (Database)                      |UO270835
+Group Name                                |L-I4
+VLAN ID                                   |-
+Server Product Name                       |SoftEther VPN Server (64 bit)
+Server Version                            |4.34
+Server Build                              |Build 9745
+Connection Started at                     |2020-04-28 (Tue) 17:54:12
+First Session has been Established since  |2020-04-28 (Tue) 17:54:12
+Current Session has been Established since|2020-04-28 (Tue) 17:54:12
+Half Duplex TCP Connection Mode           |No (Full Duplex Mode)
+VoIP / QoS Function                       |Disabled
+Number of TCP Connections                 |1
+Maximum Number of TCP Connections         |1
+Encryption                                |Disabled (No Encryption)
+Use of Compression                        |No (No Compression)
+Physical Underlay Protocol                |Legacy VPN - L2TP
+                                          |InProc AdjustMSS=1314
+UDP Acceleration is Supported             |No
+UDP Acceleration is Active                |No
+Session Name                              |SID-UO270835-[L2TP]-347
+Connection Name                           |CID-879-61E829AA4D
+Session Key (160 bit)                     |8385C9D7B3D6CEF6290D78B8924E32EA4FBF530D
+Bridge / Router Mode                      |No
+Monitoring Mode                           |No
+Outgoing Data Size                        |28,583,581 bytes
+Incoming Data Size                        |24,636,157 bytes
+Outgoing Unicast Packets                  |70,799 packets
+Outgoing Unicast Total Size               |28,554,463 bytes
+Outgoing Broadcast Packets                |210 packets
+Outgoing Broadcast Total Size             |29,118 bytes
+Incoming Unicast Packets                  |110,537 packets
+Incoming Unicast Total Size               |24,260,661 bytes
+Incoming Broadcast Packets                |2,787 packets
+Incoming Broadcast Total Size             |375,496 bytes
+Client Product Name (Reported)            |L2TP VPN Client - Microsoft
+Client Version (Reported)                 |4.34
+Client Build (Reported)                   |Build 9745
+Client OS Name (Reported)                 |L2TP VPN Client - Microsoft
+Client OS Version (Reported)              |-
+Client OS Product ID (Reported)           |-
+Client Host Name (Reported)               |LAPTOP-B5VFI5IN
+Client IP Address  (Reported)             |5.40.145.149
+Client Port (Reported)                    |1701
+Server Host Name (Reported)               |156.35.95.36
+Server IP Address (Reported)              |156.35.95.36
+Server Port (Reported)                    |1701
+The command completed successfully.
+
+VPN Server/VPN>SessionGet SID-UO281201-[L2TP]-348
+SessionGet command - Get Session Information
+Item                                      |Value
+------------------------------------------+-----------------------------------------
+Client IP Address                         |96.255.30.21
+Client Host Name                          |pool-96-255-30-21.washdc.fios.verizon.net
+User Name (Authentication)                |uo281201
+User Name (Database)                      |UO281201
+Group Name                                |L-I4
+VLAN ID                                   |-
+Server Product Name                       |SoftEther VPN Server (64 bit)
+Server Version                            |4.34
+Server Build                              |Build 9745
+Connection Started at                     |2020-04-28 (Tue) 17:54:18
+First Session has been Established since  |2020-04-28 (Tue) 17:54:18
+Current Session has been Established since|2020-04-28 (Tue) 17:54:18
+Half Duplex TCP Connection Mode           |No (Full Duplex Mode)
+VoIP / QoS Function                       |Disabled
+Number of TCP Connections                 |1
+Maximum Number of TCP Connections         |1
+Encryption                                |Disabled (No Encryption)
+Use of Compression                        |No (No Compression)
+Physical Underlay Protocol                |Legacy VPN - L2TP
+                                          |InProc AdjustMSS=1314
+UDP Acceleration is Supported             |No
+UDP Acceleration is Active                |No
+Session Name                              |SID-UO281201-[L2TP]-348
+Connection Name                           |CID-880-1FADFEC670
+Session Key (160 bit)                     |CB03AFD4A756A4A9828AB4A2C10CCFE1509CEEBA
+Bridge / Router Mode                      |No
+Monitoring Mode                           |No
+Outgoing Data Size                        |61,033,699 bytes
+Incoming Data Size                        |22,068,431 bytes
+Outgoing Unicast Packets                  |68,587 packets
+Outgoing Unicast Total Size               |61,026,913 bytes
+Outgoing Broadcast Packets                |65 packets
+Outgoing Broadcast Total Size             |6,786 bytes
+Incoming Unicast Packets                  |132,379 packets
+Incoming Unicast Total Size               |21,680,513 bytes
+Incoming Broadcast Packets                |2,836 packets
+Incoming Broadcast Total Size             |387,918 bytes
+Client Product Name (Reported)            |L2TP VPN Client - Microsoft
+Client Version (Reported)                 |4.34
+Client Build (Reported)                   |Build 9745
+Client OS Name (Reported)                 |L2TP VPN Client - Microsoft
+Client OS Version (Reported)              |-
+Client OS Product ID (Reported)           |-
+Client Host Name (Reported)               |DESKTOP-LIMQ5M4
+Client IP Address  (Reported)             |96.255.30.21
+Client Port (Reported)                    |1701
+Server Host Name (Reported)               |156.35.95.36
+Server IP Address (Reported)              |156.35.95.36
+Server Port (Reported)                    |1701
+The command completed successfully.
+
+VPN Server/VPN>SessionGet SID-UO271294-[L2TP]-349
+SessionGet command - Get Session Information
+Item                                      |Value
+------------------------------------------+-----------------------------------------------
+Client IP Address                         |93.156.131.75
+Client Host Name                          |cm-93-156-131-75.telecable.es
+User Name (Authentication)                |uo271294
+User Name (Database)                      |UO271294
+Group Name                                |L-I4
+VLAN ID                                   |-
+Server Product Name                       |SoftEther VPN Server (64 bit)
+Server Version                            |4.34
+Server Build                              |Build 9745
+Connection Started at                     |2020-04-28 (Tue) 17:55:16
+First Session has been Established since  |2020-04-28 (Tue) 17:55:16
+Current Session has been Established since|2020-04-28 (Tue) 17:55:16
+Half Duplex TCP Connection Mode           |No (Full Duplex Mode)
+VoIP / QoS Function                       |Disabled
+Number of TCP Connections                 |1
+Maximum Number of TCP Connections         |1
+Encryption                                |Enabled (Algorithm: IPsec - AES-CBC (256 bits))
+Use of Compression                        |No (No Compression)
+Physical Underlay Protocol                |Legacy VPN - L2TP
+                                          |InProc AdjustMSS=1314
+UDP Acceleration is Supported             |No
+UDP Acceleration is Active                |No
+Session Name                              |SID-UO271294-[L2TP]-349
+Connection Name                           |CID-882-BCA0C5D131
+Session Key (160 bit)                     |76BA7B65B67C2772BCE55F80CFEA472628C1D71E
+Bridge / Router Mode                      |No
+Monitoring Mode                           |No
+Outgoing Data Size                        |87,490,085 bytes
+Incoming Data Size                        |32,431,069 bytes
+Outgoing Unicast Packets                  |123,956 packets
+Outgoing Unicast Total Size               |87,456,518 bytes
+Outgoing Broadcast Packets                |249 packets
+Outgoing Broadcast Total Size             |33,567 bytes
+Incoming Unicast Packets                  |145,071 packets
+Incoming Unicast Total Size               |32,076,657 bytes
+Incoming Broadcast Packets                |2,593 packets
+Incoming Broadcast Total Size             |354,412 bytes
+Client Product Name (Reported)            |L2TP VPN Client - Microsoft
+Client Version (Reported)                 |4.34
+Client Build (Reported)                   |Build 9745
+Client OS Name (Reported)                 |L2TP VPN Client - Microsoft
+Client OS Version (Reported)              |-
+Client OS Product ID (Reported)           |-
+Client Host Name (Reported)               |MSI
+Client IP Address  (Reported)             |93.156.131.75
+Client Port (Reported)                    |1701
+Server Host Name (Reported)               |156.35.95.36
+Server IP Address (Reported)              |156.35.95.36
+Server Port (Reported)                    |1701
+The command completed successfully.
+
+VPN Server/VPN>SessionGet SID-UO263932-[L2TP]-350
+SessionGet command - Get Session Information
+Item                                      |Value
+------------------------------------------+-----------------------------------------------
+Client IP Address                         |81.34.117.240
+Client Host Name                          |240.red-81-34-117.dynamicip.rima-tde.net
+User Name (Authentication)                |uo263932
+User Name (Database)                      |UO263932
+Group Name                                |L-I4
+VLAN ID                                   |-
+Server Product Name                       |SoftEther VPN Server (64 bit)
+Server Version                            |4.34
+Server Build                              |Build 9745
+Connection Started at                     |2020-04-28 (Tue) 17:55:35
+First Session has been Established since  |2020-04-28 (Tue) 17:55:35
+Current Session has been Established since|2020-04-28 (Tue) 17:55:35
+Half Duplex TCP Connection Mode           |No (Full Duplex Mode)
+VoIP / QoS Function                       |Disabled
+Number of TCP Connections                 |1
+Maximum Number of TCP Connections         |1
+Encryption                                |Enabled (Algorithm: IPsec - AES-CBC (256 bits))
+Use of Compression                        |No (No Compression)
+Physical Underlay Protocol                |Legacy VPN - L2TP
+                                          |InProc AdjustMSS=1314
+UDP Acceleration is Supported             |No
+UDP Acceleration is Active                |No
+Session Name                              |SID-UO263932-[L2TP]-350
+Connection Name                           |CID-883-07DB6CF3EC
+Session Key (160 bit)                     |853345A9384F9CF774343CF050967D9B811CAB5D
+Bridge / Router Mode                      |No
+Monitoring Mode                           |No
+Outgoing Data Size                        |9,626,100 bytes
+Incoming Data Size                        |24,186,306 bytes
+Outgoing Unicast Packets                  |40,498 packets
+Outgoing Unicast Total Size               |9,604,492 bytes
+Outgoing Broadcast Packets                |143 packets
+Outgoing Broadcast Total Size             |21,608 bytes
+Incoming Unicast Packets                  |112,603 packets
+Incoming Unicast Total Size               |23,829,906 bytes
+Incoming Broadcast Packets                |2,611 packets
+Incoming Broadcast Total Size             |356,400 bytes
+Client Product Name (Reported)            |L2TP VPN Client - Microsoft
+Client Version (Reported)                 |4.34
+Client Build (Reported)                   |Build 9745
+Client OS Name (Reported)                 |L2TP VPN Client - Microsoft
+Client OS Version (Reported)              |-
+Client OS Product ID (Reported)           |-
+Client Host Name (Reported)               |equipo-1
+Client IP Address  (Reported)             |81.34.117.240
+Client Port (Reported)                    |1701
+Server Host Name (Reported)               |156.35.95.36
+Server IP Address (Reported)              |156.35.95.36
+Server Port (Reported)                    |1701
+The command completed successfully.
+
+VPN Server/VPN>SessionGet SID-EXAMEN01-[L2TP]-351
+SessionGet command - Get Session Information
+Item                                      |Value
+------------------------------------------+-----------------------------------------------
+Client IP Address                         |156.35.81.53
+Client Host Name                          |llama81053.euitio.uniovi.es
+User Name (Authentication)                |examen01
+User Name (Database)                      |Examen01
+Group Name                                |TPP
+VLAN ID                                   |-
+Server Product Name                       |SoftEther VPN Server (64 bit)
+Server Version                            |4.34
+Server Build                              |Build 9745
+Connection Started at                     |2020-04-28 (Tue) 18:00:49
+First Session has been Established since  |2020-04-28 (Tue) 18:00:49
+Current Session has been Established since|2020-04-28 (Tue) 18:00:49
+Half Duplex TCP Connection Mode           |No (Full Duplex Mode)
+VoIP / QoS Function                       |Disabled
+Number of TCP Connections                 |1
+Maximum Number of TCP Connections         |1
+Encryption                                |Enabled (Algorithm: IPsec - AES-CBC (256 bits))
+Use of Compression                        |No (No Compression)
+Physical Underlay Protocol                |Legacy VPN - L2TP
+                                          |InProc AdjustMSS=1314
+UDP Acceleration is Supported             |No
+UDP Acceleration is Active                |No
+Session Name                              |SID-EXAMEN01-[L2TP]-351
+Connection Name                           |CID-886-D0ACCDBE36
+Session Key (160 bit)                     |05AF95451DD7CBD153679F5EEB6059A45CD7F530
+Bridge / Router Mode                      |No
+Monitoring Mode                           |No
+Outgoing Data Size                        |1,914,358 bytes
+Incoming Data Size                        |7,131,414 bytes
+Outgoing Unicast Packets                  |7,881 packets
+Outgoing Unicast Total Size               |1,825,343 bytes
+Outgoing Broadcast Packets                |299 packets
+Outgoing Broadcast Total Size             |89,015 bytes
+Incoming Unicast Packets                  |9,416 packets
+Incoming Unicast Total Size               |6,867,432 bytes
+Incoming Broadcast Packets                |2,246 packets
+Incoming Broadcast Total Size             |263,982 bytes
+Client Product Name (Reported)            |L2TP VPN Client - Microsoft
+Client Version (Reported)                 |4.34
+Client Build (Reported)                   |Build 9745
+Client OS Name (Reported)                 |L2TP VPN Client - Microsoft
+Client OS Version (Reported)              |-
+Client OS Product ID (Reported)           |-
+Client Host Name (Reported)               |Mx-Uniovi
+Client IP Address  (Reported)             |156.35.81.53
+Client Port (Reported)                    |1701
+Server Host Name (Reported)               |156.35.95.36
+Server IP Address (Reported)              |156.35.95.36
+Server Port (Reported)                    |1701
+The command completed successfully.
+
+VPN Server/VPN>SessionGet SID-UO269424-[L2TP]-352
+SessionGet command - Get Session Information
+Item                                      |Value
+------------------------------------------+-----------------------------------------------
+Client IP Address                         |85.152.225.107
+Client Host Name                          |cm-staticIP-85-152-225-107.telecable.es
+User Name (Authentication)                |uo269424
+User Name (Database)                      |UO269424
+Group Name                                |L-I4
+VLAN ID                                   |-
+Server Product Name                       |SoftEther VPN Server (64 bit)
+Server Version                            |4.34
+Server Build                              |Build 9745
+Connection Started at                     |2020-04-28 (Tue) 18:01:40
+First Session has been Established since  |2020-04-28 (Tue) 18:01:40
+Current Session has been Established since|2020-04-28 (Tue) 18:01:40
+Half Duplex TCP Connection Mode           |No (Full Duplex Mode)
+VoIP / QoS Function                       |Disabled
+Number of TCP Connections                 |1
+Maximum Number of TCP Connections         |1
+Encryption                                |Enabled (Algorithm: IPsec - AES-CBC (256 bits))
+Use of Compression                        |No (No Compression)
+Physical Underlay Protocol                |Legacy VPN - L2TP
+                                          |InProc AdjustMSS=1314
+UDP Acceleration is Supported             |No
+UDP Acceleration is Active                |No
+Session Name                              |SID-UO269424-[L2TP]-352
+Connection Name                           |CID-888-2A2D5864BD
+Session Key (160 bit)                     |09B22AF2CE4CD6D57A205BC6269C7BCB4E4F09B6
+Bridge / Router Mode                      |No
+Monitoring Mode                           |No
+Outgoing Data Size                        |31,401,054 bytes
+Incoming Data Size                        |45,668,347 bytes
+Outgoing Unicast Packets                  |58,120 packets
+Outgoing Unicast Total Size               |31,377,998 bytes
+Outgoing Broadcast Packets                |161 packets
+Outgoing Broadcast Total Size             |23,056 bytes
+Incoming Unicast Packets                  |137,875 packets
+Incoming Unicast Total Size               |45,363,288 bytes
+Incoming Broadcast Packets                |2,221 packets
+Incoming Broadcast Total Size             |305,059 bytes
+Client Product Name (Reported)            |L2TP VPN Client - Microsoft
+Client Version (Reported)                 |4.34
+Client Build (Reported)                   |Build 9745
+Client OS Name (Reported)                 |L2TP VPN Client - Microsoft
+Client OS Version (Reported)              |-
+Client OS Product ID (Reported)           |-
+Client Host Name (Reported)               |HPElite
+Client IP Address  (Reported)             |85.152.225.107
+Client Port (Reported)                    |1701
+Server Host Name (Reported)               |156.35.95.36
+Server IP Address (Reported)              |156.35.95.36
+Server Port (Reported)                    |1701
+The command completed successfully.
+
+VPN Server/VPN>SessionGet SID-UO264254-[L2TP]-353
+SessionGet command - Get Session Information
+Item                                      |Value
+------------------------------------------+-----------------------------------------------
+Client IP Address                         |213.177.221.231
+Client Host Name                          |213.177.221.231
+User Name (Authentication)                |uo264254
+User Name (Database)                      |UO264254
+Group Name                                |L-I3
+VLAN ID                                   |-
+Server Product Name                       |SoftEther VPN Server (64 bit)
+Server Version                            |4.34
+Server Build                              |Build 9745
+Connection Started at                     |2020-04-28 (Tue) 18:05:26
+First Session has been Established since  |2020-04-28 (Tue) 18:05:26
+Current Session has been Established since|2020-04-28 (Tue) 18:05:26
+Half Duplex TCP Connection Mode           |No (Full Duplex Mode)
+VoIP / QoS Function                       |Disabled
+Number of TCP Connections                 |1
+Maximum Number of TCP Connections         |1
+Encryption                                |Enabled (Algorithm: IPsec - AES-CBC (256 bits))
+Use of Compression                        |No (No Compression)
+Physical Underlay Protocol                |Legacy VPN - L2TP
+                                          |InProc AdjustMSS=1314
+UDP Acceleration is Supported             |No
+UDP Acceleration is Active                |No
+Session Name                              |SID-UO264254-[L2TP]-353
+Connection Name                           |CID-890-22CAF099E2
+Session Key (160 bit)                     |8559ED7ECD3A3D31B11DBA61F09B278B8E4BEC5E
+Bridge / Router Mode                      |No
+Monitoring Mode                           |No
+Outgoing Data Size                        |7,114,352 bytes
+Incoming Data Size                        |15,613,330 bytes
+Outgoing Unicast Packets                  |23,449 packets
+Outgoing Unicast Total Size               |7,058,641 bytes
+Outgoing Broadcast Packets                |322 packets
+Outgoing Broadcast Total Size             |55,711 bytes
+Incoming Unicast Packets                  |92,718 packets
+Incoming Unicast Total Size               |15,393,307 bytes
+Incoming Broadcast Packets                |1,679 packets
+Incoming Broadcast Total Size             |220,023 bytes
+Client Product Name (Reported)            |L2TP VPN Client - Microsoft
+Client Version (Reported)                 |4.34
+Client Build (Reported)                   |Build 9745
+Client OS Name (Reported)                 |L2TP VPN Client - Microsoft
+Client OS Version (Reported)              |-
+Client OS Product ID (Reported)           |-
+Client Host Name (Reported)               |LAPTOP-NSIL0T33
+Client IP Address  (Reported)             |213.177.221.231
+Client Port (Reported)                    |1701
+Server Host Name (Reported)               |156.35.95.36
+Server IP Address (Reported)              |156.35.95.36
+Server Port (Reported)                    |1701
+The command completed successfully.
+
+VPN Server/VPN>[EOF]
