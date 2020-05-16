@@ -101,13 +101,13 @@ void ScreenshotFeaturePlugin::initializeRecordingParameters()
 		m_codecContext->framerate = (AVRational){25, 1};
 		m_codecContext->gop_size = 10;
 		m_codecContext->max_b_frames = 1;
-		m_codecContext->frame_size = 1;
+//		m_codecContext->frame_size = 1;
 		m_codecContext->pix_fmt = AV_PIX_FMT_YUV420P;
 
 		av_opt_set(m_codecContext->priv_data, "preset", "slow", 0);
 
-		if (avcodec_open2(m_codecContext, m_codec, NULL) < 0)
-			QTextStream(stdout) << tr("Could not open codec.") << endl;
+//		if (avcodec_open2(m_codecContext, m_codec, NULL) < 0)
+//			QTextStream(stdout) << tr("Could not open codec.") << endl;
 
 		m_currentVideoframe = av_frame_alloc();
 		if (!m_currentVideoframe)
@@ -130,27 +130,76 @@ void ScreenshotFeaturePlugin::initializeRecordingParameters()
 		m_frameCount = 0;
 		//m_outFile = fopen(tr("Stadyn_user.mp4").toLocal8Bit().data(), "wb");
 		//m_outputFormat = av_guess_format(NULL, tr("Stadyn_user.mp4").toLocal8Bit().data(), NULL);
-		//if (!m_outputFormat)
-			//QTextStream(stdout) << tr("Error av_guess_format.") << endl;
+		m_outputFormat = av_guess_format("mp4", NULL, NULL);
+
+		if (!m_outputFormat)
+			QTextStream(stdout) << tr("Error av_guess_format.") << endl;
 		
-		if (avformat_alloc_output_context2(&m_outputContext, NULL, NULL, "Stadyn_user.mp4") < 0)
+		if (avformat_alloc_output_context2(&m_outputContext, m_outputFormat, NULL, NULL) < 0)
 			QTextStream(stdout) << tr("Error avformat_alloc_output_context2()") << endl;
 
 
-		m_outputFormat = m_outputContext->oformat;
-		QTextStream(stdout) << tr("N streams ") << m_outputContext->nb_streams << endl;
+		//m_outputFormat = m_outputContext->oformat;
 		m_st = avformat_new_stream(m_outputContext, NULL);
 		if (!m_st)
 			QTextStream(stdout) << tr("Could not allocate stream") << endl;
 		QTextStream(stdout) << tr("N streams ") << m_outputContext->nb_streams << endl;
 
 		m_st->id = m_outputContext->nb_streams-1;
-		avcodec_parameters_from_context(m_st->codecpar, m_codecContext);
+
+
+
+m_st->codecpar->codec_id = m_outputFormat->video_codec;
+m_st->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
+m_st->codecpar->width = 640;
+m_st->codecpar->height = 320;
+m_st->codecpar->format = AV_PIX_FMT_YUV420P;
+m_st->codecpar->bit_rate = 400 * 1000;
+//m_st->time_base = { 1, 25 };
+//m_st->r_frame_rate = { 25, 1 };
+
+avcodec_parameters_to_context(m_codecContext, m_st->codecpar);
+m_codecContext->time_base = { 1, 25 };
+m_codecContext->framerate = { 25, 1 };
+m_codecContext->max_b_frames = 2;
+m_codecContext->gop_size = 12;
+if (m_st->codecpar->codec_id == AV_CODEC_ID_H264) {
+	av_opt_set(m_codecContext, "preset", "slow", 0);
+}
+if (m_outputContext->oformat->flags & AVFMT_GLOBALHEADER) {
+	m_outputContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+}
+avcodec_parameters_from_context(m_st->codecpar, m_codecContext);
+
+if (avcodec_open2(m_codecContext, m_codec, NULL) < 0)
+	QTextStream(stdout) << tr("Could not open codec.") << endl;
+
+		//avcodec_parameters_from_context(m_st->codecpar, m_codecContext);
 
 		av_dump_format(m_outputContext, 0, "Stadyn_user.mp4", 1);
 		avio_open(&m_outputContext->pb, "Stadyn_user.mp4", AVIO_FLAG_WRITE);
 		if (avformat_write_header(m_outputContext, NULL) < 0)
 		        QTextStream(stdout) << tr("Error avformat_write_header()") << endl;
+
+
+		QTextStream(stdout) << tr("Stream Params") << endl;
+		QTextStream(stdout) << m_st->id << endl;
+		QTextStream(stdout) << m_st->codecpar->codec_id << endl;
+		QTextStream(stdout) << m_st->codecpar->codec_type << endl;
+		QTextStream(stdout) << m_st->codecpar->width << endl;
+		QTextStream(stdout) << m_st->codecpar->height << endl;
+		QTextStream(stdout) << m_st->time_base.num << endl;
+		QTextStream(stdout) << m_st->time_base.den << endl;
+		//m_st->r_frame_rate.num = 25000;
+		//m_st->r_frame_rate.den = 1000;
+
+
+		QTextStream(stdout) << m_st->r_frame_rate.num << endl;
+		QTextStream(stdout) << m_st->r_frame_rate.den << endl;
+		//m_st->codecpar->codec_id = fmt->video_codec;
+		//m_st->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
+		//m_st->codecpar->width = 352;
+		//m_st->codecpar->height = 288;
 
 	}
 	
@@ -199,9 +248,8 @@ void ScreenshotFeaturePlugin::record()
 			//m_currentVideoframe->data
 			m_currentVideoframe->pts = m_frameCount++;
 			QTextStream(stdout) << tr("current frame ") << m_currentVideoframe->pts << endl;
-			//m_pkt->stream_index = m_st->index;
-			av_packet_rescale_ts(m_pkt, m_codecContext->time_base, m_st->time_base);
-			m_pkt->stream_index = m_st->index;
+
+
 
 			int ret = avcodec_send_frame(m_codecContext, m_currentVideoframe);
 			if (ret < 0)
@@ -209,13 +257,42 @@ void ScreenshotFeaturePlugin::record()
 
 			while (ret >= 0)
 			{
-        			ret = avcodec_receive_packet(m_codecContext, m_pkt);
+				ret = avcodec_receive_packet(m_codecContext, m_pkt);
+
+				//m_pkt->pts = m_packetCount++;
+				//m_pkt->dts = m_packetCount;
+
+				//av_packet_rescale_ts(m_pkt, m_codecContext->time_base, m_st->time_base);
+				m_pkt->stream_index = m_st->index;
+
+
+
+				//m_pkt->dts = m_packetCount;
+				//m_pkt->duration = av_rescale_q(m_pkt->duration, m_st->time_base, m_st->time_base);
+				//m_packetCount += m_pkt->duration;
 				//m_pkt->dts = m_packetCount++;
 				//QTextStream(stdout) << m_pkt->pts << endl;//= m_packetCount++;
         			if (ret == AVERROR(EAGAIN))
 					;//QTextStream(stdout) << tr("AVERROR") << endl;
         			else 
 				{
+
+
+QTextStream(stdout) << tr("pts ") << m_pkt->pts;
+QTextStream(stdout) << tr(", dts") << m_pkt->dts;
+QTextStream(stdout) << tr(", dur ") << m_pkt->duration << endl;
+
+m_pkt->pts += av_rescale_q(1, m_codecContext->time_base, m_st->time_base);
+//m_pkt->dts += av_rescale_q(m_packetCount, m_st->time_base, m_codecContext->time_base);
+//m_pkt->duration = av_rescale_q(m_packetCount, m_st->time_base, m_codecContext->time_base);
+m_pkt->pos = -1;
+m_packetCount++;
+
+QTextStream(stdout) << tr("pts ") << m_pkt->pts;
+QTextStream(stdout) << tr(", dts") << m_pkt->dts;
+QTextStream(stdout) << tr(", dur ") << m_pkt->duration << endl;
+
+
 					//fwrite(m_pkt->data, 1, m_pkt->size, m_outFile);
 					av_interleaved_write_frame(m_outputContext, m_pkt);
 //					QTextStream(stdout) << tr("pkt pts: ") << m_pkt->pts << tr("pkt size: ") << m_pkt->size << endl;
