@@ -132,7 +132,7 @@ void RecordFeaturePlugin::startRecording()
 		m_videoEncoder[0].swsResizeContext = sws_getContext(m_recordingWidth, m_recordingHeight, AV_PIX_FMT_RGB32, m_recordingWidth, m_recordingHeight, AV_PIX_FMT_YUV420P, SWS_BICUBIC, 0, 0, 0 );
 
 		m_frameCount = 0;
-		//m_videoEncoder[0].outFile = fopen(tr("Stadyn_user.mp4").toLocal8Bit().data(), "wb");
+		m_videoEncoder[0].outFile = fopen(tr("Stadyn_user.mp4").toLocal8Bit().data(), "wb");
 		//m_outputFormat = av_guess_format(NULL, tr("Stadyn_user.mp4").toLocal8Bit().data(), NULL);
 		//if (!m_outputFormat)
 			//QTextStream(stdout) << tr("Error av_guess_format.") << endl;
@@ -166,12 +166,14 @@ void RecordFeaturePlugin::stopRecording()
 				av_packet_unref(m_videoEncoder[0].pkt);
 			}
 		}
-
+		QTextStream(stdout) << tr("1") << endl;
 		fclose(m_videoEncoder[0].outFile);
-
+		QTextStream(stdout) << tr("2") << endl;
 		avcodec_free_context(&m_videoEncoder[0].videoCodecContext);
 		av_frame_free(&m_videoEncoder[0].currentVideoframe);
+		QTextStream(stdout) << tr("3") << endl;
 		av_frame_free(&m_videoEncoder[0].screenshotVideoFrame);
+		QTextStream(stdout) << tr("4") << endl;
 		av_packet_free(&m_videoEncoder[0].pkt);
 		//avformat_free_context(m_outputContext);
 	}	
@@ -258,8 +260,8 @@ bool RecordFeaturePlugin::startFeature( VeyonMasterInterface& master, const Feat
 		else
 		{
 			m_recordEnabled = false;
-			stopRecording();
 			m_recordTimer->stop();
+			stopRecording();
 			QMessageBox::information(nullptr, tr("Stopping recording"), tr("Recording is now disabled"));
 		}
 		return true;
