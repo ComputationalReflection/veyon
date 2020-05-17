@@ -46,6 +46,7 @@ typedef struct VideoRecording {
 	AVFrame *currentVideoframe;
 	AVFrame *screenshotVideoFrame;
 	SwsContext *swsResizeContext;
+	int frameCount;
 	
 	AVPacket *pkt;
 	FILE *outFile;
@@ -107,7 +108,7 @@ private:
 	VeyonMasterInterface* m_lastMaster;
 	ComputerControlInterfaceList m_lastComputerControlInterfaces;
 
-	int m_videoEncoder[100];
+	VideoRecording m_videoEncoder[100];
 	QString m_videoCodecName;
 	
 	//Reflection.Uniovi configuration parameters

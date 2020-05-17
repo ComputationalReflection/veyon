@@ -34,6 +34,15 @@
 #include "Computer.h"
 #include "ComputerControlInterface.h"
 #include "Filesystem.h"
+#ifdef __cplusplus
+extern "C"
+{
+    #include <libavcodec/avcodec.h>
+    #include <libavutil/opt.h>
+    #include <libavformat/avformat.h>
+    #include <libswscale/swscale.h>
+}
+#endif
 
 
 RecordFeaturePlugin::RecordFeaturePlugin( QObject* parent ) :
@@ -53,7 +62,7 @@ RecordFeaturePlugin::RecordFeaturePlugin( QObject* parent ) :
 	m_lastMaster = nullptr;
 }
 
-void ScreenshotFeaturePlugin::initializeRecordingParameters()
+void RecordFeaturePlugin::initializeRecordingParameters()
 {
 	//initialize libav
 	av_register_all();
@@ -63,13 +72,10 @@ void ScreenshotFeaturePlugin::initializeRecordingParameters()
 	m_recordingHeight = m_lastMaster->userConfigurationObject()->value(tr("VideoResY"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
 	m_recordingVideo = m_lastMaster->userConfigurationObject()->value(tr("SaveVideo"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
 	m_recordingFrameInterval = m_lastMaster->userConfigurationObject()->value(tr("VideoFrameInterval"), tr("Uniovi.Reflection"), QVariant(false)).toBool();
-	if(m_recordingVideo)
-	{
-		initializeVideo();
-	}
+	startRecording();
 }
 
-void ScreenshotFeaturePlugin::startRecording()
+void RecordFeaturePlugin::startRecording()
 {	
 	if(m_recordingVideo)
 	{
@@ -138,7 +144,7 @@ void ScreenshotFeaturePlugin::startRecording()
 	
 }
 
-void ScreenshotFeaturePlugin::stopRecording()
+void RecordFeaturePlugin::stopRecording()
 {
 	if (m_recordingVideo)
 	{
@@ -189,7 +195,7 @@ void RecordFeaturePlugin::recordFrame()
 			sws_scale(m_videoEncoder[0].swsResizeContext, m_videoEncoder[0].screenshotVideoFrame->data, m_videoEncoder[0].screenshotVideoFrame->linesize, 0, image.height(), m_videoEncoder[0].currentVideoframe->data, m_videoEncoder[0].currentVideoframe->linesize);
 
 			//m_videoEncoder[0].currentVideoframe->data
-			m_videoEncoder[0].currentVideoframe->pts = m_frameCount++;
+			m_videoEncoder[0].currentVideoframe->pts = m_videoEncoder[0].frameCount++;
 			QTextStream(stdout) << tr("current frame ") << m_videoEncoder[0].currentVideoframe->pts << endl;
 
 			int ret = avcodec_send_frame(m_videoEncoder[0].videoCodecContext, m_videoEncoder[0].currentVideoframe);
