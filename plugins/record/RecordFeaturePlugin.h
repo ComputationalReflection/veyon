@@ -50,8 +50,15 @@ typedef struct VideoRecording {
 	
 	AVPacket *pkt;
 	FILE *outFile;
+	QString outFilePath;
     
 } VideoRecording;
+
+typedef struct RecordingComputer {
+	
+	VideoRecording videoRecording;
+	QSharedPointer<ComputerControlInterface> computer;    
+} RecordingComputer;
 
 class RecordFeaturePlugin : public QObject, SimpleFeatureProvider, PluginInterface
 {
@@ -108,7 +115,7 @@ private:
 	VeyonMasterInterface* m_lastMaster;
 	ComputerControlInterfaceList m_lastComputerControlInterfaces;
 
-	VideoRecording m_videoEncoder[100];
+	QVector<RecordingComputer> m_recordingSessions;
 	QString m_videoCodecName;
 	
 	//Reflection.Uniovi configuration parameters
@@ -116,7 +123,6 @@ private:
 	int m_recordingHeight;
 	bool m_recordingVideo;
 	int m_recordingFrameInterval;
-	long m_frameCount;
 	long m_packetCount;
 	//
 	void initializeRecordingParameters();
