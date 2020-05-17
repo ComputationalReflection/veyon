@@ -66,7 +66,7 @@ void RecordFeaturePlugin::initializeRecordingParameters()
 {
 	//initialize libav
 	av_register_all();
-	QString m_videoCodecName = tr("libx264");
+	m_videoCodecName = tr("libx264");
 	
 	m_recordingWidth = m_lastMaster->userConfigurationObject()->value(tr("VideoResX"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
 	m_recordingHeight = m_lastMaster->userConfigurationObject()->value(tr("VideoResY"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
