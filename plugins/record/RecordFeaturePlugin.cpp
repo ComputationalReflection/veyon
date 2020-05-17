@@ -73,60 +73,60 @@ void ScreenshotFeaturePlugin::startRecording()
 {	
 	if(m_recordingVideo)
 	{
-		//m_videoEncoder[0]->videoCodec
-		m_videoEncoder[0]->videoCodec = avcodec_find_encoder_by_name(m_videoCodecName.toLocal8Bit().data());
-		if (!m_videoEncoder[0]->videoCodec) {
+		//m_videoEncoder[0].videoCodec
+		m_videoEncoder[0].videoCodec = avcodec_find_encoder_by_name(m_videoCodecName.toLocal8Bit().data());
+		if (!m_videoEncoder[0].videoCodec) {
 		    QTextStream(stdout) << tr("Codec ") << m_videoCodecName << tr(" not found") << endl;
 		}
 		else {
 		    QTextStream(stdout) << tr("Codec ") << m_videoCodecName << tr(" found") << endl;
 		}
-		m_videoEncoder[0]->videoCodecContext = avcodec_alloc_context3(m_videoEncoder[0]->videoCodec);
-		if (!m_videoEncoder[0]->videoCodecContext)
+		m_videoEncoder[0].videoCodecContext = avcodec_alloc_context3(m_videoEncoder[0].videoCodec);
+		if (!m_videoEncoder[0].videoCodecContext)
 		    QTextStream(stdout) << tr("Codec Context couldn't be allocated.") << endl;
 
-		m_videoEncoder[0]->pkt = av_packet_alloc();
-		if (!m_videoEncoder[0]->pkt)
+		m_videoEncoder[0].pkt = av_packet_alloc();
+		if (!m_videoEncoder[0].pkt)
 		    QTextStream(stdout) << tr("AV packet couldn't be allocated.") << endl;
 
 		//Initilize basic encoding context: based on https://github.com/FFmpeg/FFmpeg/blob/master/doc/examples/encode_video.c
-		m_videoEncoder[0]->videoCodecContext->bit_rate = 400000;
-		m_videoEncoder[0]->videoCodecContext->width = m_recordingWidth;
-		m_videoEncoder[0]->videoCodecContext->height = m_recordingHeight;
-//		m_videoEncoder[0]->videoCodecContext->time_base = (AVRational){1, m_recordingFrameInterval/1000.0};
-//		m_videoEncoder[0]->videoCodecContext->framerate = (AVRational){m_recordingFrameInterval/1000.0, 1};
-		m_videoEncoder[0]->videoCodecContext->time_base = (AVRational){1, 25};
-		m_videoEncoder[0]->videoCodecContext->framerate = (AVRational){25, 1};
-		m_videoEncoder[0]->videoCodecContext->gop_size = 10;
-		m_videoEncoder[0]->videoCodecContext->max_b_frames = 1;
-		m_videoEncoder[0]->videoCodecContext->frame_size = 1;
-		m_videoEncoder[0]->videoCodecContext->pix_fmt = AV_PIX_FMT_YUV420P;
+		m_videoEncoder[0].videoCodecContext->bit_rate = 400000;
+		m_videoEncoder[0].videoCodecContext->width = m_recordingWidth;
+		m_videoEncoder[0].videoCodecContext->height = m_recordingHeight;
+//		m_videoEncoder[0].videoCodecContext->time_base = (AVRational){1, m_recordingFrameInterval/1000.0};
+//		m_videoEncoder[0].videoCodecContext->framerate = (AVRational){m_recordingFrameInterval/1000.0, 1};
+		m_videoEncoder[0].videoCodecContext->time_base = (AVRational){1, 25};
+		m_videoEncoder[0].videoCodecContext->framerate = (AVRational){25, 1};
+		m_videoEncoder[0].videoCodecContext->gop_size = 10;
+		m_videoEncoder[0].videoCodecContext->max_b_frames = 1;
+		m_videoEncoder[0].videoCodecContext->frame_size = 1;
+		m_videoEncoder[0].videoCodecContext->pix_fmt = AV_PIX_FMT_YUV420P;
 
-		av_opt_set(m_videoEncoder[0]->videoCodecContext->priv_data, "preset", "slow", 0);
+		av_opt_set(m_videoEncoder[0].videoCodecContext->priv_data, "preset", "slow", 0);
 
-		if (avcodec_open2(m_videoEncoder[0]->videoCodecContext, m_videoEncoder[0]->videoCodec, NULL) < 0)
+		if (avcodec_open2(m_videoEncoder[0].videoCodecContext, m_videoEncoder[0].videoCodec, NULL) < 0)
 			QTextStream(stdout) << tr("Could not open codec.") << endl;
 
-		m_videoEncoder[0]->currentVideoframe = av_frame_alloc();
-		if (!m_videoEncoder[0]->currentVideoframe)
+		m_videoEncoder[0].currentVideoframe = av_frame_alloc();
+		if (!m_videoEncoder[0].currentVideoframe)
 			QTextStream(stdout) << tr("Could not allocate video frame.") << endl;
-		m_videoEncoder[0]->currentVideoframe->format = m_videoEncoder[0]->videoCodecContext->pix_fmt;
-		m_videoEncoder[0]->currentVideoframe->width  = m_videoEncoder[0]->videoCodecContext->width;
-		m_videoEncoder[0]->currentVideoframe->height = m_videoEncoder[0]->videoCodecContext->height;
+		m_videoEncoder[0].currentVideoframe->format = m_videoEncoder[0].videoCodecContext->pix_fmt;
+		m_videoEncoder[0].currentVideoframe->width  = m_videoEncoder[0].videoCodecContext->width;
+		m_videoEncoder[0].currentVideoframe->height = m_videoEncoder[0].videoCodecContext->height;
 
 
-		if (av_frame_get_buffer(m_videoEncoder[0]->currentVideoframe, 32) < 0) 
+		if (av_frame_get_buffer(m_videoEncoder[0].currentVideoframe, 32) < 0) 
 			QTextStream(stdout) << tr("Could not allocate the video frame data.") << endl;
 
-		if (av_frame_make_writable(m_videoEncoder[0]->currentVideoframe) < 0) 
+		if (av_frame_make_writable(m_videoEncoder[0].currentVideoframe) < 0) 
 			QTextStream(stdout) << tr("Could not made the video frame data writable.") << endl;
 
-		m_videoEncoder[0]->screenshotVideoFrame = av_frame_alloc();
+		m_videoEncoder[0].screenshotVideoFrame = av_frame_alloc();
 
-		m_videoEncoder[0]->swsResizeContext = sws_getContext(m_recordingWidth, m_recordingHeight, AV_PIX_FMT_RGB32, m_recordingWidth, m_recordingHeight, AV_PIX_FMT_YUV420P, SWS_BICUBIC, 0, 0, 0 );
+		m_videoEncoder[0].swsResizeContext = sws_getContext(m_recordingWidth, m_recordingHeight, AV_PIX_FMT_RGB32, m_recordingWidth, m_recordingHeight, AV_PIX_FMT_YUV420P, SWS_BICUBIC, 0, 0, 0 );
 
 		m_frameCount = 0;
-		//m_videoEncoder[0]->outFile = fopen(tr("Stadyn_user.mp4").toLocal8Bit().data(), "wb");
+		//m_videoEncoder[0].outFile = fopen(tr("Stadyn_user.mp4").toLocal8Bit().data(), "wb");
 		//m_outputFormat = av_guess_format(NULL, tr("Stadyn_user.mp4").toLocal8Bit().data(), NULL);
 		//if (!m_outputFormat)
 			//QTextStream(stdout) << tr("Error av_guess_format.") << endl;
@@ -144,29 +144,29 @@ void ScreenshotFeaturePlugin::stopRecording()
 	{
 		/* flush the encoder */
 		//encode(c, NULL, pkt, f);
-		int ret = avcodec_send_frame(m_videoEncoder[0]->videoCodecContext, NULL);
+		int ret = avcodec_send_frame(m_videoEncoder[0].videoCodecContext, NULL);
 		if (ret < 0)
 			QTextStream(stdout) << tr("Error sending a frame for encoding") << endl;
 
 		while (ret >= 0)
 		{
-			ret = avcodec_receive_packet(m_videoEncoder[0]->videoCodecContext, m_videoEncoder[0]->pkt);
+			ret = avcodec_receive_packet(m_videoEncoder[0].videoCodecContext, m_videoEncoder[0].pkt);
 			if (ret == AVERROR_EOF)
 				QTextStream(stdout) << tr("AVERROR_EOF") << endl;
 			else if (ret < 0)
 				QTextStream(stdout) << tr("Error during encoding") << endl;
 			else {
-				fwrite(m_videoEncoder[0]->pkt->data, 1, m_videoEncoder[0]->pkt->size, m_videoEncoder[0]->outFile);
-				av_packet_unref(m_videoEncoder[0]->pkt);
+				fwrite(m_videoEncoder[0].pkt->data, 1, m_videoEncoder[0].pkt->size, m_videoEncoder[0].outFile);
+				av_packet_unref(m_videoEncoder[0].pkt);
 			}
 		}
 
-		fclose(m_videoEncoder[0]->outFile);
+		fclose(m_videoEncoder[0].outFile);
 
-		avcodec_free_context(&m_videoEncoder[0]->videoCodecContext);
-		av_frame_free(&m_videoEncoder[0]->currentVideoframe);
-		av_frame_free(&m_videoEncoder[0]->screenshotVideoFrame);
-		av_packet_free(&m_videoEncoder[0]->pkt);
+		avcodec_free_context(&m_videoEncoder[0].videoCodecContext);
+		av_frame_free(&m_videoEncoder[0].currentVideoframe);
+		av_frame_free(&m_videoEncoder[0].screenshotVideoFrame);
+		av_packet_free(&m_videoEncoder[0].pkt);
 		//avformat_free_context(m_outputContext);
 	}	
 }
@@ -185,26 +185,26 @@ void RecordFeaturePlugin::recordFrame()
 			image = image.scaled(m_recordingWidth, m_recordingHeight, Qt::IgnoreAspectRatio, Qt::FastTransformation);
 
 
-			avpicture_fill((AVPicture*)m_videoEncoder[0]->screenshotVideoFrame, image.bits(), AV_PIX_FMT_RGB32, image.width(), image.height());
-			sws_scale(m_videoEncoder[0]->swsResizeContext, m_videoEncoder[0]->screenshotVideoFrame->data, m_videoEncoder[0]->screenshotVideoFrame->linesize, 0, image.height(), m_videoEncoder[0]->currentVideoframe->data, m_videoEncoder[0]->currentVideoframe->linesize);
+			avpicture_fill((AVPicture*)m_videoEncoder[0].screenshotVideoFrame, image.bits(), AV_PIX_FMT_RGB32, image.width(), image.height());
+			sws_scale(m_videoEncoder[0].swsResizeContext, m_videoEncoder[0].screenshotVideoFrame->data, m_videoEncoder[0].screenshotVideoFrame->linesize, 0, image.height(), m_videoEncoder[0].currentVideoframe->data, m_videoEncoder[0].currentVideoframe->linesize);
 
-			//m_videoEncoder[0]->currentVideoframe->data
-			m_videoEncoder[0]->currentVideoframe->pts = m_frameCount++;
-			QTextStream(stdout) << tr("current frame ") << m_videoEncoder[0]->currentVideoframe->pts << endl;
+			//m_videoEncoder[0].currentVideoframe->data
+			m_videoEncoder[0].currentVideoframe->pts = m_frameCount++;
+			QTextStream(stdout) << tr("current frame ") << m_videoEncoder[0].currentVideoframe->pts << endl;
 
-			int ret = avcodec_send_frame(m_videoEncoder[0]->videoCodecContext, m_videoEncoder[0]->currentVideoframe);
+			int ret = avcodec_send_frame(m_videoEncoder[0].videoCodecContext, m_videoEncoder[0].currentVideoframe);
 			if (ret < 0)
         			QTextStream(stdout) << tr("Error sending a frame for encoding") << endl;
 
 			while (ret >= 0)
 			{
-				ret = avcodec_receive_packet(m_videoEncoder[0]->videoCodecContext, m_videoEncoder[0]->pkt);
+				ret = avcodec_receive_packet(m_videoEncoder[0].videoCodecContext, m_videoEncoder[0].pkt);
 				if (ret == AVERROR(EAGAIN))
 					;//QTextStream(stdout) << tr("AVERROR") << endl;
 				else 
 				{
-					fwrite(m_videoEncoder[0]->pkt->data, 1, m_videoEncoder[0]->pkt->size, m_videoEncoder[0]->outFile);
-					av_packet_unref(m_videoEncoder[0]->pkt);
+					fwrite(m_videoEncoder[0].pkt->data, 1, m_videoEncoder[0].pkt->size, m_videoEncoder[0].outFile);
+					av_packet_unref(m_videoEncoder[0].pkt);
 				}
 			}
 		}
