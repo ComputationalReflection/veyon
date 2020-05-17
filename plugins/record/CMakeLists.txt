@@ -5,3 +5,5 @@ build_veyon_plugin(record
 	RecordFeaturePlugin.h
 	record.qrc
 )
+
+TARGET_LINK_LIBRARIES(record -lavformat -lavcodec -lavutil -lswscale)

@@ -28,14 +28,38 @@
 #include "Feature.h"
 #include "SimpleFeatureProvider.h"
 
-class ScreenshotFeaturePlugin : public QObject, SimpleFeatureProvider, PluginInterface
+#ifdef __cplusplus
+extern "C"
+{
+    #include <libavcodec/avcodec.h>
+    #include <libavformat/avformat.h>
+    #include <libswscale/swscale.h>
+}
+#endif
+
+typedef struct VideoRecording {
+	
+	AVCodec *videoCodec;
+	AVCodecContext *videoCodecContext;
+	
+	
+	AVFrame *currentVideoframe;
+	AVFrame *screenshotVideoFrame;
+	SwsContext *swsResizeContext;
+	
+	AVPacket *pkt;
+	FILE *outFile;
+    
+} VideoRecording;
+
+class RecordFeaturePlugin : public QObject, SimpleFeatureProvider, PluginInterface
 {
 	Q_OBJECT
 	Q_PLUGIN_METADATA(IID "io.veyon.Veyon.Plugins.Record")
 	Q_INTERFACES(PluginInterface FeatureProviderInterface)
 public:
-	explicit ScreenshotFeaturePlugin( QObject* parent = nullptr );
-	~ScreenshotFeaturePlugin() override = default;
+	explicit RecordFeaturePlugin( QObject* parent = nullptr );
+	~RecordFeaturePlugin() override = default;
 
 	Plugin::Uid uid() const override
 	{
@@ -73,7 +97,7 @@ public:
 					   const ComputerControlInterfaceList& computerControlInterfaces ) override;
 
 public Q_SLOTS:
-	void record();
+	void recordFrame();
 
 private:
 	const Feature m_screenshotFeature;
@@ -83,4 +107,18 @@ private:
 	VeyonMasterInterface* m_lastMaster;
 	ComputerControlInterfaceList m_lastComputerControlInterfaces;
 
+	int m_videoEncoder[100];
+	QString m_videoCodecName;
+	
+	//Reflection.Uniovi configuration parameters
+	int m_recordingWidth;
+	int m_recordingHeight;
+	bool m_recordingVideo;
+	int m_recordingFrameInterval;
+	long m_frameCount;
+	long m_packetCount;
+	//
+	void initializeRecordingParameters();
+	void startRecording();
+	void stopRecording();
 };
