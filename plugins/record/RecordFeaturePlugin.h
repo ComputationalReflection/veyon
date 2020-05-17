@@ -105,7 +105,7 @@ public:
 					   const ComputerControlInterfaceList& computerControlInterfaces ) override;
 
 public Q_SLOTS:
-	void recordFrame();
+	void saveFrame();
 
 private:
 	const Feature m_screenshotFeature;

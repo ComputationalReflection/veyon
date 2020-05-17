@@ -60,7 +60,7 @@ RecordFeaturePlugin::RecordFeaturePlugin( QObject* parent ) :
 {
 	m_recordEnabled = false;
 	m_recordTimer = new QTimer(this);
-	connect(m_recordTimer, SIGNAL(timeout()), this, SLOT(record()));
+	connect(m_recordTimer, SIGNAL(timeout()), this, SLOT(saveFrame()));
 	m_lastMaster = nullptr;
 }
 
@@ -143,7 +143,7 @@ void RecordFeaturePlugin::startRecording()
 			currentRecording.videoRecording.swsResizeContext = sws_getContext(m_recordingWidth, m_recordingHeight, AV_PIX_FMT_RGB32, m_recordingWidth, m_recordingHeight, AV_PIX_FMT_YUV420P, SWS_BICUBIC, 0, 0, 0 );
 
 			currentRecording.videoRecording.frameCount = 0;
-			currentRecording.videoRecording.outFilePath = currentRecording.computer->computer().name() + QDateTime::currentDateTime().toString( Qt::ISODate ) + tr(".mp4");
+			currentRecording.videoRecording.outFilePath = currentRecording.computer->computer().name() + tr("_") + QDateTime::currentDateTime().toString( Qt::ISODate ) + tr(".mp4");
 			currentRecording.videoRecording.outFile = fopen(currentRecording.videoRecording.outFilePath.toLocal8Bit().data(), "wb");
 
 			//if (!m_outputFormat)
@@ -184,11 +184,12 @@ void RecordFeaturePlugin::stopRecording()
 			av_frame_free(&(currentRecording.videoRecording.currentVideoframe));
 			av_frame_free(&(currentRecording.videoRecording.screenshotVideoFrame));
 			av_packet_free(&(currentRecording.videoRecording.pkt));
+			//QTextStream(stdout) << currentRecording.videoRecording.outFilePath << tr(" closed") << endl;
 		}
 	}
 }
 
-void RecordFeaturePlugin::recordFrame()
+void RecordFeaturePlugin::saveFrame()
 {
 	//Debugging configured values
 	qDebug() << tr("x:") << m_recordingWidth << endl;
@@ -215,13 +216,13 @@ void RecordFeaturePlugin::recordFrame()
 			while (ret >= 0)
 			{
 				ret = avcodec_receive_packet(currentRecording.videoRecording.videoCodecContext, currentRecording.videoRecording.pkt);
-				if (ret == AVERROR(EAGAIN))
-					;//QTextStream(stdout) << tr("AVERROR") << endl;
-				else 
+				if (ret != AVERROR(EAGAIN))
 				{
 					fwrite(currentRecording.videoRecording.pkt->data, 1, currentRecording.videoRecording.pkt->size, currentRecording.videoRecording.outFile);
 					av_packet_unref(currentRecording.videoRecording.pkt);
 				}
+				//else 
+				//	QTextStream(stdout) << tr("EAGAIN") << endl;
 			}
 		}
 	}
@@ -231,7 +232,7 @@ void RecordFeaturePlugin::recordFrame()
 		{
 			//This is a simplified version of the code in Screenshot::take(). In this case no label is added to png image
 			const auto dir = VeyonCore::filesystem().expandPath( VeyonCore::config().screenshotDirectory() );
-			QString fileName = dir + QDir::separator() + Screenshot::constructFileName( controlInterface->computer().name(), controlInterface->computer().hostAddress() );
+			QString fileName = dir + QDir::separator() + Screenshot::constructFileName( controlInterface->computer().name(), controlInterface->computer().hostAddress(), QDateTime::currentDateTime().date(), QDateTime::currentDateTime().time() );
 			QImage image = controlInterface->screen();
 			if(m_recordingWidth != 0 && m_recordingHeight != 0)
 				image = image.scaled(m_recordingWidth, m_recordingHeight, Qt::IgnoreAspectRatio, Qt::FastTransformation);
@@ -267,9 +268,9 @@ bool RecordFeaturePlugin::startFeature( VeyonMasterInterface& master, const Feat
 		}
 		else
 		{
-			m_recordEnabled = false;
 			m_recordTimer->stop();
 			stopRecording();
+			m_recordEnabled = false;
 			QMessageBox::information(nullptr, tr("Stopping recording"), tr("Recording is now disabled"));
 		}
 		return true;
