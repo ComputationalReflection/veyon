@@ -4,7 +4,7 @@ names = {}
 labs = {}
 with open("data.txt") as f:
     for line in f:
-       (uo,name,lab) = line.split(';')
+       (uo,name,lab) = line.split(',')
        names[uo] = name
        labs[uo] = lab
 for x in i:
@@ -16,7 +16,7 @@ for x in i:
     pc_name = x.split("'")[1]
     if not "NAT" in user:
       if not "MASTER" in user:
-        o.write("{0}-{1};{2};{3}".format(user,names[user],ip,labs[user]))
+        o.write("{0}-{1},{2},{3}".format(user,names[user],ip,labs[user]))
         
 i.close()
 o.close()

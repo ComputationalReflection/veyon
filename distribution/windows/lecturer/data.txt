@@ -1,1 +1,10 @@
-Student Id;Student Name;Laboratory Id
+UO002517,Joe Bloggs,Lab01
+UO009767,John Doe,Lab01
+UO002315,Mia Harris,Lab01
+UO007741,Tom Smith,Lab01
+UO005542,Olivia Brwon,Lab01
+UO005638,Joe Schmoe,Lab02
+UO004722,Emma Williams,Lab02
+UO004591,Harry Johnson,Lab02
+UO009437,Jane Doe,Lab02
+
