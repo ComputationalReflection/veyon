@@ -23,26 +23,11 @@
  */
 
 #include <QMessageBox>
-#include <QTimer>
-#include <QImage>
 
 #include "ScreenshotFeaturePlugin.h"
 #include "ComputerControlInterface.h"
 #include "VeyonMasterInterface.h"
 #include "Screenshot.h"
-#include "VeyonConfiguration.h"
-#include "Computer.h"
-#include "ComputerControlInterface.h"
-#include "Filesystem.h"
-#ifdef __cplusplus
-extern "C"
-{
-    #include <libavcodec/avcodec.h>
-    #include <libavutil/opt.h>
-    #include <libavformat/avformat.h>
-    #include <libswscale/swscale.h>
-}
-#endif
 
 
 ScreenshotFeaturePlugin::ScreenshotFeaturePlugin( QObject* parent ) :
@@ -56,345 +41,32 @@ ScreenshotFeaturePlugin::ScreenshotFeaturePlugin( QObject* parent ) :
 								  QStringLiteral(":/screenshot/camera-photo.png") ) ),
 	m_features( { m_screenshotFeature } )
 {
-	m_recordEnabled = false;
-	m_recordTimer = new QTimer(this);
-	connect(m_recordTimer, SIGNAL(timeout()), this, SLOT(record()));
-	m_lastMaster = nullptr;
-
 }
 
-void ScreenshotFeaturePlugin::initializeRecordingParameters()
-{
-	m_recordingWidth = m_lastMaster->userConfigurationObject()->value(tr("VideoResX"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
-	m_recordingHeight = m_lastMaster->userConfigurationObject()->value(tr("VideoResY"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
-	m_recordingVideo = m_lastMaster->userConfigurationObject()->value(tr("SaveVideo"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
-	m_recordingFrameInterval = m_lastMaster->userConfigurationObject()->value(tr("VideoFrameInterval"), tr("Uniovi.Reflection"), QVariant(false)).toBool();
 
-	
-	if(m_recordingVideo)
-	{
-		QString codec_name = tr("libx264");
-
-		av_register_all();
-		m_codec = avcodec_find_encoder_by_name(codec_name.toLocal8Bit().data());
-		if (!m_codec) {
-		    QTextStream(stdout) << tr("Codec ") << codec_name << tr(" not found") << endl;
-		}
-		else {
-		    QTextStream(stdout) << tr("Codec ") << codec_name << tr(" found") << endl;
-		}
-		m_codecContext = avcodec_alloc_context3(m_codec);
-		if (!m_codecContext)
-		    QTextStream(stdout) << tr("Codec Context couldn't be allocated.") << endl;
-
-		m_pkt = av_packet_alloc();
-		if (!m_pkt)
-		    QTextStream(stdout) << tr("AV packet couldn't be allocated.") << endl;
-
-		//Initilize basic encoding context: based on https://github.com/FFmpeg/FFmpeg/blob/master/doc/examples/encode_video.c
-		m_codecContext->bit_rate = 400000;
-		m_codecContext->width = m_recordingWidth;
-		m_codecContext->height = m_recordingHeight;
-//		m_codecContext->time_base = (AVRational){1, m_recordingFrameInterval/1000.0};
-//		m_codecContext->framerate = (AVRational){m_recordingFrameInterval/1000.0, 1};
-		m_codecContext->time_base = (AVRational){1, 25};
-		m_codecContext->framerate = (AVRational){25, 1};
-		m_codecContext->gop_size = 10;
-		m_codecContext->max_b_frames = 1;
-//		m_codecContext->frame_size = 1;
-		m_codecContext->pix_fmt = AV_PIX_FMT_YUV420P;
-
-		av_opt_set(m_codecContext->priv_data, "preset", "slow", 0);
-
-//		if (avcodec_open2(m_codecContext, m_codec, NULL) < 0)
-//			QTextStream(stdout) << tr("Could not open codec.") << endl;
-
-		m_currentVideoframe = av_frame_alloc();
-		if (!m_currentVideoframe)
-			QTextStream(stdout) << tr("Could not allocate video frame.") << endl;
-		m_currentVideoframe->format = m_codecContext->pix_fmt;
-		m_currentVideoframe->width  = m_codecContext->width;
-		m_currentVideoframe->height = m_codecContext->height;
-
-
-		if (av_frame_get_buffer(m_currentVideoframe, 32) < 0) 
-			QTextStream(stdout) << tr("Could not allocate the video frame data.") << endl;
-
-		if (av_frame_make_writable(m_currentVideoframe) < 0) 
-			QTextStream(stdout) << tr("Could not made the video frame data writable.") << endl;
-
-		m_intermediate = av_frame_alloc();
-
-		m_swsContext = sws_getContext(m_recordingWidth, m_recordingHeight, AV_PIX_FMT_RGB32, m_recordingWidth, m_recordingHeight, AV_PIX_FMT_YUV420P, SWS_BICUBIC, 0, 0, 0 );
-
-		m_frameCount = 0;
-		//m_outFile = fopen(tr("Stadyn_user.mp4").toLocal8Bit().data(), "wb");
-		//m_outputFormat = av_guess_format(NULL, tr("Stadyn_user.mp4").toLocal8Bit().data(), NULL);
-		m_outputFormat = av_guess_format("mp4", NULL, NULL);
-
-		if (!m_outputFormat)
-			QTextStream(stdout) << tr("Error av_guess_format.") << endl;
-		
-		if (avformat_alloc_output_context2(&m_outputContext, m_outputFormat, NULL, NULL) < 0)
-			QTextStream(stdout) << tr("Error avformat_alloc_output_context2()") << endl;
-
-
-		//m_outputFormat = m_outputContext->oformat;
-		m_st = avformat_new_stream(m_outputContext, NULL);
-		if (!m_st)
-			QTextStream(stdout) << tr("Could not allocate stream") << endl;
-		QTextStream(stdout) << tr("N streams ") << m_outputContext->nb_streams << endl;
-
-		m_st->id = m_outputContext->nb_streams-1;
-
-
-
-m_st->codecpar->codec_id = m_outputFormat->video_codec;
-m_st->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
-m_st->codecpar->width = 640;
-m_st->codecpar->height = 320;
-m_st->codecpar->format = AV_PIX_FMT_YUV420P;
-m_st->codecpar->bit_rate = 400 * 1000;
-//m_st->time_base = { 1, 25 };
-//m_st->r_frame_rate = { 25, 1 };
-
-avcodec_parameters_to_context(m_codecContext, m_st->codecpar);
-m_codecContext->time_base = { 1, 25 };
-m_codecContext->framerate = { 25, 1 };
-m_codecContext->max_b_frames = 2;
-m_codecContext->gop_size = 12;
-if (m_st->codecpar->codec_id == AV_CODEC_ID_H264) {
-	av_opt_set(m_codecContext, "preset", "slow", 0);
-}
-if (m_outputContext->oformat->flags & AVFMT_GLOBALHEADER) {
-	m_outputContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
-}
-avcodec_parameters_from_context(m_st->codecpar, m_codecContext);
-
-if (avcodec_open2(m_codecContext, m_codec, NULL) < 0)
-	QTextStream(stdout) << tr("Could not open codec.") << endl;
-
-		//avcodec_parameters_from_context(m_st->codecpar, m_codecContext);
-
-		av_dump_format(m_outputContext, 0, "Stadyn_user.mp4", 1);
-		avio_open(&m_outputContext->pb, "Stadyn_user.mp4", AVIO_FLAG_WRITE);
-		if (avformat_write_header(m_outputContext, NULL) < 0)
-		        QTextStream(stdout) << tr("Error avformat_write_header()") << endl;
-
-
-		QTextStream(stdout) << tr("Stream Params") << endl;
-		QTextStream(stdout) << m_st->id << endl;
-		QTextStream(stdout) << m_st->codecpar->codec_id << endl;
-		QTextStream(stdout) << m_st->codecpar->codec_type << endl;
-		QTextStream(stdout) << m_st->codecpar->width << endl;
-		QTextStream(stdout) << m_st->codecpar->height << endl;
-		QTextStream(stdout) << m_st->time_base.num << endl;
-		QTextStream(stdout) << m_st->time_base.den << endl;
-		//m_st->r_frame_rate.num = 25000;
-		//m_st->r_frame_rate.den = 1000;
-
-
-		QTextStream(stdout) << m_st->r_frame_rate.num << endl;
-		QTextStream(stdout) << m_st->r_frame_rate.den << endl;
-		//m_st->codecpar->codec_id = fmt->video_codec;
-		//m_st->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
-		//m_st->codecpar->width = 352;
-		//m_st->codecpar->height = 288;
-
-	}
-	
-}
 
 const FeatureList &ScreenshotFeaturePlugin::featureList() const
 {
 	return m_features;
 }
 
-void ScreenshotFeaturePlugin::record()
-{
-	//QMessageBox::information(nullptr, tr("hola"), tr("mundo"));
-	//qDebug() << "recording event";
 
-/*	//iteration on Json categories (incomplete)
-	QMapIterator<QString, QVariant> i(m_lastMaster->userConfigurationObject()->data());
-	while (i.hasNext())
-	{
-	    i.next();
-	    QTextStream(stdout) << i.key() << ": " << i.value().toString() << endl;
-	}
-*/
-	//Debugging configured values
-	qDebug() << tr("x:") << m_recordingWidth << endl;
-	qDebug() << tr("y:") << m_recordingHeight << endl;
-
-	if(m_recordingVideo)
-	{
-		for( const auto& controlInterface : m_lastComputerControlInterfaces )
-		{
-			QImage image = controlInterface->screen();
-			image = image.scaled(m_recordingWidth, m_recordingHeight, Qt::IgnoreAspectRatio, Qt::FastTransformation);
-
-
-			avpicture_fill((AVPicture*)m_intermediate, image.bits(), AV_PIX_FMT_RGB32, image.width(), image.height());
-			sws_scale(m_swsContext, m_intermediate->data, m_intermediate->linesize, 0, image.height(), m_currentVideoframe->data, m_currentVideoframe->linesize);
-
-
-			//avpicture_fill((AVPicture *)m_currentVideoframe, image.bits(), AV_PIX_FMT_RGB24, m_codecContext->width, m_codecContext->height);
-
-			//av_frame_copy(copyFrame, frame);
-			//int rgb_stride[3]={3, 0, 0};
-			//sws_scale(m_swsContext, (const uint8_t * const *)image.bits(), rgb_stride, 0, m_codecContext->height, m_currentVideoframe->data, m_currentVideoframe->linesize);
-
-			//m_currentVideoframe->data
-			m_currentVideoframe->pts = m_frameCount++;
-			QTextStream(stdout) << tr("current frame ") << m_currentVideoframe->pts << endl;
-
-
-
-			int ret = avcodec_send_frame(m_codecContext, m_currentVideoframe);
-			if (ret < 0)
-        			QTextStream(stdout) << tr("Error sending a frame for encoding") << endl;
-
-			while (ret >= 0)
-			{
-				ret = avcodec_receive_packet(m_codecContext, m_pkt);
-
-				//m_pkt->pts = m_packetCount++;
-				//m_pkt->dts = m_packetCount;
-
-				//av_packet_rescale_ts(m_pkt, m_codecContext->time_base, m_st->time_base);
-				m_pkt->stream_index = m_st->index;
-
-
-
-				//m_pkt->dts = m_packetCount;
-				//m_pkt->duration = av_rescale_q(m_pkt->duration, m_st->time_base, m_st->time_base);
-				//m_packetCount += m_pkt->duration;
-				//m_pkt->dts = m_packetCount++;
-				//QTextStream(stdout) << m_pkt->pts << endl;//= m_packetCount++;
-        			if (ret == AVERROR(EAGAIN))
-					;//QTextStream(stdout) << tr("AVERROR") << endl;
-        			else 
-				{
-
-
-QTextStream(stdout) << tr("pts ") << m_pkt->pts;
-QTextStream(stdout) << tr(", dts") << m_pkt->dts;
-QTextStream(stdout) << tr(", dur ") << m_pkt->duration << endl;
-
-m_pkt->pts += av_rescale_q(1, m_codecContext->time_base, m_st->time_base);
-//m_pkt->dts += av_rescale_q(m_packetCount, m_st->time_base, m_codecContext->time_base);
-//m_pkt->duration = av_rescale_q(m_packetCount, m_st->time_base, m_codecContext->time_base);
-m_pkt->pos = -1;
-m_packetCount++;
-
-QTextStream(stdout) << tr("pts ") << m_pkt->pts;
-QTextStream(stdout) << tr(", dts") << m_pkt->dts;
-QTextStream(stdout) << tr(", dur ") << m_pkt->duration << endl;
-
-
-					//fwrite(m_pkt->data, 1, m_pkt->size, m_outFile);
-					av_interleaved_write_frame(m_outputContext, m_pkt);
-//					QTextStream(stdout) << tr("pkt pts: ") << m_pkt->pts << tr("pkt size: ") << m_pkt->size << endl;
-					av_packet_unref(m_pkt);
-				}
-
-				
-				
-			}
-		}
-	}
-	else
-	{
-    	    	for( const auto& controlInterface : m_lastComputerControlInterfaces )
-		{
-			//This is a simplified version of the code in Screenshot::take(). In this case no label is added to png image
-			const auto dir = VeyonCore::filesystem().expandPath( VeyonCore::config().screenshotDirectory() );
-			QString fileName = dir + QDir::separator() + Screenshot::constructFileName( controlInterface->computer().name(), controlInterface->computer().hostAddress() );
-			QImage image = controlInterface->screen();
-			if(m_recordingWidth != 0 && m_recordingHeight != 0)
-				image = image.scaled(m_recordingWidth, m_recordingHeight, Qt::IgnoreAspectRatio, Qt::FastTransformation);
-			image.save( fileName, "PNG", 50 );
-			QTextStream(stdout) << fileName << endl;
-		}
-	}
-//	m_lastMaster->userConfigurationObject()->data()[tr("Uniovi.Reflection")];
-}
 
 bool ScreenshotFeaturePlugin::startFeature( VeyonMasterInterface& master, const Feature& feature,
 											const ComputerControlInterfaceList& computerControlInterfaces )
 {
 	if( feature.uid() == m_screenshotFeature.uid() )
 	{
-		if(m_lastMaster == nullptr)
+		for( const auto& controlInterface : computerControlInterfaces )
 		{
-			m_lastMaster = &master;
-			initializeRecordingParameters();
+			Screenshot().take( controlInterface );
+
 		}
 
-		m_lastComputerControlInterfaces = computerControlInterfaces;
-		if( m_recordEnabled == false)
-		{
-			m_recordEnabled = true;
-			int interval = m_lastMaster->userConfigurationObject()->value(tr("VideoFrameInterval"), tr("Uniovi.Reflection"), QVariant(10000)).toInt();
-			qDebug() << tr("VideoFrameInterval") << interval << endl;
-			m_recordTimer->start(interval);
-			QMessageBox::information(nullptr, tr("Starting recording"), tr("Recording parameters: TODO"));
-		}
-		else
-		{
-			m_recordEnabled = false;
-			m_recordTimer->stop();
-			QMessageBox::information(nullptr, tr("Stopping recording"), tr("Recording is now disabled"));
-			if (m_recordingVideo)
-			{
-				/* flush the encoder */
-				//encode(c, NULL, pkt, f);
-				int ret = avcodec_send_frame(m_codecContext, NULL);
-				if (ret < 0)
-					QTextStream(stdout) << tr("Error sending a frame for encoding") << endl;
-
-				while (ret >= 0)
-				{
-					ret = avcodec_receive_packet(m_codecContext, m_pkt);
-					if (ret == AVERROR_EOF)
-						QTextStream(stdout) << tr("AVERROR_EOF") << endl;
-					else if (ret < 0)
-						QTextStream(stdout) << tr("Error during encoding") << endl;
-					else {
-						//fwrite(m_pkt->data, 1, m_pkt->size, m_outFile);
-						av_interleaved_write_frame(m_outputContext, m_pkt);
-
-						av_packet_unref(m_pkt);
-					}
-				}
-
-				//fclose(m_outFile);
-				av_write_trailer(m_outputContext);
-				avio_close(m_outputContext->pb);
-
-				avcodec_free_context(&m_codecContext);
-				av_frame_free(&m_currentVideoframe);
-				av_frame_free(&m_intermediate);
-				av_packet_free(&m_pkt);
-				avformat_free_context(m_outputContext);
-			}
-		}
-
-
-		
-//QMessageBox::information(nullptr, tr("hola"), tr("mundo"));
-
-		//for( const auto& controlInterface : computerControlInterfaces )
-//		{
-//			Screenshot().take( controlInterface );
-//
-//		}
-
-		//QMessageBox::information( master.mainWindow(),
-		//						  tr( "Screenshots taken" ),
-		//						  tr( "Screenshot of %1 computer have been taken successfully." ).
-		//						  arg( computerControlInterfaces.count() ) );
+		QMessageBox::information( master.mainWindow(),
+								  tr( "Screenshots taken" ),
+								  tr( "Screenshot of %1 computer have been taken successfully." ).
+								  arg( computerControlInterfaces.count() ) );
 
 		return true;
 	}

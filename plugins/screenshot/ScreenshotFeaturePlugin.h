@@ -24,19 +24,8 @@
 
 #pragma once
 
-#include <QTimer>
 #include "Feature.h"
 #include "SimpleFeatureProvider.h"
-
-#ifdef __cplusplus
-extern "C"
-{
-    #include <libavcodec/avcodec.h>
-    #include <libavformat/avformat.h>
-    #include <libswscale/swscale.h>
-}
-#endif
-
 
 class ScreenshotFeaturePlugin : public QObject, SimpleFeatureProvider, PluginInterface
 {
@@ -82,35 +71,9 @@ public:
 	bool startFeature( VeyonMasterInterface& master, const Feature& feature,
 					   const ComputerControlInterfaceList& computerControlInterfaces ) override;
 
-public Q_SLOTS:
-	void record();
 
 private:
 	const Feature m_screenshotFeature;
 	const FeatureList m_features;
-	bool m_recordEnabled;
-	QTimer *m_recordTimer;
-	VeyonMasterInterface* m_lastMaster;
-	ComputerControlInterfaceList m_lastComputerControlInterfaces;
-	AVCodec *m_codec;
-	AVCodecContext *m_codecContext;
-	AVPacket *m_pkt;
-	FILE *m_outFile;
-	AVFrame *m_currentVideoframe;
-	AVFrame *m_intermediate;
-	SwsContext *m_swsContext;
-	AVOutputFormat *m_outputFormat;
-	AVFormatContext *m_outputContext;
-	AVStream *m_st;
 
-
-	//Reflection.Uniovi configuration parameters
-	int m_recordingWidth;
-	int m_recordingHeight;
-	bool m_recordingVideo;
-	int m_recordingFrameInterval;
-	long m_frameCount;
-	long m_packetCount;
-	void initializeRecordingParameters();
-	
 };
