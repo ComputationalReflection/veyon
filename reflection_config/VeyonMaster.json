@@ -18,12 +18,12 @@
         "WindowState": "AAAA/wAAAAD9AAAAAAAABf0AAAL1AAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAOAHQAbwBvAGwAQgBhAHIBAAAAAP////8AAAAAAAAAAA=="
     },
     "Uniovi.Reflection": {
+		"StartDateTime": "",
         "EndDateTime": "",
-        "SaveScreenshots": true,
-        "SaveVideo": true,
-        "StartDateTime": "",
-        "VideoFrameInterval": 2500,
-        "VideoResX": 1024,
-        "VideoResY": 768
+        "Video": true,
+        "VideoFrameIntervalNum": 2500,
+		"VideoFrameIntervalDen": 1000,
+        "Width": 1290,
+        "Heigth": 720
     }
 }

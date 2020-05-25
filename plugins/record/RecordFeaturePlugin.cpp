@@ -70,10 +70,11 @@ RecordFeaturePlugin::RecordFeaturePlugin( QObject* parent ) :
 
 void RecordFeaturePlugin::initializeRecordingParameters()
 {
-	m_recordingWidth = m_lastMaster->userConfigurationObject()->value(tr("VideoResX"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
-	m_recordingHeight = m_lastMaster->userConfigurationObject()->value(tr("VideoResY"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
-	m_recordingVideo = m_lastMaster->userConfigurationObject()->value(tr("SaveVideo"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
-	m_recordingFrameInterval = m_lastMaster->userConfigurationObject()->value(tr("VideoFrameInterval"), tr("Uniovi.Reflection"), QVariant(false)).toBool();
+	m_recordingWidth = m_lastMaster->userConfigurationObject()->value(tr("Width"), tr("Plugin.Record"), QVariant(0)).toInt();
+	m_recordingHeight = m_lastMaster->userConfigurationObject()->value(tr("Heigth"), tr("Plugin.Record"), QVariant(0)).toInt();
+	m_recordingVideo = m_lastMaster->userConfigurationObject()->value(tr("Video"), tr("Plugin.Record"), QVariant(false)).toBool();
+	m_recordingFrameIntervalNum = m_lastMaster->userConfigurationObject()->value(tr("CaptureIntervalNum"), tr("Plugin.Record"), QVariant(1)).toInt();
+	m_recordingFrameIntervalDen = m_lastMaster->userConfigurationObject()->value(tr("CaptureIntervalDen"), tr("Plugin.Record"), QVariant(1)).toInt();
 
 	m_recordingSessions.clear();
 	for( const auto& controlInterface : m_lastComputerControlInterfaces )
@@ -243,7 +244,7 @@ void RecordFeaturePlugin::saveFrame()
 			QTextStream(stdout) << fileName << endl;
 		}
 	}
-//	m_lastMaster->userConfigurationObject()->data()[tr("Uniovi.Reflection")];
+//	m_lastMaster->userConfigurationObject()->data()[tr("Plugin.Record")];
 }
 const FeatureList &RecordFeaturePlugin::featureList() const
 {
@@ -261,7 +262,7 @@ bool RecordFeaturePlugin::startFeature( VeyonMasterInterface& master, const Feat
 		{
 			initializeRecordingParameters();
 			m_recordEnabled = true;
-			int interval = m_lastMaster->userConfigurationObject()->value(tr("VideoFrameInterval"), tr("Uniovi.Reflection"), QVariant(10000)).toInt();
+			int interval = m_lastMaster->userConfigurationObject()->value(tr("VideoFrameInterval"), tr("Plugin.Record"), QVariant(10000)).toInt();
 			qDebug() << tr("VideoFrameInterval") << interval << endl;
 			m_recordTimer->start(interval);
 			QMessageBox::information(nullptr, tr("Starting recording"), tr("Recording parameters: TO BE DONE"));

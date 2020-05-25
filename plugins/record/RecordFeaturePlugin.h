@@ -119,11 +119,13 @@ private:
 	QVector<RecordingComputer> m_recordingSessions;
 	QString m_videoCodecName;
 	
-	//Reflection.Uniovi configuration parameters
+	//Pluging configuration parameters
 	int m_recordingWidth;
 	int m_recordingHeight;
 	bool m_recordingVideo;
-	int m_recordingFrameInterval;
+	int m_recordingFrameIntervalNum;
+	int m_recordingFrameIntervalDen;
+	
 	long m_packetCount;
 	//
 	void initializeRecordingParameters();
