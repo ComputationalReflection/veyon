@@ -1,7 +1,7 @@
 /*
- * ScreenshotFeaturePlugin.cpp - implementation of ScreenshotFeaturePlugin class
+ * RecordFeaturePlugin.cpp - implementation of RecordFeaturePlugin class
  *
- * Copyright (c) 2017-2020 Tobias Junghans <tobydox@veyon.io>
+ * Copyright (c) 2020 Jose Quiroga <quirogajose@uniovi.es>, Miguel Garcia <garciarmiguel@uniovi.es>
  *
  * This file is part of Veyon - https://veyon.io
  *
@@ -33,7 +33,6 @@
 #include "Screenshot.h"
 #include "VeyonConfiguration.h"
 #include "Computer.h"
-#include "ComputerControlInterface.h"
 #include "Filesystem.h"
 
 #ifdef __cplusplus
@@ -70,12 +69,19 @@ RecordFeaturePlugin::RecordFeaturePlugin( QObject* parent ) :
 
 void RecordFeaturePlugin::initializeRecordingParameters()
 {
-	m_recordingWidth = m_lastMaster->userConfigurationObject()->value(tr("Width"), tr("Plugin.Record"), QVariant(0)).toInt();
-	m_recordingHeight = m_lastMaster->userConfigurationObject()->value(tr("Heigth"), tr("Plugin.Record"), QVariant(0)).toInt();
-	m_recordingVideo = m_lastMaster->userConfigurationObject()->value(tr("Video"), tr("Plugin.Record"), QVariant(false)).toBool();
+	m_recordingWidth = m_lastMaster->userConfigurationObject()->value(tr("Width"), tr("Plugin.Record"), QVariant(1280)).toInt();
+	m_recordingHeight = m_lastMaster->userConfigurationObject()->value(tr("Heigth"), tr("Plugin.Record"), QVariant(720)).toInt();
+	m_recordingVideo = m_lastMaster->userConfigurationObject()->value(tr("Video"), tr("Plugin.Record"), QVariant(true)).toBool();
 	m_recordingFrameIntervalNum = m_lastMaster->userConfigurationObject()->value(tr("CaptureIntervalNum"), tr("Plugin.Record"), QVariant(1)).toInt();
 	m_recordingFrameIntervalDen = m_lastMaster->userConfigurationObject()->value(tr("CaptureIntervalDen"), tr("Plugin.Record"), QVariant(1)).toInt();
-
+	
+	//Update config file values. It writes default values if not set.
+	m_lastMaster->userConfigurationObject()->setValue(tr("Width"), QVariant(m_recordingWidth), tr("Plugin.Record"));
+	m_lastMaster->userConfigurationObject()->setValue(tr("Heigth"), QVariant(m_recordingHeight), tr("Plugin.Record"));
+	m_lastMaster->userConfigurationObject()->setValue(tr("Video"), QVariant(m_recordingVideo), tr("Plugin.Record"));
+	m_lastMaster->userConfigurationObject()->setValue(tr("CaptureIntervalNum"), QVariant(m_recordingFrameIntervalNum), tr("Plugin.Record"));
+	m_lastMaster->userConfigurationObject()->setValue(tr("CaptureIntervalDen"), QVariant(m_recordingFrameIntervalNum), tr("Plugin.Record"));
+	
 	m_recordingSessions.clear();
 	for( const auto& controlInterface : m_lastComputerControlInterfaces )
 	{
@@ -146,13 +152,13 @@ void RecordFeaturePlugin::startRecording()
 
 			currentRecording.videoRecording.frameCount = 0;
 			currentRecording.videoRecording.pktCount = 0;
-			currentRecording.videoRecording.outFilePath = currentRecording.computer->computer().name() + tr("_") + QDateTime::currentDateTime().toString( Qt::ISODate ) + tr(".mp4");
+			currentRecording.videoRecording.outFilePath = currentRecording.computer->computer().name() + tr("_") + QDateTime::currentDateTime().toString( Qt::ISODate ) + tr(".h264");
 			currentRecording.videoRecording.outFile = fopen(currentRecording.videoRecording.outFilePath.toLocal8Bit().data(), "wb");
 
 			//if (!m_outputFormat)
 				//QTextStream(stdout) << tr("Error av_guess_format.") << endl;
 
-			//if (avformat_alloc_output_context2(&m_outputContext, NULL, NULL, "Stadyn_user.mp4") < 0)
+			//if (avformat_alloc_output_context2(&m_outputContext, NULL, NULL, "Test_video.h264") < 0)
 				//QTextStream(stdout) << tr("Error avformat_alloc_output_context2()") << endl;
 		}
 	}
@@ -262,9 +268,11 @@ bool RecordFeaturePlugin::startFeature( VeyonMasterInterface& master, const Feat
 		{
 			initializeRecordingParameters();
 			m_recordEnabled = true;
-			int interval = m_lastMaster->userConfigurationObject()->value(tr("VideoFrameInterval"), tr("Plugin.Record"), QVariant(10000)).toInt();
-			qDebug() << tr("VideoFrameInterval") << interval << endl;
-			m_recordTimer->start(interval);
+			int intervalNum = m_lastMaster->userConfigurationObject()->value(tr("setCaptureIntervalNum"), tr("Plugin.Record"), QVariant(10000)).toInt();
+			int intervalDen = m_lastMaster->userConfigurationObject()->value(tr("setCaptureIntervalDen"), tr("Plugin.Record"), QVariant(10000)).toInt();
+			qDebug() << tr("setCaptureIntervalNum") << intervalNum << endl;
+			qDebug() << tr("setCaptureIntervalDen") << intervalDen << endl;
+			m_recordTimer->start((int)((intervalNum * 1.000) / (intervalDen * 1.0)));
 			QMessageBox::information(nullptr, tr("Starting recording"), tr("Recording parameters: TO BE DONE"));
 		}
 		else
@@ -278,3 +286,4 @@ bool RecordFeaturePlugin::startFeature( VeyonMasterInterface& master, const Feat
 	}
 	return true;
 }
+
