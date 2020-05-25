@@ -26,6 +26,8 @@
 #include <QTimer>
 #include <QImage>
 #include <QDate>
+#include <QDir>
+#include <QFileInfo>
 
 #include "RecordFeaturePlugin.h"
 #include "ComputerControlInterface.h"
@@ -67,6 +69,35 @@ RecordFeaturePlugin::RecordFeaturePlugin( QObject* parent ) :
 	m_videoCodecName = tr("libx264");
 }
 
+void RecordFeaturePlugin::updateConfigFile()
+{
+	if( VeyonCore::filesystem().ensurePathExists( m_savePath ) == false )
+	{
+		if (m_savePath == tr("%APPDATA%/Record/"))
+		{
+			QMessageBox::critical( nullptr, tr( "Recording" ), tr( "Probando" ) );
+			const auto dir = VeyonCore::filesystem().expandPath( m_savePath );
+			QDir().mkdir(dir);
+		}
+		else
+		{
+			const auto dir = VeyonCore::filesystem().expandPath( m_savePath );
+			QMessageBox::critical( nullptr, tr( "Recording" ), tr( "Directory %1 doesn't exist and couldn't be created. Videos should be saved in default video folder." ).arg( dir ) );
+			const auto defaultdir = VeyonCore::filesystem().expandPath( tr("%APPDATA%/Record/") );
+			QDir().mkdir(defaultdir);
+		}
+	}
+
+	//Update config file values. It writes default values if not set.
+	m_lastMaster->userConfigurationObject()->setValue(tr("Width"), QVariant(m_recordingWidth), tr("Plugin.Record"));
+	m_lastMaster->userConfigurationObject()->setValue(tr("Heigth"), QVariant(m_recordingHeight), tr("Plugin.Record"));
+	m_lastMaster->userConfigurationObject()->setValue(tr("Video"), QVariant(m_recordingVideo), tr("Plugin.Record"));
+	m_lastMaster->userConfigurationObject()->setValue(tr("CaptureIntervalNum"), QVariant(m_recordingFrameIntervalNum), tr("Plugin.Record"));
+	m_lastMaster->userConfigurationObject()->setValue(tr("CaptureIntervalDen"), QVariant(m_recordingFrameIntervalNum), tr("Plugin.Record"));
+	m_lastMaster->userConfigurationObject()->setValue(tr("SavePath"), QVariant(m_savePath), tr("Plugin.Record"));
+
+}
+
 void RecordFeaturePlugin::initializeRecordingParameters()
 {
 	m_recordingWidth = m_lastMaster->userConfigurationObject()->value(tr("Width"), tr("Plugin.Record"), QVariant(1280)).toInt();
@@ -74,13 +105,9 @@ void RecordFeaturePlugin::initializeRecordingParameters()
 	m_recordingVideo = m_lastMaster->userConfigurationObject()->value(tr("Video"), tr("Plugin.Record"), QVariant(true)).toBool();
 	m_recordingFrameIntervalNum = m_lastMaster->userConfigurationObject()->value(tr("CaptureIntervalNum"), tr("Plugin.Record"), QVariant(1)).toInt();
 	m_recordingFrameIntervalDen = m_lastMaster->userConfigurationObject()->value(tr("CaptureIntervalDen"), tr("Plugin.Record"), QVariant(1)).toInt();
+	m_savePath = m_lastMaster->userConfigurationObject()->value(tr("SavePath"), tr("Plugin.Record"), tr("%APPDATA%/Record/")).toString();
 	
-	//Update config file values. It writes default values if not set.
-	m_lastMaster->userConfigurationObject()->setValue(tr("Width"), QVariant(m_recordingWidth), tr("Plugin.Record"));
-	m_lastMaster->userConfigurationObject()->setValue(tr("Heigth"), QVariant(m_recordingHeight), tr("Plugin.Record"));
-	m_lastMaster->userConfigurationObject()->setValue(tr("Video"), QVariant(m_recordingVideo), tr("Plugin.Record"));
-	m_lastMaster->userConfigurationObject()->setValue(tr("CaptureIntervalNum"), QVariant(m_recordingFrameIntervalNum), tr("Plugin.Record"));
-	m_lastMaster->userConfigurationObject()->setValue(tr("CaptureIntervalDen"), QVariant(m_recordingFrameIntervalNum), tr("Plugin.Record"));
+	updateConfigFile();
 	
 	m_recordingSessions.clear();
 	for( const auto& controlInterface : m_lastComputerControlInterfaces )
@@ -152,14 +179,8 @@ void RecordFeaturePlugin::startRecording()
 
 			currentRecording.videoRecording.frameCount = 0;
 			currentRecording.videoRecording.pktCount = 0;
-			currentRecording.videoRecording.outFilePath = currentRecording.computer->computer().name() + tr("_") + QDateTime::currentDateTime().toString( Qt::ISODate ) + tr(".h264");
+			currentRecording.videoRecording.outFilePath = VeyonCore::filesystem().expandPath( m_savePath ) + currentRecording.computer->computer().name() + tr("_") + QDateTime::currentDateTime().toString( Qt::ISODate ) + tr(".h264");
 			currentRecording.videoRecording.outFile = fopen(currentRecording.videoRecording.outFilePath.toLocal8Bit().data(), "wb");
-
-			//if (!m_outputFormat)
-				//QTextStream(stdout) << tr("Error av_guess_format.") << endl;
-
-			//if (avformat_alloc_output_context2(&m_outputContext, NULL, NULL, "Test_video.h264") < 0)
-				//QTextStream(stdout) << tr("Error avformat_alloc_output_context2()") << endl;
 		}
 	}
 }

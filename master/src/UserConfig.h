@@ -57,8 +57,10 @@ public:
 	OP( UserConfig, VeyonMaster::userConfig(), QString, endDateTime, setEndDateTime, "EndDateTime", "Plugin.Record", QString(), Configuration::Property::Flag::Standard )	\
 	OP( UserConfig, VeyonMaster::userConfig(), int, captureIntervalNum, setCaptureIntervalNum, "CaptureIntervalNum", "Plugin.Record", 1, Configuration::Property::Flag::Standard )	\
 	OP( UserConfig, VeyonMaster::userConfig(), int, captureIntervalDen, setCaptureIntervalDen, "CaptureIntervalDen", "Plugin.Record", 1, Configuration::Property::Flag::Standard )	\
+	OP( UserConfig, VeyonMaster::userConfig(), QString, savePath, setSavePath, "SavePath", "Plugin.Record", QString(), Configuration::Property::Flag::Standard )	\
 
 
 	FOREACH_PERSONAL_CONFIG_PROPERTY(DECLARE_CONFIG_PROPERTY)
 
 } ;
+

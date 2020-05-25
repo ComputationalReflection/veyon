@@ -125,11 +125,13 @@ private:
 	bool m_recordingVideo;
 	int m_recordingFrameIntervalNum;
 	int m_recordingFrameIntervalDen;
+	QString m_savePath;
 	
 	long m_packetCount;
 	//
 	void initializeRecordingParameters();
 	void startRecording();
 	void stopRecording();
+	void updateConfigFile();
 };
 
