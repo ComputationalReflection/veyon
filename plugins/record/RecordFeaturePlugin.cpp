@@ -214,7 +214,6 @@ void RecordFeaturePlugin::stopRecording()
 			av_frame_free(&(currentRecording.videoRecording.currentVideoframe));
 			av_frame_free(&(currentRecording.videoRecording.screenshotVideoFrame));
 			av_packet_free(&(currentRecording.videoRecording.pkt));
-			//QTextStream(stdout) << currentRecording.videoRecording.outFilePath << tr(" closed") << endl;
 		}
 	}
 }
@@ -235,9 +234,7 @@ void RecordFeaturePlugin::saveFrame()
 			avpicture_fill((AVPicture*)currentRecording.videoRecording.screenshotVideoFrame, image.bits(), AV_PIX_FMT_RGB32, image.width(), image.height());
 			sws_scale(currentRecording.videoRecording.swsResizeContext, currentRecording.videoRecording.screenshotVideoFrame->data, currentRecording.videoRecording.screenshotVideoFrame->linesize, 0, image.height(), currentRecording.videoRecording.currentVideoframe->data, currentRecording.videoRecording.currentVideoframe->linesize);
 
-			//currentRecording.videoRecording.currentVideoframe->data
 			currentRecording.videoRecording.currentVideoframe->pts = currentRecording.videoRecording.frameCount++;
-			//QTextStream(stdout) << tr("current frame ") << currentRecording.videoRecording.currentVideoframe->pts << endl;
 
 			int ret = avcodec_send_frame(currentRecording.videoRecording.videoCodecContext, currentRecording.videoRecording.currentVideoframe);
 			if (ret < 0)
@@ -268,10 +265,9 @@ void RecordFeaturePlugin::saveFrame()
 			if(m_recordingWidth != 0 && m_recordingHeight != 0)
 				image = image.scaled(m_recordingWidth, m_recordingHeight, Qt::IgnoreAspectRatio, Qt::FastTransformation);
 			image.save( fileName, "PNG", 50 );
-			QTextStream(stdout) << fileName << endl;
+			qDebug() <<  fileName << endl;
 		}
 	}
-//	m_lastMaster->userConfigurationObject()->data()[tr("Plugin.Record")];
 }
 const FeatureList &RecordFeaturePlugin::featureList() const
 {
@@ -293,8 +289,14 @@ bool RecordFeaturePlugin::startFeature( VeyonMasterInterface& master, const Feat
 			int intervalDen = m_lastMaster->userConfigurationObject()->value(tr("setCaptureIntervalDen"), tr("Plugin.Record"), QVariant(10000)).toInt();
 			qDebug() << tr("setCaptureIntervalNum") << intervalNum << endl;
 			qDebug() << tr("setCaptureIntervalDen") << intervalDen << endl;
-			m_recordTimer->start((int)((intervalNum * 1.000) / (intervalDen * 1.0)));
-			QMessageBox::information(nullptr, tr("Starting recording"), tr("Recording parameters: TO BE DONE"));
+			int interval = (int)((intervalNum * 1.000) / (intervalDen * 1.0));
+			m_recordTimer->start(interval);
+			if (m_recordingVideo)
+				QMessageBox::information(nullptr, tr("Starting recording"), tr("Recording parameters:\nVideo with resolution %1x%2\nInterval: %3 frames per second").arg( QString::number(m_recordingWidth),
+					QString::number(m_recordingHeight), QString::number(interval)));
+			else
+				QMessageBox::information(nullptr, tr("Starting recording"), tr("Recording parameters:\nScreenshots with resolution %1x%2\nInterval: %3 screenshots per second").arg( QString::number(m_recordingWidth),
+					QString::number(m_recordingHeight), QString::number(interval)));
 		}
 		else
 		{
