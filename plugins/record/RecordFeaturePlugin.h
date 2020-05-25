@@ -46,7 +46,8 @@ typedef struct VideoRecording {
 	AVFrame *currentVideoframe;
 	AVFrame *screenshotVideoFrame;
 	SwsContext *swsResizeContext;
-	int frameCount;
+	long frameCount;
+	long pktCount;
 	
 	AVPacket *pkt;
 	FILE *outFile;

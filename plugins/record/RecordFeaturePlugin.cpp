@@ -62,19 +62,20 @@ RecordFeaturePlugin::RecordFeaturePlugin( QObject* parent ) :
 	m_recordTimer = new QTimer(this);
 	connect(m_recordTimer, SIGNAL(timeout()), this, SLOT(saveFrame()));
 	m_lastMaster = nullptr;
+
+	//initialize libav
+	av_register_all();
+	m_videoCodecName = tr("libx264");
 }
 
 void RecordFeaturePlugin::initializeRecordingParameters()
 {
-	//initialize libav
-	av_register_all();
-	m_videoCodecName = tr("libx264");
-	
 	m_recordingWidth = m_lastMaster->userConfigurationObject()->value(tr("VideoResX"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
 	m_recordingHeight = m_lastMaster->userConfigurationObject()->value(tr("VideoResY"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
 	m_recordingVideo = m_lastMaster->userConfigurationObject()->value(tr("SaveVideo"), tr("Uniovi.Reflection"), QVariant(0)).toInt();
 	m_recordingFrameInterval = m_lastMaster->userConfigurationObject()->value(tr("VideoFrameInterval"), tr("Uniovi.Reflection"), QVariant(false)).toBool();
 
+	m_recordingSessions.clear();
 	for( const auto& controlInterface : m_lastComputerControlInterfaces )
 	{
 		RecordingComputer recordingData;
@@ -107,7 +108,7 @@ void RecordFeaturePlugin::startRecording()
 				QTextStream(stdout) << tr("AV packet couldn't be allocated.") << endl;
 
 			//Initilize basic encoding context: based on https://github.com/FFmpeg/FFmpeg/blob/master/doc/examples/encode_video.c
-			currentRecording.videoRecording.videoCodecContext->bit_rate = 400000;
+			currentRecording.videoRecording.videoCodecContext->bit_rate = 4000000;
 			currentRecording.videoRecording.videoCodecContext->width = m_recordingWidth;
 			currentRecording.videoRecording.videoCodecContext->height = m_recordingHeight;
 			//currentRecording.videoRecording.videoCodecContext->time_base = (AVRational){1, m_recordingFrameInterval/1000.0};
@@ -143,6 +144,7 @@ void RecordFeaturePlugin::startRecording()
 			currentRecording.videoRecording.swsResizeContext = sws_getContext(m_recordingWidth, m_recordingHeight, AV_PIX_FMT_RGB32, m_recordingWidth, m_recordingHeight, AV_PIX_FMT_YUV420P, SWS_BICUBIC, 0, 0, 0 );
 
 			currentRecording.videoRecording.frameCount = 0;
+			currentRecording.videoRecording.pktCount = 0;
 			currentRecording.videoRecording.outFilePath = currentRecording.computer->computer().name() + tr("_") + QDateTime::currentDateTime().toString( Qt::ISODate ) + tr(".mp4");
 			currentRecording.videoRecording.outFile = fopen(currentRecording.videoRecording.outFilePath.toLocal8Bit().data(), "wb");
 
@@ -207,7 +209,7 @@ void RecordFeaturePlugin::saveFrame()
 
 			//currentRecording.videoRecording.currentVideoframe->data
 			currentRecording.videoRecording.currentVideoframe->pts = currentRecording.videoRecording.frameCount++;
-			QTextStream(stdout) << tr("current frame ") << currentRecording.videoRecording.currentVideoframe->pts << endl;
+			//QTextStream(stdout) << tr("current frame ") << currentRecording.videoRecording.currentVideoframe->pts << endl;
 
 			int ret = avcodec_send_frame(currentRecording.videoRecording.videoCodecContext, currentRecording.videoRecording.currentVideoframe);
 			if (ret < 0)
@@ -218,6 +220,7 @@ void RecordFeaturePlugin::saveFrame()
 				ret = avcodec_receive_packet(currentRecording.videoRecording.videoCodecContext, currentRecording.videoRecording.pkt);
 				if (ret != AVERROR(EAGAIN))
 				{
+					currentRecording.videoRecording.pkt->pts = currentRecording.videoRecording.pktCount++;
 					fwrite(currentRecording.videoRecording.pkt->data, 1, currentRecording.videoRecording.pkt->size, currentRecording.videoRecording.outFile);
 					av_packet_unref(currentRecording.videoRecording.pkt);
 				}
@@ -252,14 +255,11 @@ bool RecordFeaturePlugin::startFeature( VeyonMasterInterface& master, const Feat
 	if( feature.uid() == m_screenshotFeature.uid() )
 	{
 		m_lastComputerControlInterfaces = computerControlInterfaces;
-		if(m_lastMaster == nullptr)
-		{
-			m_lastMaster = &master;
-			initializeRecordingParameters();
-		}
+		m_lastMaster = &master;
 
 		if( m_recordEnabled == false)
 		{
+			initializeRecordingParameters();
 			m_recordEnabled = true;
 			int interval = m_lastMaster->userConfigurationObject()->value(tr("VideoFrameInterval"), tr("Uniovi.Reflection"), QVariant(10000)).toInt();
 			qDebug() << tr("VideoFrameInterval") << interval << endl;
