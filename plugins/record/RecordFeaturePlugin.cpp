@@ -73,9 +73,8 @@ void RecordFeaturePlugin::updateConfigFile()
 {
 	if( VeyonCore::filesystem().ensurePathExists( m_savePath ) == false )
 	{
-		if (m_savePath == tr("%APPDATA%/Record/"))
+		if (m_savePath == tr("%APPDATA%/Record"))
 		{
-			QMessageBox::critical( nullptr, tr( "Recording" ), tr( "Probando" ) );
 			const auto dir = VeyonCore::filesystem().expandPath( m_savePath );
 			QDir().mkdir(dir);
 		}
@@ -83,7 +82,7 @@ void RecordFeaturePlugin::updateConfigFile()
 		{
 			const auto dir = VeyonCore::filesystem().expandPath( m_savePath );
 			QMessageBox::critical( nullptr, tr( "Recording" ), tr( "Directory %1 doesn't exist and couldn't be created. Videos should be saved in default video folder." ).arg( dir ) );
-			const auto defaultdir = VeyonCore::filesystem().expandPath( tr("%APPDATA%/Record/") );
+			const auto defaultdir = VeyonCore::filesystem().expandPath( tr("%APPDATA%/Record") );
 			QDir().mkdir(defaultdir);
 		}
 	}
@@ -93,7 +92,7 @@ void RecordFeaturePlugin::updateConfigFile()
 	m_lastMaster->userConfigurationObject()->setValue(tr("Heigth"), QVariant(m_recordingHeight), tr("Plugin.Record"));
 	m_lastMaster->userConfigurationObject()->setValue(tr("Video"), QVariant(m_recordingVideo), tr("Plugin.Record"));
 	m_lastMaster->userConfigurationObject()->setValue(tr("CaptureIntervalNum"), QVariant(m_recordingFrameIntervalNum), tr("Plugin.Record"));
-	m_lastMaster->userConfigurationObject()->setValue(tr("CaptureIntervalDen"), QVariant(m_recordingFrameIntervalNum), tr("Plugin.Record"));
+	m_lastMaster->userConfigurationObject()->setValue(tr("CaptureIntervalDen"), QVariant(m_recordingFrameIntervalDen), tr("Plugin.Record"));
 	m_lastMaster->userConfigurationObject()->setValue(tr("SavePath"), QVariant(m_savePath), tr("Plugin.Record"));
 
 }
@@ -103,9 +102,9 @@ void RecordFeaturePlugin::initializeRecordingParameters()
 	m_recordingWidth = m_lastMaster->userConfigurationObject()->value(tr("Width"), tr("Plugin.Record"), QVariant(1280)).toInt();
 	m_recordingHeight = m_lastMaster->userConfigurationObject()->value(tr("Heigth"), tr("Plugin.Record"), QVariant(720)).toInt();
 	m_recordingVideo = m_lastMaster->userConfigurationObject()->value(tr("Video"), tr("Plugin.Record"), QVariant(true)).toBool();
-	m_recordingFrameIntervalNum = m_lastMaster->userConfigurationObject()->value(tr("CaptureIntervalNum"), tr("Plugin.Record"), QVariant(1)).toInt();
-	m_recordingFrameIntervalDen = m_lastMaster->userConfigurationObject()->value(tr("CaptureIntervalDen"), tr("Plugin.Record"), QVariant(1)).toInt();
-	m_savePath = m_lastMaster->userConfigurationObject()->value(tr("SavePath"), tr("Plugin.Record"), tr("%APPDATA%/Record/")).toString();
+	m_recordingFrameIntervalNum = m_lastMaster->userConfigurationObject()->value(tr("CaptureIntervalNum"), tr("Plugin.Record"), QVariant(1000)).toInt();
+	m_recordingFrameIntervalDen = m_lastMaster->userConfigurationObject()->value(tr("CaptureIntervalDen"), tr("Plugin.Record"), QVariant(1000)).toInt();
+	m_savePath = m_lastMaster->userConfigurationObject()->value(tr("SavePath"), tr("Plugin.Record"), tr("%APPDATA%/Record")).toString();
 	
 	updateConfigFile();
 	
@@ -179,7 +178,7 @@ void RecordFeaturePlugin::startRecording()
 
 			currentRecording.videoRecording.frameCount = 0;
 			currentRecording.videoRecording.pktCount = 0;
-			currentRecording.videoRecording.outFilePath = VeyonCore::filesystem().expandPath( m_savePath ) + currentRecording.computer->computer().name() + tr("_") + QDateTime::currentDateTime().toString( Qt::ISODate ) + tr(".h264");
+			currentRecording.videoRecording.outFilePath = VeyonCore::filesystem().expandPath( m_savePath ) + QDir::separator() + currentRecording.computer->computer().name() + tr("_") + QDateTime::currentDateTime().toString( Qt::ISODate ) + tr(".h264");
 			currentRecording.videoRecording.outFile = fopen(currentRecording.videoRecording.outFilePath.toLocal8Bit().data(), "wb");
 		}
 	}
@@ -259,13 +258,13 @@ void RecordFeaturePlugin::saveFrame()
 		for( const auto& controlInterface : m_lastComputerControlInterfaces )
 		{
 			//This is a simplified version of the code in Screenshot::take(). In this case no label is added to png image
-			const auto dir = VeyonCore::filesystem().expandPath( VeyonCore::config().screenshotDirectory() );
+			const auto dir = VeyonCore::filesystem().expandPath( m_savePath );
 			QString fileName = dir + QDir::separator() + Screenshot::constructFileName( controlInterface->computer().name(), controlInterface->computer().hostAddress(), QDateTime::currentDateTime().date(), QDateTime::currentDateTime().time() );
 			QImage image = controlInterface->screen();
 			if(m_recordingWidth != 0 && m_recordingHeight != 0)
 				image = image.scaled(m_recordingWidth, m_recordingHeight, Qt::IgnoreAspectRatio, Qt::FastTransformation);
 			image.save( fileName, "PNG", 50 );
-			qDebug() <<  fileName << endl;
+			QTextStream(stdout) <<  fileName << endl;
 		}
 	}
 }
@@ -285,18 +284,14 @@ bool RecordFeaturePlugin::startFeature( VeyonMasterInterface& master, const Feat
 		{
 			initializeRecordingParameters();
 			m_recordEnabled = true;
-			int intervalNum = m_lastMaster->userConfigurationObject()->value(tr("setCaptureIntervalNum"), tr("Plugin.Record"), QVariant(10000)).toInt();
-			int intervalDen = m_lastMaster->userConfigurationObject()->value(tr("setCaptureIntervalDen"), tr("Plugin.Record"), QVariant(10000)).toInt();
-			qDebug() << tr("setCaptureIntervalNum") << intervalNum << endl;
-			qDebug() << tr("setCaptureIntervalDen") << intervalDen << endl;
-			int interval = (int)((intervalNum * 1.000) / (intervalDen * 1.0));
+			int interval = (int)((m_recordingFrameIntervalNum * 1000.0) / (m_recordingFrameIntervalDen * 1.0));
 			m_recordTimer->start(interval);
 			if (m_recordingVideo)
 				QMessageBox::information(nullptr, tr("Starting recording"), tr("Recording parameters:\nVideo with resolution %1x%2\nInterval: %3 frames per second").arg( QString::number(m_recordingWidth),
-					QString::number(m_recordingHeight), QString::number(interval)));
+					QString::number(m_recordingHeight), QString::number(1000.0/interval)));
 			else
 				QMessageBox::information(nullptr, tr("Starting recording"), tr("Recording parameters:\nScreenshots with resolution %1x%2\nInterval: %3 screenshots per second").arg( QString::number(m_recordingWidth),
-					QString::number(m_recordingHeight), QString::number(interval)));
+					QString::number(m_recordingHeight), QString::number(1000.0/interval)));
 		}
 		else
 		{
@@ -309,4 +304,5 @@ bool RecordFeaturePlugin::startFeature( VeyonMasterInterface& master, const Feat
 	}
 	return true;
 }
+
 
