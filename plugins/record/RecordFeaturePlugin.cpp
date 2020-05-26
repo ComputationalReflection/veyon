@@ -144,10 +144,8 @@ void RecordFeaturePlugin::startRecording()
 			currentRecording.videoRecording.videoCodecContext->bit_rate = 4000000;
 			currentRecording.videoRecording.videoCodecContext->width = m_recordingWidth;
 			currentRecording.videoRecording.videoCodecContext->height = m_recordingHeight;
-			//currentRecording.videoRecording.videoCodecContext->time_base = (AVRational){1, m_recordingFrameInterval/1000.0};
-			//currentRecording.videoRecording.videoCodecContext->framerate = (AVRational){m_recordingFrameInterval/1000.0, 1};
-			currentRecording.videoRecording.videoCodecContext->time_base = (AVRational){1, 25};
-			currentRecording.videoRecording.videoCodecContext->framerate = (AVRational){25, 1};
+			currentRecording.videoRecording.videoCodecContext->time_base = (AVRational){m_recordingFrameIntervalNum, m_recordingFrameIntervalDen};
+			currentRecording.videoRecording.videoCodecContext->framerate = (AVRational){m_recordingFrameIntervalDen, m_recordingFrameIntervalNum};
 			currentRecording.videoRecording.videoCodecContext->gop_size = 10;
 			currentRecording.videoRecording.videoCodecContext->max_b_frames = 1;
 			currentRecording.videoRecording.videoCodecContext->frame_size = 1;
@@ -200,7 +198,7 @@ void RecordFeaturePlugin::stopRecording()
 			{
 				ret = avcodec_receive_packet(currentRecording.videoRecording.videoCodecContext, currentRecording.videoRecording.pkt);
 				if (ret == AVERROR_EOF)
-					QTextStream(stdout) << tr("AVERROR_EOF") << endl;
+					;//QTextStream(stdout) << tr("AVERROR_EOF") << endl;
 				else if (ret < 0)
 					QTextStream(stdout) << tr("Error during encoding") << endl;
 				else {
@@ -219,10 +217,6 @@ void RecordFeaturePlugin::stopRecording()
 
 void RecordFeaturePlugin::saveFrame()
 {
-	//Debugging configured values
-	qDebug() << tr("x:") << m_recordingWidth << endl;
-	qDebug() << tr("y:") << m_recordingHeight << endl;
-
 	if(m_recordingVideo)
 	{
 		for( auto& currentRecording : m_recordingSessions )
@@ -248,8 +242,6 @@ void RecordFeaturePlugin::saveFrame()
 					fwrite(currentRecording.videoRecording.pkt->data, 1, currentRecording.videoRecording.pkt->size, currentRecording.videoRecording.outFile);
 					av_packet_unref(currentRecording.videoRecording.pkt);
 				}
-				//else 
-				//	QTextStream(stdout) << tr("EAGAIN") << endl;
 			}
 		}
 	}
@@ -264,7 +256,6 @@ void RecordFeaturePlugin::saveFrame()
 			if(m_recordingWidth != 0 && m_recordingHeight != 0)
 				image = image.scaled(m_recordingWidth, m_recordingHeight, Qt::IgnoreAspectRatio, Qt::FastTransformation);
 			image.save( fileName, "PNG", 50 );
-			QTextStream(stdout) <<  fileName << endl;
 		}
 	}
 }
@@ -304,5 +295,6 @@ bool RecordFeaturePlugin::startFeature( VeyonMasterInterface& master, const Feat
 	}
 	return true;
 }
+
 
 
