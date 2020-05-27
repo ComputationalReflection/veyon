@@ -24,7 +24,7 @@ at their daily work:
 
 ## What is this Veyon version?
 
-This fork of the [Veyon project](https://github.com/veyon/veyon) provides video recording of all the students attending a remote lab.
+This fork of the [Veyon project](https://github.com/veyon/veyon) provides video recording of all the students attending a remote lab. It also allows the storage of a sequence of screenshots instead of a video. We added a new button for video recording to the toolbar.
 
 ## Installation and configuration
 
@@ -128,12 +128,6 @@ Then you'll get something like veyon_x.y.z_arch.deb
 ### Installing binaries
 
 	sudo dpkg -i veyon_x.y.z_amd64.deb
-
-## Join development
-
-If you are interested in Veyon, its programming, artwork, testing or something like that, you're welcome to participate in the development of Veyon!
-
-Before starting the implementation of a new feature, please always open an issue at https://github.com/ComputationalReflection/veyon/issues to start a discussion about your intended implementation. There may be different ideas, improvements, hints or maybe an already ongoing work on this feature.
 
 ## License
 
