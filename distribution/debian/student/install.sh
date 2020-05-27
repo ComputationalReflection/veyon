@@ -1,6 +1,6 @@
 #!/bin/bash
 cd app
-sudo dpkg -i veyon_4.3.5_amd64_NO_MASTER.deb
+sudo dpkg -i veyon_1.0.0_amd64_NO_MASTER.deb
 sudo veyon-cli config clear
 sudo veyon-cli config set Service/Autostart false
 sudo veyon-cli config set Authentication/Method 1
