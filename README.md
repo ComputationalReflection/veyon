@@ -44,12 +44,12 @@ This version of Veyon includes video recording as part of its functionality. Whe
 ![Record Button](record_button.png)
 
 It is possible specify the parameters about how the video should be recorded by modifying the VeyonMaster.json configuration file.
-* video (default true): video (true) or a sequence of screenshots (false)
-* frame heigth (default 720): size in pixels
-* frame Width (default 1280): size in pixels
-* CaptureIntervalDen (default 1000): interval time in miliseconds
-* CaptureIntervalNum (default 1000): interval time in miliseconds
-* SavePath (default %APPDATA%/Record): path to the storage folder
+* `video` (default true): video (true) or a sequence of screenshots (false)
+* `Heigth` (default 720): frame heigth in pixels
+* `Width` (default 1280): frame width in pixels
+* `CaptureIntervalDen` (default 1000): interval time in miliseconds
+* `CaptureIntervalNum` (default 1000): interval time in miliseconds
+* `SavePath` (default %APPDATA%/Record): path to the storage folder
 
 Full Example Configuration 
 
