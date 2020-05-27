@@ -47,7 +47,7 @@ It is possible specify the parameters about how the video should be recorded by 
 * `video` (default true): video (true) or a sequence of screenshots (false)
 * `Heigth` (default 720): frame heigth in pixels
 * `Width` (default 1280): frame width in pixels
-* `CaptureIntervalNum` and `CaptureIntervalDen` (default 1000/1000): set frame rate for screenshots and video recording
+* `CaptureIntervalNum` and `CaptureIntervalDen` (default 1000/1000): set interval time between consecutive frames for screenshots and video recording. By default 1 second.
 * `SavePath` (default %APPDATA%/Record): path to the storage folder
 
 Full Example Configuration 
