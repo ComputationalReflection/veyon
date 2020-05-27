@@ -1,16 +1,11 @@
-# Veyon - Virtual Eye On Networks
+# Computational Reflection Research Group Veyon Fork
 
-[![Build status](https://img.shields.io/travis/veyon/veyon.svg)](https://travis-ci.org/veyon/veyon)
-[![Latest stable release](https://img.shields.io/github/release/veyon/veyon.svg?maxAge=3600)](https://github.com/veyon/veyon/releases)
-[![Overall downloads on Github](https://img.shields.io/github/downloads/veyon/veyon/total.svg?maxAge=3600)](https://github.com/veyon/veyon/releases)
-[![Documentation Status](https://readthedocs.org/projects/veyon/badge/?version=latest)](https://docs.veyon.io/)
-[![Localise on Transifex](https://img.shields.io/badge/localise-on_transifex-green.svg)](https://www.transifex.com/veyon-solutions/veyon/)
+[![Latest stable release](https://img.shields.io/github/v/release/ComputationalReflection/veyon.svg?maxAge=3600)](https://github.com/ComputationalReflection/veyon/releases)
 [![license](https://img.shields.io/badge/license-GPLv2-green.svg)](LICENSE)
-
 
 ## What is Veyon?
 
-Veyon is a free and open source software for computer monitoring and classroom
+[Veyon (Virtual Eye On Networks)](https://veyon.io/) is a free and open source software for computer monitoring and classroom
 management supporting Windows and Linux. It enables teachers to view and control
 computer labs and interact with students. Veyon is available in many different
 languages and provides numerous features supporting teachers and administrators
@@ -27,25 +22,47 @@ at their daily work:
   * Teaching material: distribute and open documents, images and videos easily
   * Administration: power on/off and reboot computers remotely
 
+## What is this Veyon version?
 
-## License
-
-Copyright (c) 2004-2020 Tobias Junghans / Veyon Solutions.
-
-See the file COPYING for the GNU GENERAL PUBLIC LICENSE.
-
+This fork of the [Veyon project](https://github.com/veyon/veyon) provides video recording of all the students attending a remote lab.
 
 ## Installation and configuration
 
-Please refer to the official Veyon Administrator Manual at https://docs.veyon.io/en/latest/admin/index.html
-for information on the installation and configuration of Veyon.
+Installation and configuration of this Veyon version is done in the same way as in the original one, please refer to the official Veyon Administrator Manual at https://docs.veyon.io/en/latest/admin/index.html for information on the installation and configuration of Veyon.
 
+Additionally, our Veyon version is provided with two sets of [Windows and Linux scripts](https://github.com/ComputationalReflection/veyon/tree/master/distribution) that makes it very easy for students and lectures to (un)install, configure, start and stop the system.
 
 ## Usage
 
-Please refer to the official Veyon User Manual at https://docs.veyon.io/en/latest/user/index.html
-for information on how to use Veyon.
+Please refer to the official Veyon User Manual at https://docs.veyon.io/en/latest/user/index.html for information on how to use Veyon.
 
+### Video Recording Usage
+
+This version of Veyon includes video recording as part of its functionality. When the record button of the toolbar is clicked, the system records one video per lab attendant.
+
+![Record Button](record_button.png)
+
+It is possible specify the parameters about how the video should be recorded by modifying the VeyonMaster.json configuration file.
+* video (default true): video (true) or a sequence of screenshots (false)
+* frame heigth (default 720): size in pixels
+* frame Width (default 1280): size in pixels
+* CaptureIntervalDen (default 1000): interval time in miliseconds
+* CaptureIntervalNum (default 1000): interval time in miliseconds
+* SavePath (default %APPDATA%/Record): path to the storage folder
+
+
+```shell
+...
+ "Plugin.Record": {
+        "Video": true,
+        "CaptureIntervalDen": 1000,
+        "CaptureIntervalNum": 1000,
+        "Heigth": 720,        
+        "Width": 1280,
+	"SavePath": "%APPDATA%/Record"
+    }
+...
+```
 
 ## Veyon on Linux
 
@@ -53,7 +70,7 @@ for information on how to use Veyon.
 
 First grab the latest sources by cloning the Git repository and fetching all submodules:
 
-	git clone --recursive https://github.com/veyon/veyon.git && cd veyon
+	git clone --recursive https://github.com/ComputationalReflection/veyon.git && cd veyon
 
 
 ### Installing dependencies
@@ -72,36 +89,14 @@ Requirements for Debian-based distributions:
 - QCA: libqca2-dev libqca-qt5-2-dev
 - LDAP: libldap2-dev
 - SASL: libsasl2-dev
+- FFmpeg: libavcodec-dev libavformat-dev libswscale-dev
 
 As root you can run
 
 	apt install g++ make cmake qtbase5-dev qtbase5-dev-tools qttools5-dev qttools5-dev-tools \
 	            xorg-dev libxtst-dev libjpeg-dev zlib1g-dev libssl-dev libpam0g-dev \
 	            libprocps-dev liblzo2-dev libqca2-dev libqca-qt5-2-dev libldap2-dev \
-	            libsasl2-dev
-
-
-
-Requirements for RedHat-based distributions:
-
-- Build tools: gcc-c++ make cmake rpm-build
-- Qt5: qt5-devel
-- X11: libXtst-devel libXrandr-devel libXinerama-devel libXcursor-devel libXrandr-devel libXdamage-devel libXcomposite-devel libXfixes-devel
-- libjpeg: libjpeg-turbo-devel
-- zlib: zlib-devel
-- OpenSSL: openssl-devel
-- PAM: pam-devel
-- procps: procps-devel
-- LZO: lzo-devel
-- QCA: qca-devel qca-qt5-devel
-- LDAP: openldap-devel
-- SASL: cyrus-sasl-devel
-
-As root you can run
-
-	dnf install gcc-c++ make cmake rpm-build qt5-devel libXtst-devel libXrandr-devel libXinerama-devel libXcursor-devel \
-             libXrandr-devel libXdamage-devel libXcomposite-devel libXfixes-devel libjpeg-turbo-devel zlib-devel \
-             openssl-devel pam-devel procps-devel lzo-devel qca-devel qca-qt5-devel openldap-devel cyrus-sasl-devel
+	            libsasl2-dev libavcodec-dev libavformat-dev libswscale-dev
 
 
 ### Configuring and building sources
@@ -113,7 +108,7 @@ Run the following commands:
 	cmake ..
 	make -j4
 
-NOTE: If you want to build a .deb or .rpm package for this software, instead of the provided cmake command, you should use:
+NOTE: If you want to build a .deb package for this software, instead of the provided cmake command, you should use:
 
 	cmake -DCMAKE_INSTALL_PREFIX=/usr ..
 
@@ -122,40 +117,32 @@ to install package files in /usr instead of /usr/local.
 If some requirements are not fullfilled, CMake will inform you about it and
 you will have to install the missing software before continuing.
 
-You can now generate a package (.deb or .rpm depending what system you are in).
+You can now generate a .deb package
 
 For generating a package you can run
 
 	fakeroot make package
 
-Then you'll get something like veyon_x.y.z_arch.deb or veyon-x.y.z.arch.rpm
+Then you'll get something like veyon_x.y.z_arch.deb
 
-Alternatively you can install the built binaries directly (not recommended for
-production systems) by running the following command as root:
+### Installing binaries
 
-	make install
-
-### Arch linux
-
-A PKGBUILD can be found in the [AUR](https://aur.archlinux.org/packages/veyon/).
-
-### PPA
-
-This PPA contains official Veyon packages for Ubuntu suitable for use both on desktop computers and ARM boards (e.g. Raspberry Pi). Even though only packages for LTS releases are available they should work for subsequent non-LTS releases as well.
-
-	sudo add-apt-repository ppa:veyon/stable
-	sudo apt-get update
+	sudo dpkg -i veyon_x.y.z_amd64.deb
 
 ## Join development
 
 If you are interested in Veyon, its programming, artwork, testing or something like that, you're welcome to participate in the development of Veyon!
 
-Before starting the implementation of a new feature, please always open an issue at https://github.com/veyon/veyon/issues to start a discussion about your intended implementation. There may be different ideas, improvements, hints or maybe an already ongoing work on this feature.
+Before starting the implementation of a new feature, please always open an issue at https://github.com/ComputationalReflection/veyon/issues to start a discussion about your intended implementation. There may be different ideas, improvements, hints or maybe an already ongoing work on this feature.
+
+## License
+
+Copyright (c) 2020 [Miguel Garcia](http://www.reflection.uniovi.es/miguel) and [Jose Quiroga](http://www.reflection.uniovi.es/quiroga) / [University of Oviedo](http://www.uniovi.es).
+
+See the file COPYING for the GNU GENERAL PUBLIC LICENSE.
 
 
 ## More information
 
+* http://www.reflection.uniovi.es/
 * https://veyon.io/
-* https://docs.veyon.io/
-* https://facebook.com/veyon.io/
-* https://twitter.com/veyon_io
