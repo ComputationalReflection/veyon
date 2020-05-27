@@ -23,32 +23,32 @@ at their daily work:
   * Administration: power on/off and reboot computers remotely
   
 
-## What is this Veyon fork?
+## What is in this Veyon fork?
 
-This fork of the [Veyon project](https://github.com/veyon/veyon) provides video recording of all the students attending a remote lab. It also allows the storage of a sequence of screenshots instead of a video. We added a new button for video recording to the toolbar.
+This fork of the [Veyon project](https://github.com/veyon/veyon) provides video recording of all the student sessions attending the remote lab. It could also store a sequence of screenshots instead of a video. A new "record" button has been added to the toolbar.
 
 ## Installation and configuration
 
-Installation and configuration of this Veyon version is done in the same way as in the original one, please refer to the official [Veyon Administrator Manual](https://docs.veyon.io/en/latest/admin/index.html) for information on the installation and configuration of Veyon.
+Installation and configuration is done the same way as in the original project. Please, refer to the official [Veyon Administrator Manual](https://docs.veyon.io/en/latest/admin/index.html) for information about installation and configuration of Veyon.
 
-Additionally, our Veyon version is provided with two sets of [Windows and Linux scripts](https://github.com/ComputationalReflection/veyon/tree/master/distribution) that makes it very easy for students and lectures to (un)install, configure, start and stop the system.
+Additionally, this Veyon version is provided with two sets of [Windows and Linux scripts](https://github.com/ComputationalReflection/veyon/tree/master/distribution) that makes it very easy for students and lectures to (un)install, configure, start and stop the system.
 
 ## Usage
 
-Please refer to the official [Veyon User Manual](https://docs.veyon.io/en/latest/user/index.html) for information on how to use Veyon.
+Please refer to the official [Veyon User Manual](https://docs.veyon.io/en/latest/user/index.html) for information about how to use Veyon.
 
 ### Video Recording Usage
 
-This version of Veyon includes video recording as part of its functionality. When the record button of the toolbar is clicked, the system records one video per lab attendant. Clicking the button again the recording stops.
+This version of Veyon includes video recording as part of its functionality. When the record button of the toolbar is clicked, the system starts recording one video per lab attendant. By clicking the button again, the recording stops.
  
 ![Record Button](record_button.png)
 
-It is possible to specify the parameters about how the video should be recorded by modifying the VeyonMaster.json configuration file.
-* `video` (default true): video (true) or a sequence of screenshots (false)
-* `Heigth` (default 720): frame heigth in pixels
-* `Width` (default 1280): frame width in pixels
-* `CaptureIntervalNum` and `CaptureIntervalDen` (default 1000/1000): set interval time between consecutive frames for screenshots and video recording. By default 1 second.
-* `SavePath` (default %APPDATA%/Record): path to the storage folder
+It is possible to specify different video parameters, modifying the VeyonMaster.json configuration file.
+* `video` (default true): recrods video (true) or sequence of screenshots (false).
+* `Height` (default 720): frame height in pixels.
+* `Width` (default 1280): frame width in pixels.
+* `CaptureIntervalNum` and `CaptureIntervalDen` (default 1000/1000): set interval time (in millis) between consecutive frames for screenshots and video recording. By default 1 second (1000).
+* `SavePath` (default %APPDATA%/Record): path where the video or screenshots are saved.
 
 Full Example Configuration 
 
@@ -58,7 +58,7 @@ Full Example Configuration
         "Video": true,
         "CaptureIntervalDen": 1000,
         "CaptureIntervalNum": 1000,
-        "Heigth": 720,        
+        "Height": 720,        
         "Width": 1280,
 	"SavePath": "%APPDATA%/Record"
     }
@@ -67,14 +67,14 @@ Full Example Configuration
 
 ## Veyon on Linux
 
-### Downloading sources
+### Downloading the sources
 
 First grab the latest sources by cloning the Git repository and fetching all submodules:
 
 	git clone --recursive https://github.com/ComputationalReflection/veyon.git && cd veyon
 
 
-### Installing dependencies
+### Installing the dependencies
 
 Requirements for Debian-based distributions:
 
@@ -100,7 +100,7 @@ As root you can run
 	            libsasl2-dev libavcodec-dev libavformat-dev libswscale-dev
 
 
-### Configuring and building sources
+### Configuring and building the sources
 
 Run the following commands:
 
@@ -115,18 +115,18 @@ NOTE: If you want to build a .deb package for this software, instead of the prov
 
 to install package files in /usr instead of /usr/local.
 
-If some requirements are not fullfilled, CMake will inform you about it and
+If some requirements are not fulfilled, CMake will inform you about it and
 you will have to install the missing software before continuing.
 
 You can now generate a .deb package
 
-For generating a package you can run
+For generating a package, you can run
 
 	fakeroot make package
 
 Then you'll get something like veyon_x.y.z_arch.deb
 
-### Installing binaries
+### Installing the binaries
 
 	sudo dpkg -i veyon_x.y.z_amd64.deb
 
