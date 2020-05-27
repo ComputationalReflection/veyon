@@ -21,8 +21,9 @@ at their daily work:
   * Programs & websites: launch programs and open website URLs remotely
   * Teaching material: distribute and open documents, images and videos easily
   * Administration: power on/off and reboot computers remotely
+  
 
-## What is this Veyon version?
+## What is this Veyon fork?
 
 This fork of the [Veyon project](https://github.com/veyon/veyon) provides video recording of all the students attending a remote lab. It also allows the storage of a sequence of screenshots instead of a video. We added a new button for video recording to the toolbar.
 
