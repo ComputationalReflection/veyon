@@ -1,4 +1,4 @@
-# Computational Reflection Research Group Veyon Fork
+# Veyon Fork to record student sessions (Computational Reflection Research Group)
 
 [![Latest stable release](https://img.shields.io/github/v/release/ComputationalReflection/veyon.svg?maxAge=3600)](https://github.com/ComputationalReflection/veyon/releases)
 [![license](https://img.shields.io/badge/license-GPLv2-green.svg)](LICENSE)
