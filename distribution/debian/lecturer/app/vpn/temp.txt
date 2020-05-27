@@ -1,0 +1,35 @@
+vpncmd command - SoftEther VPN Command Line Management Utility
+SoftEther VPN Command Line Management Utility (vpncmd command)
+Version 4.34 Build 9745   (English)
+Compiled 2020/04/05 23:39:56 by buildsan at crosswin
+Copyright (c) SoftEther VPN Project. All Rights Reserved.
+
+Connection has been established with VPN Server "156.35.95.36" (port 443).
+
+You have administrator privileges for the entire VPN Server.
+
+VPN Server>Hub VPN
+Hub command - Select Virtual Hub to Manage
+The Virtual Hub "VPN" has been selected.
+The command completed successfully.
+
+VPN Server/VPN>Iptable
+IpTable command - Get the IP Address Table Database
+Item        |Value
+------------+----------------------
+ID          |1043154098
+Session Name|SID-SECURENAT-2
+IP Address  |192.168.30.1
+Created at  |2020-05-16 09:04:01
+Updated at  |2020-05-22 16:42:16
+Location    |On 'Mx-Dev-V2'
+------------+----------------------
+ID          |590878991
+Session Name|SID-UO002517-[L2TP]-14
+IP Address  |192.168.30.10 (DHCP)
+Created at  |2020-05-22 16:40:37
+Updated at  |2020-05-22 16:42:13
+Location    |On 'Mx-Dev-V2'
+The command completed successfully.
+
+VPN Server/VPN>[EOF]

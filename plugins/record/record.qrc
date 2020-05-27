@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/record" >
+        <file>record.png</file>
+    </qresource>
+</RCC>

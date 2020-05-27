@@ -50,7 +50,17 @@ public:
 	OP( UserConfig, VeyonMaster::userConfig(), bool, noToolTips, setNoToolTips, "NoToolTips", "UI", false, Configuration::Property::Flag::Standard )	\
 	OP( UserConfig, VeyonMaster::userConfig(), QString, windowState, setWindowState, "WindowState", "UI", QString(), Configuration::Property::Flag::Standard )	\
 	OP( UserConfig, VeyonMaster::userConfig(), QString, windowGeometry, setWindowGeometry, "WindowGeometry", "UI", QString(), Configuration::Property::Flag::Standard )	\
+	OP( UserConfig, VeyonMaster::userConfig(), int, width, setWidth, "Width", "Plugin.Record", 1280, Configuration::Property::Flag::Standard )	\
+	OP( UserConfig, VeyonMaster::userConfig(), int, height, setHeight, "Height", "Plugin.Record", 720, Configuration::Property::Flag::Standard )	\
+	OP( UserConfig, VeyonMaster::userConfig(), bool, video, setVideo, "Video", "Plugin.Record", true, Configuration::Property::Flag::Standard )	\
+	OP( UserConfig, VeyonMaster::userConfig(), QString, startDateTime, setStartDateTime, "StartDateTime", "Plugin.Record", QString(), Configuration::Property::Flag::Standard )	\
+	OP( UserConfig, VeyonMaster::userConfig(), QString, endDateTime, setEndDateTime, "EndDateTime", "Plugin.Record", QString(), Configuration::Property::Flag::Standard )	\
+	OP( UserConfig, VeyonMaster::userConfig(), int, captureIntervalNum, setCaptureIntervalNum, "CaptureIntervalNum", "Plugin.Record", 1, Configuration::Property::Flag::Standard )	\
+	OP( UserConfig, VeyonMaster::userConfig(), int, captureIntervalDen, setCaptureIntervalDen, "CaptureIntervalDen", "Plugin.Record", 1, Configuration::Property::Flag::Standard )	\
+	OP( UserConfig, VeyonMaster::userConfig(), QString, savePath, setSavePath, "SavePath", "Plugin.Record", QString(), Configuration::Property::Flag::Standard )	\
+
 
 	FOREACH_PERSONAL_CONFIG_PROPERTY(DECLARE_CONFIG_PROPERTY)
 
 } ;
+
