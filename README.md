@@ -29,13 +29,13 @@ This fork of the [Veyon project](https://github.com/veyon/veyon) provides video 
 
 ## Installation and configuration
 
-Installation and configuration of this Veyon version is done in the same way as in the original one, please refer to the official Veyon Administrator Manual at https://docs.veyon.io/en/latest/admin/index.html for information on the installation and configuration of Veyon.
+Installation and configuration of this Veyon version is done in the same way as in the original one, please refer to the official [Veyon Administrator Manual](https://docs.veyon.io/en/latest/admin/index.html) for information on the installation and configuration of Veyon.
 
 Additionally, our Veyon version is provided with two sets of [Windows and Linux scripts](https://github.com/ComputationalReflection/veyon/tree/master/distribution) that makes it very easy for students and lectures to (un)install, configure, start and stop the system.
 
 ## Usage
 
-Please refer to the official Veyon User Manual at https://docs.veyon.io/en/latest/user/index.html for information on how to use Veyon.
+Please refer to the official [Veyon User Manual](https://docs.veyon.io/en/latest/user/index.html) for information on how to use Veyon.
 
 ### Video Recording Usage
 
