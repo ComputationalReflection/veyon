@@ -50,6 +50,7 @@ It is possible specify the parameters about how the video should be recorded by 
 * CaptureIntervalNum (default 1000): interval time in miliseconds
 * SavePath (default %APPDATA%/Record): path to the storage folder
 
+Full Example Configuration 
 
 ```shell
 ...
