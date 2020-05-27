@@ -39,8 +39,8 @@ Please refer to the official [Veyon User Manual](https://docs.veyon.io/en/latest
 
 ### Video Recording Usage
 
-This version of Veyon includes video recording as part of its functionality. When the record button of the toolbar is clicked, the system records one video per lab attendant.
-
+This version of Veyon includes video recording as part of its functionality. When the record button of the toolbar is clicked, the system records one video per lab attendant. Clicking the button again the recording stops.
+ 
 ![Record Button](record_button.png)
 
 It is possible specify the parameters about how the video should be recorded by modifying the VeyonMaster.json configuration file.
