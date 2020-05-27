@@ -43,7 +43,7 @@ This version of Veyon includes video recording as part of its functionality. Whe
  
 ![Record Button](record_button.png)
 
-It is possible specify the parameters about how the video should be recorded by modifying the VeyonMaster.json configuration file.
+It is possible to specify the parameters about how the video should be recorded by modifying the VeyonMaster.json configuration file.
 * `video` (default true): video (true) or a sequence of screenshots (false)
 * `Heigth` (default 720): frame heigth in pixels
 * `Width` (default 1280): frame width in pixels
