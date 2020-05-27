@@ -89,7 +89,7 @@ void RecordFeaturePlugin::updateConfigFile()
 
 	//Update config file values. It writes default values if not set.
 	m_lastMaster->userConfigurationObject()->setValue(tr("Width"), QVariant(m_recordingWidth), tr("Plugin.Record"));
-	m_lastMaster->userConfigurationObject()->setValue(tr("Heigth"), QVariant(m_recordingHeight), tr("Plugin.Record"));
+	m_lastMaster->userConfigurationObject()->setValue(tr("Height"), QVariant(m_recordingHeight), tr("Plugin.Record"));
 	m_lastMaster->userConfigurationObject()->setValue(tr("Video"), QVariant(m_recordingVideo), tr("Plugin.Record"));
 	m_lastMaster->userConfigurationObject()->setValue(tr("CaptureIntervalNum"), QVariant(m_recordingFrameIntervalNum), tr("Plugin.Record"));
 	m_lastMaster->userConfigurationObject()->setValue(tr("CaptureIntervalDen"), QVariant(m_recordingFrameIntervalDen), tr("Plugin.Record"));
@@ -100,7 +100,7 @@ void RecordFeaturePlugin::updateConfigFile()
 void RecordFeaturePlugin::initializeRecordingParameters()
 {
 	m_recordingWidth = m_lastMaster->userConfigurationObject()->value(tr("Width"), tr("Plugin.Record"), QVariant(1280)).toInt();
-	m_recordingHeight = m_lastMaster->userConfigurationObject()->value(tr("Heigth"), tr("Plugin.Record"), QVariant(720)).toInt();
+	m_recordingHeight = m_lastMaster->userConfigurationObject()->value(tr("Height"), tr("Plugin.Record"), QVariant(720)).toInt();
 	m_recordingVideo = m_lastMaster->userConfigurationObject()->value(tr("Video"), tr("Plugin.Record"), QVariant(true)).toBool();
 	m_recordingFrameIntervalNum = m_lastMaster->userConfigurationObject()->value(tr("CaptureIntervalNum"), tr("Plugin.Record"), QVariant(1000)).toInt();
 	m_recordingFrameIntervalDen = m_lastMaster->userConfigurationObject()->value(tr("CaptureIntervalDen"), tr("Plugin.Record"), QVariant(1000)).toInt();
