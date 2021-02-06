@@ -1,7 +1,7 @@
 /*
  * ScreenshotFeaturePlugin.h - declaration of ScreenshotFeature class
  *
- * Copyright (c) 2020 Jose Quiroga <quirogajose@uniovi.es>, Miguel Garcia <garciarmiguel@uniovi.es>
+ * Copyright (c) 2017-2020 Tobias Junghans <tobydox@veyon.io>
  *
  * This file is part of Veyon - https://veyon.io
  *

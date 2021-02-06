@@ -29,6 +29,10 @@
 #include "RemoteAccessFeaturePlugin.h"
 #include "RemoteAccessWidget.h"
 #include "VeyonMasterInterface.h"
+#include "VeyonServerInterface.h"
+#include "FeatureWorkerManager.h"
+#include "PlatformCoreFunctions.h"
+
 
 
 RemoteAccessFeaturePlugin::RemoteAccessFeaturePlugin( QObject* parent ) :
@@ -100,12 +104,16 @@ bool RemoteAccessFeaturePlugin::startFeature( VeyonMasterInterface& master, cons
 
 	if( feature.uid() == m_remoteViewFeature.uid() )
 	{
+		sendFeatureMessage( FeatureMessage( m_remoteViewFeature.uid(), FeatureMessage::DefaultCommand ),
+									computerControlInterfaces );
 		new RemoteAccessWidget( remoteAccessComputer, true );
 
 		return true;
 	}
 	else if( feature.uid() == m_remoteControlFeature.uid() )
 	{
+		sendFeatureMessage( FeatureMessage( m_remoteControlFeature.uid(), FeatureMessage::DefaultCommand ),
+									computerControlInterfaces );
 		new RemoteAccessWidget( remoteAccessComputer, false );
 
 		return true;
@@ -114,7 +122,71 @@ bool RemoteAccessFeaturePlugin::startFeature( VeyonMasterInterface& master, cons
 	return false;
 }
 
+bool RemoteAccessFeaturePlugin::handleFeatureMessage( VeyonServerInterface& server,
+													  const MessageContext& messageContext,
+													  const FeatureMessage& message )
+{
+	Q_UNUSED(messageContext)
+	vWarning() << "Mensaje en el lado del Master?";
 
+	auto& featureWorkerManager = server.featureWorkerManager();
+
+	if( message.featureUid() == m_remoteViewFeature.uid() )
+	{
+		featureWorkerManager.startWorker( m_remoteViewFeature, FeatureWorkerManager::ManagedSystemProcess );
+		featureWorkerManager.sendMessage( message );
+	}
+	else if( message.featureUid() == m_remoteControlFeature.uid() )
+	{
+		featureWorkerManager.startWorker( m_remoteControlFeature, FeatureWorkerManager::ManagedSystemProcess );
+		featureWorkerManager.sendMessage( message );
+	}
+	else
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool RemoteAccessFeaturePlugin::handleFeatureMessage( VeyonWorkerInterface& worker, const FeatureMessage& message )
+{
+	Q_UNUSED(worker)
+	vWarning() << "Mensaje recibido en RemoteAccessFeaturePlugin::handleFeatureMessage";
+	vWarning() << "feature Id: " << message.featureUid();
+
+	if( message.featureUid() == m_remoteViewFeature.uid() )
+	{
+
+		QMessageBox m( QMessageBox::Question, tr( "Alguien va a VER tu monitor" ),
+				   tr( "Deseas permitirlo?" ),
+				   QMessageBox::Yes | QMessageBox::No );
+		m.show();
+		VeyonCore::platform().coreFunctions().raiseWindow( &m, true );
+
+		if( m.exec() == QMessageBox::No )
+		{
+			return false;
+		}
+		return true;
+	}
+	else if( message.featureUid() == m_remoteControlFeature.uid() )
+	{
+		QMessageBox m( QMessageBox::Question, tr( "Alguien va a CONTROLAR tu monitor" ),
+				   tr( "Deseas permitirlo?" ),
+				   QMessageBox::Yes | QMessageBox::No );
+		m.show();
+		VeyonCore::platform().coreFunctions().raiseWindow( &m, true );
+
+		if( m.exec() == QMessageBox::No )
+		{
+			return false;
+		}
+		return true;
+	}
+
+	return false;
+}
 
 QStringList RemoteAccessFeaturePlugin::commands() const
 {

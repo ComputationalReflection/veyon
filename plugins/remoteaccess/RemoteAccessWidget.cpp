@@ -364,6 +364,9 @@ void RemoteAccessWidget::toggleFullScreen( bool _on )
 
 void RemoteAccessWidget::toggleViewOnly( bool viewOnly )
 {
+	// AQUI PUEDE SER NECESARIO ENVIAR UN MENSAJE DE QUE HA CAMBIADO EL ESTADO A __REMOTE-CONTROL__
+	vWarning() << "toggleViewOnly: Cambiamos de VIEW a REMOTECONTROL en el widget";
+
 	m_vncView->setViewOnly( viewOnly );
 	m_toolBar->updateControls( viewOnly );
 	m_toolBar->update();
