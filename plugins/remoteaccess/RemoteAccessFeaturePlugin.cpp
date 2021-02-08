@@ -127,17 +127,18 @@ bool RemoteAccessFeaturePlugin::handleFeatureMessage( VeyonServerInterface& serv
 													  const FeatureMessage& message )
 {
 	Q_UNUSED(messageContext)
-	vWarning() << "Mensaje en el lado del Master?";
-
 	auto& featureWorkerManager = server.featureWorkerManager();
 
 	if( message.featureUid() == m_remoteViewFeature.uid() )
 	{
+		vWarning() << "PASA POR AQUI? VIEW";
 		featureWorkerManager.startWorker( m_remoteViewFeature, FeatureWorkerManager::ManagedSystemProcess );
 		featureWorkerManager.sendMessage( message );
+
 	}
 	else if( message.featureUid() == m_remoteControlFeature.uid() )
 	{
+		vWarning() << "PASA POR AQUI? CONTROL";
 		featureWorkerManager.startWorker( m_remoteControlFeature, FeatureWorkerManager::ManagedSystemProcess );
 		featureWorkerManager.sendMessage( message );
 	}
@@ -155,25 +156,10 @@ bool RemoteAccessFeaturePlugin::handleFeatureMessage( VeyonWorkerInterface& work
 	vWarning() << "Mensaje recibido en RemoteAccessFeaturePlugin::handleFeatureMessage";
 	vWarning() << "feature Id: " << message.featureUid();
 
-	if( message.featureUid() == m_remoteViewFeature.uid() )
+	if( message.featureUid() == m_remoteControlFeature.uid() )
 	{
-
-		QMessageBox m( QMessageBox::Question, tr( "Alguien va a VER tu monitor" ),
-				   tr( "Deseas permitirlo?" ),
-				   QMessageBox::Yes | QMessageBox::No );
-		m.show();
-		VeyonCore::platform().coreFunctions().raiseWindow( &m, true );
-
-		if( m.exec() == QMessageBox::No )
-		{
-			return false;
-		}
-		return true;
-	}
-	else if( message.featureUid() == m_remoteControlFeature.uid() )
-	{
-		QMessageBox m( QMessageBox::Question, tr( "Alguien va a CONTROLAR tu monitor" ),
-				   tr( "Deseas permitirlo?" ),
+		QMessageBox m( QMessageBox::Question, tr( "A remote user wants to CONTROL you computer" ),
+				   tr( "Do you wnat to allow REMOTE CONTROL?" ),
 				   QMessageBox::Yes | QMessageBox::No );
 		m.show();
 		VeyonCore::platform().coreFunctions().raiseWindow( &m, true );
