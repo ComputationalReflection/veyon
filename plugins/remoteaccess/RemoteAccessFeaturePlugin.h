@@ -27,6 +27,7 @@
 #include "Computer.h"
 #include "SimpleFeatureProvider.h"
 #include "CommandLinePluginInterface.h"
+#include "VeyonConnection.h"
 
 
 class RemoteAccessFeaturePlugin : public QObject, CommandLinePluginInterface, SimpleFeatureProvider, PluginInterface
@@ -92,6 +93,9 @@ public:
 							   const FeatureMessage& message ) override;
 
 	bool handleFeatureMessage( VeyonWorkerInterface& worker, const FeatureMessage& message ) override;
+
+	void notifyRemoteControlRequest(VeyonConnection* connection);
+    void notifyRemoteControlRequest(const ComputerControlInterface::Pointer& server);
 
 
 private Q_SLOTS:

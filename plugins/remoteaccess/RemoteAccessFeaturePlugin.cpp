@@ -32,6 +32,7 @@
 #include "VeyonServerInterface.h"
 #include "FeatureWorkerManager.h"
 #include "PlatformCoreFunctions.h"
+#include "VeyonConnection.h"
 
 
 
@@ -106,7 +107,7 @@ bool RemoteAccessFeaturePlugin::startFeature( VeyonMasterInterface& master, cons
 	{
 		sendFeatureMessage( FeatureMessage( m_remoteViewFeature.uid(), FeatureMessage::DefaultCommand ),
 									computerControlInterfaces );
-		new RemoteAccessWidget( remoteAccessComputer, true );
+		new RemoteAccessWidget( remoteAccessComputer, this, true );
 
 		return true;
 	}
@@ -114,7 +115,7 @@ bool RemoteAccessFeaturePlugin::startFeature( VeyonMasterInterface& master, cons
 	{
 		sendFeatureMessage( FeatureMessage( m_remoteControlFeature.uid(), FeatureMessage::DefaultCommand ),
 									computerControlInterfaces );
-		new RemoteAccessWidget( remoteAccessComputer, false );
+		new RemoteAccessWidget( remoteAccessComputer, this, false );
 
 		return true;
 	}
@@ -254,9 +255,24 @@ bool RemoteAccessFeaturePlugin::remoteAccess( const QString& hostAddress, bool v
 	remoteComputer.setName( hostAddress );
 	remoteComputer.setHostAddress( hostAddress );
 
-	new RemoteAccessWidget( ComputerControlInterface::Pointer::create( remoteComputer ), viewOnly );
+	new RemoteAccessWidget( ComputerControlInterface::Pointer::create( remoteComputer ), this, viewOnly );
 
 	qApp->exec();
 
 	return true;
 }
+
+
+void RemoteAccessFeaturePlugin::notifyRemoteControlRequest(VeyonConnection* connection)
+{
+    vWarning() << "WIDGET set REMOTE CONTROL";
+    connection->sendFeatureMessage( FeatureMessage( m_remoteControlFeature.uid(), FeatureMessage::DefaultCommand ), false);
+}
+
+
+void RemoteAccessFeaturePlugin::notifyRemoteControlRequest(const ComputerControlInterface::Pointer& server)
+{
+    vWarning() << "WIDGET set REMOTE CONTROL ComputerInterface";
+    server->sendFeatureMessage( FeatureMessage( m_remoteControlFeature.uid(), FeatureMessage::DefaultCommand ), false);
+}
+
