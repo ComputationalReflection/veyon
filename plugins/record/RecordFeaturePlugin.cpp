@@ -37,6 +37,12 @@
 #include "Computer.h"
 #include "Filesystem.h"
 
+
+#include "VeyonServerInterface.h"
+#include "FeatureWorkerManager.h"
+#include "PlatformCoreFunctions.h"
+#include "PlatformServiceFunctions.h"
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -273,6 +279,11 @@ bool RecordFeaturePlugin::startFeature( VeyonMasterInterface& master, const Feat
 
 		if( m_recordEnabled == false)
 		{
+            //Send recording notification to clients
+            sendFeatureMessage( FeatureMessage( m_screenshotFeature.uid(), FeatureMessage::DefaultCommand ),
+									computerControlInterfaces );
+            
+            //Start Recording
 			initializeRecordingParameters();
 			m_recordEnabled = true;
 			int interval = (int)((m_recordingFrameIntervalNum * 1000.0) / (m_recordingFrameIntervalDen * 1.0));
@@ -296,5 +307,58 @@ bool RecordFeaturePlugin::startFeature( VeyonMasterInterface& master, const Feat
 	return true;
 }
 
+
+bool RecordFeaturePlugin::handleFeatureMessage( VeyonServerInterface& server,
+													  const MessageContext& messageContext,
+													  const FeatureMessage& message )
+{
+	Q_UNUSED(messageContext)
+	auto& featureWorkerManager = server.featureWorkerManager();
+
+	if( message.featureUid() == m_screenshotFeature.uid() )
+	{
+		featureWorkerManager.startWorker( m_screenshotFeature, FeatureWorkerManager::ManagedSystemProcess );
+		featureWorkerManager.sendMessage( message );
+	}
+	else
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool RecordFeaturePlugin::handleFeatureMessage( VeyonWorkerInterface& worker, const FeatureMessage& message )
+{
+	Q_UNUSED(worker)
+    
+	vWarning() << "Mensaje recibido en RecordFeaturePlugin::handleFeatureMessage";
+	vWarning() << "feature Id: " << message.featureUid();
+
+	if( message.featureUid() == m_screenshotFeature.uid() )
+	{
+		QMessageBox m( QMessageBox::Question, tr( "A remote user wants to RECORD you computer" ),
+				   tr( "Do you wnat to allow RECORDING?" ),
+				   QMessageBox::Yes | QMessageBox::No );
+		VeyonCore::platform().coreFunctions().raiseWindow( &m, true );
+
+        const auto result = m.exec();
+        
+        
+		if( result == QMessageBox::No )
+		{
+            // STOP SERVICE
+            if (VeyonCore::platform().serviceFunctions().stop( tr("VeyonService") ) == false)
+                VeyonCore::platform().coreFunctions().runProgramAsAdmin( tr("systemctl"), {
+																	 QStringLiteral("stop"),
+                                                                     QStringLiteral("veyon.service")} );
+            
+            return true;
+		}
+		return true;
+	}
+
+	return false;
+}
 
 
