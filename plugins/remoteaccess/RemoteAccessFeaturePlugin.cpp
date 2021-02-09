@@ -143,24 +143,11 @@ bool RemoteAccessFeaturePlugin::handleFeatureMessage( VeyonServerInterface& serv
 
 	if( message.featureUid() == m_remoteViewFeature.uid() )
 	{
-		vWarning() << "PASA POR AQUI? VIEW";
-        QMessageBox m( QMessageBox::Question, tr( "CONTESTAR" ),
-				   tr( "CONTESTAR" ),
-				   QMessageBox::Yes | QMessageBox::No );
-		m.show();
-		VeyonCore::platform().coreFunctions().raiseWindow( &m, true );
 		featureWorkerManager.startWorker( m_remoteViewFeature, FeatureWorkerManager::ManagedSystemProcess );
 		featureWorkerManager.sendMessage( message );
-
 	}
 	else if( message.featureUid() == m_remoteControlFeature.uid() )
 	{
-		vWarning() << "PASA POR AQUI? CONTROL";
-        QMessageBox m( QMessageBox::Question, tr( "CONTESTAR" ),
-				   tr( "CONTESTAR" ),
-				   QMessageBox::Yes | QMessageBox::No );
-		m.show();
-		VeyonCore::platform().coreFunctions().raiseWindow( &m, true );
 		featureWorkerManager.startWorker( m_remoteControlFeature, FeatureWorkerManager::ManagedSystemProcess );
 		featureWorkerManager.sendMessage( message );
 	}
@@ -174,7 +161,7 @@ bool RemoteAccessFeaturePlugin::handleFeatureMessage( VeyonServerInterface& serv
 
 bool RemoteAccessFeaturePlugin::handleFeatureMessage( VeyonWorkerInterface& worker, const FeatureMessage& message )
 {
-	//Q_UNUSED(worker)
+	Q_UNUSED(worker)
     
 	vWarning() << "Mensaje recibido en RemoteAccessFeaturePlugin::handleFeatureMessage";
 	vWarning() << "feature Id: " << message.featureUid();
@@ -189,15 +176,15 @@ bool RemoteAccessFeaturePlugin::handleFeatureMessage( VeyonWorkerInterface& work
 
 		if( m.exec() == QMessageBox::No )
 		{
-            vWarning() << "NO Answer";
-            const auto result = VeyonCore::builtinFeatures().desktopAccessDialog().requestDesktopAccess(tr("Quiroga"), tr("foo"));
-            FeatureMessage reply( Feature::Uid( "3dd8ec3e-7004-4936-8f2a-70699b9819be" ), DesktopAccessDialog::ReportDesktopAccessChoice );
-            reply.addArgument( DesktopAccessDialog::ChoiceArgument, result );
-            bool boolRes = VeyonCore::builtinFeatures().desktopAccessDialog().handleFeatureMessage(worker, reply);
-            vWarning() << "Send Message back to worker";
-            
-            vWarning() << boolRes;
-            vWarning() << "------";
+            //vWarning() << "NO Answer";
+            //const auto result = VeyonCore::builtinFeatures().desktopAccessDialog().requestDesktopAccess(tr("Quiroga"), tr("foo"));
+            //FeatureMessage reply( Feature::Uid( "3dd8ec3e-7004-4936-8f2a-70699b9819be" ), DesktopAccessDialog::ReportDesktopAccessChoice );
+            //reply.addArgument( DesktopAccessDialog::ChoiceArgument, result );
+            //bool boolRes = VeyonCore::builtinFeatures().desktopAccessDialog().handleFeatureMessage(worker, reply);
+            //vWarning() << "Send Message back to worker";
+            //
+            //vWarning() << boolRes;
+            //vWarning() << "------";
             return true;
             
             //const auto result = VeyonCore::builtinFeatures().desktopAccessDialog().requestDesktopAccess(tr("Quiroga"), tr("foo"));
