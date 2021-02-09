@@ -365,11 +365,10 @@ void RemoteAccessWidget::toggleFullScreen( bool _on )
 
 void RemoteAccessWidget::toggleViewOnly( bool viewOnly )
 {
-	vWarning() << "toggleViewOnly: Cambiamos de VIEW a REMOTECONTROL en el widget";
     if ( viewOnly == false)
     {
+        vDebug() << "toggleViewOnly: widget notifies a 'remote control' session";
         m_plugin->notifyRemoteControlRequest(m_connection);
-        m_plugin->notifyRemoteControlRequest(m_computerControlInterface);
     }
 
 	m_vncView->setViewOnly( viewOnly );

@@ -273,14 +273,7 @@ bool RemoteAccessFeaturePlugin::remoteAccess( const QString& hostAddress, bool v
 
 void RemoteAccessFeaturePlugin::notifyRemoteControlRequest(VeyonConnection* connection)
 {
-    vWarning() << "WIDGET set REMOTE CONTROL";
     connection->sendFeatureMessage( FeatureMessage( m_remoteControlFeature.uid(), FeatureMessage::DefaultCommand ), false);
 }
 
-
-void RemoteAccessFeaturePlugin::notifyRemoteControlRequest(const ComputerControlInterface::Pointer& server)
-{
-    vWarning() << "WIDGET set REMOTE CONTROL ComputerInterface";
-    server->sendFeatureMessage( FeatureMessage( m_remoteControlFeature.uid(), FeatureMessage::DefaultCommand ), false);
-}
 
