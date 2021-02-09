@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/gdprdisclaimer" >
-        <file>dialog-information.png</file>
-    </qresource>
-</RCC>
