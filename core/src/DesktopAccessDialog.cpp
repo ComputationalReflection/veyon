@@ -141,28 +141,29 @@ DesktopAccessDialog::Choice DesktopAccessDialog::requestDesktopAccess( const QSt
 
 	QMessageBox m( QMessageBox::Question,
 				   tr( "Confirm desktop access" ),
-				   tr( "The user %1 at computer %2 wants to access your desktop. Do you want to grant access?" ).
-				   arg( user, hostName ), QMessageBox::Yes | QMessageBox::No );
+				   tr( "<h1>Important</h1>If you press <b>Yes</b>, you allow the teacher to view and control your desktop." ),
+                   QMessageBox::Yes | QMessageBox::No );
 
-	auto neverBtn = m.addButton( tr( "Never for this session" ), QMessageBox::NoRole );
-	auto alwaysBtn = m.addButton( tr( "Always for this session" ), QMessageBox::YesRole );
+	//auto neverBtn = m.addButton( tr( "Never for this session" ), QMessageBox::NoRole );
+	//auto alwaysBtn = m.addButton( tr( "Always for this session" ), QMessageBox::YesRole );
 
-	m.setEscapeButton( m.button( QMessageBox::No ) );
-	m.setDefaultButton( neverBtn );
+	//m.setEscapeButton( m.button( QMessageBox::No ) );
+	//m.setDefaultButton( neverBtn );
 
 	VeyonCore::platform().coreFunctions().raiseWindow( &m, true );
 
 	const auto result = m.exec();
 
-	if( m.clickedButton() == neverBtn )
-	{
-		return ChoiceNever;
-	}
-	else if( m.clickedButton() == alwaysBtn )
-	{
-		return ChoiceAlways;
-	}
-	else if( result == QMessageBox::Yes )
+	//if( m.clickedButton() == neverBtn )
+	//{
+	//	return ChoiceNever;
+	//}
+	//else if( m.clickedButton() == alwaysBtn )
+	//{
+	//	return ChoiceAlways;
+	//}
+	//else 
+    if( result == QMessageBox::Yes )
 	{
 		return ChoiceYes;
 	}
