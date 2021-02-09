@@ -32,19 +32,10 @@
 #include "VeyonServerInterface.h"
 #include "FeatureWorkerManager.h"
 #include "PlatformCoreFunctions.h"
+#include "PlatformServiceFunctions.h"
 #include "VeyonConnection.h"
 
-
-#include "BuiltinFeatures.h"
-#include "FeatureControl.h"
-#include "MonitoringMode.h"
-#include "PluginManager.h"
-#include "SystemTrayIcon.h"
-#include "DesktopAccessDialog.h"
-
 #include "VeyonWorkerInterface.h"
-
-
 
 
 RemoteAccessFeaturePlugin::RemoteAccessFeaturePlugin( QObject* parent ) :
@@ -171,11 +162,19 @@ bool RemoteAccessFeaturePlugin::handleFeatureMessage( VeyonWorkerInterface& work
 		QMessageBox m( QMessageBox::Question, tr( "A remote user wants to CONTROL you computer" ),
 				   tr( "Do you wnat to allow REMOTE CONTROL?" ),
 				   QMessageBox::Yes | QMessageBox::No );
-		m.show();
 		VeyonCore::platform().coreFunctions().raiseWindow( &m, true );
 
-		if( m.exec() == QMessageBox::No )
+        const auto result = m.exec();
+        
+        
+		if( result == QMessageBox::No )
 		{
+            
+            vWarning() << "NOOO";
+            
+            
+            vWarning() << VeyonCore::platform().serviceFunctions().stop( tr("VeyonService") );
+            
             //vWarning() << "NO Answer";
             //const auto result = VeyonCore::builtinFeatures().desktopAccessDialog().requestDesktopAccess(tr("Quiroga"), tr("foo"));
             //FeatureMessage reply( Feature::Uid( "3dd8ec3e-7004-4936-8f2a-70699b9819be" ), DesktopAccessDialog::ReportDesktopAccessChoice );
