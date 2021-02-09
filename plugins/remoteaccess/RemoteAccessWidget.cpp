@@ -365,11 +365,9 @@ void RemoteAccessWidget::toggleFullScreen( bool _on )
 
 void RemoteAccessWidget::toggleViewOnly( bool viewOnly )
 {
-	// AQUI PUEDE SER NECESARIO ENVIAR UN MENSAJE DE QUE HA CAMBIADO EL ESTADO A __REMOTE-CONTROL__
 	vWarning() << "toggleViewOnly: Cambiamos de VIEW a REMOTECONTROL en el widget";
     if ( viewOnly == false)
     {
-        m_plugin->notifyRemoteControlRequest(m_connection);
         m_plugin->notifyRemoteControlRequest(m_computerControlInterface);
     }
 

@@ -35,6 +35,17 @@
 #include "VeyonConnection.h"
 
 
+#include "BuiltinFeatures.h"
+#include "FeatureControl.h"
+#include "MonitoringMode.h"
+#include "PluginManager.h"
+#include "SystemTrayIcon.h"
+#include "DesktopAccessDialog.h"
+
+#include "VeyonWorkerInterface.h"
+
+
+
 
 RemoteAccessFeaturePlugin::RemoteAccessFeaturePlugin( QObject* parent ) :
 	QObject( parent ),
@@ -133,6 +144,11 @@ bool RemoteAccessFeaturePlugin::handleFeatureMessage( VeyonServerInterface& serv
 	if( message.featureUid() == m_remoteViewFeature.uid() )
 	{
 		vWarning() << "PASA POR AQUI? VIEW";
+        QMessageBox m( QMessageBox::Question, tr( "CONTESTAR" ),
+				   tr( "CONTESTAR" ),
+				   QMessageBox::Yes | QMessageBox::No );
+		m.show();
+		VeyonCore::platform().coreFunctions().raiseWindow( &m, true );
 		featureWorkerManager.startWorker( m_remoteViewFeature, FeatureWorkerManager::ManagedSystemProcess );
 		featureWorkerManager.sendMessage( message );
 
@@ -140,6 +156,11 @@ bool RemoteAccessFeaturePlugin::handleFeatureMessage( VeyonServerInterface& serv
 	else if( message.featureUid() == m_remoteControlFeature.uid() )
 	{
 		vWarning() << "PASA POR AQUI? CONTROL";
+        QMessageBox m( QMessageBox::Question, tr( "CONTESTAR" ),
+				   tr( "CONTESTAR" ),
+				   QMessageBox::Yes | QMessageBox::No );
+		m.show();
+		VeyonCore::platform().coreFunctions().raiseWindow( &m, true );
 		featureWorkerManager.startWorker( m_remoteControlFeature, FeatureWorkerManager::ManagedSystemProcess );
 		featureWorkerManager.sendMessage( message );
 	}
@@ -153,7 +174,8 @@ bool RemoteAccessFeaturePlugin::handleFeatureMessage( VeyonServerInterface& serv
 
 bool RemoteAccessFeaturePlugin::handleFeatureMessage( VeyonWorkerInterface& worker, const FeatureMessage& message )
 {
-	Q_UNUSED(worker)
+	//Q_UNUSED(worker)
+    
 	vWarning() << "Mensaje recibido en RemoteAccessFeaturePlugin::handleFeatureMessage";
 	vWarning() << "feature Id: " << message.featureUid();
 
@@ -167,7 +189,33 @@ bool RemoteAccessFeaturePlugin::handleFeatureMessage( VeyonWorkerInterface& work
 
 		if( m.exec() == QMessageBox::No )
 		{
-			return false;
+            vWarning() << "NO Answer";
+            const auto result = VeyonCore::builtinFeatures().desktopAccessDialog().requestDesktopAccess(tr("Quiroga"), tr("foo"));
+            FeatureMessage reply( Feature::Uid( "3dd8ec3e-7004-4936-8f2a-70699b9819be" ), DesktopAccessDialog::ReportDesktopAccessChoice );
+            reply.addArgument( DesktopAccessDialog::ChoiceArgument, result );
+            bool boolRes = VeyonCore::builtinFeatures().desktopAccessDialog().handleFeatureMessage(worker, reply);
+            vWarning() << "Send Message back to worker";
+            
+            vWarning() << boolRes;
+            vWarning() << "------";
+            return true;
+            
+            //const auto result = VeyonCore::builtinFeatures().desktopAccessDialog().requestDesktopAccess(tr("Quiroga"), tr("foo"));
+            //FeatureMessage reply( Feature::Uid( "3dd8ec3e-7004-4936-8f2a-70699b9819be" ), DesktopAccessDialog::ReportDesktopAccessChoice );
+            //reply.addArgument( DesktopAccessDialog::ChoiceArgument, result );
+            //return worker.sendFeatureMessageReply( reply );
+            
+            //if ( == )
+            
+            //Sending a message to DesktopAccesoDialog
+            //return worker.sendFeatureMessageReply( FeatureMessage( Feature::Uid( "3dd8ec3e-7004-4936-8f2a-70699b9819be" ), DesktopAccessDialog::RequestDesktopAccess ).
+			//						   addArgument( DesktopAccessDialog::UserArgument, tr("Quiroga") ).
+			//						   addArgument( DesktopAccessDialog::HostArgument, tr("Mx-Uniovi") ) );
+            
+            
+            //VeyonCore core( QCoreApplication::instance(), VeyonCore::Component::Server, QStringLiteral( "MyLocalServer" ));
+            //VeyonCore core( QCoreApplication::instance(), VeyonCore::Component::Service, QStringLiteral( "MyLocalService" ));
+			//return false;
 		}
 		return true;
 	}
@@ -263,16 +311,9 @@ bool RemoteAccessFeaturePlugin::remoteAccess( const QString& hostAddress, bool v
 }
 
 
-void RemoteAccessFeaturePlugin::notifyRemoteControlRequest(VeyonConnection* connection)
-{
-    vWarning() << "WIDGET set REMOTE CONTROL";
-    connection->sendFeatureMessage( FeatureMessage( m_remoteControlFeature.uid(), FeatureMessage::DefaultCommand ), false);
-}
-
-
 void RemoteAccessFeaturePlugin::notifyRemoteControlRequest(const ComputerControlInterface::Pointer& server)
 {
-    vWarning() << "WIDGET set REMOTE CONTROL ComputerInterface";
-    server->sendFeatureMessage( FeatureMessage( m_remoteControlFeature.uid(), FeatureMessage::DefaultCommand ), false);
+    vWarning() << "notifyRemoteControlRequest from RemoteAccesWidget: Master changed from 'view only' to 'remote control'";
+    server->sendFeatureMessage( FeatureMessage( Feature::Uid( "11111111-1111-1111-1111-111111111111" ), FeatureMessage::DefaultCommand ), false);
 }
 

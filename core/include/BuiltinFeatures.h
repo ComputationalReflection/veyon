@@ -31,6 +31,7 @@ class FeatureControl;
 class MonitoringMode;
 class SystemTrayIcon;
 
+
 // clazy:excludeall=rule-of-three
 
 class VEYON_CORE_EXPORT BuiltinFeatures
@@ -58,10 +59,12 @@ public:
 	{
 		return *m_desktopAccessDialog;
 	}
+    
 
 private:
 	FeatureControl* m_featureControl;
 	SystemTrayIcon* m_systemTrayIcon;
 	MonitoringMode* m_monitoringMode;
 	DesktopAccessDialog* m_desktopAccessDialog;
+
 };
