@@ -368,6 +368,7 @@ void RemoteAccessWidget::toggleViewOnly( bool viewOnly )
 	vWarning() << "toggleViewOnly: Cambiamos de VIEW a REMOTECONTROL en el widget";
     if ( viewOnly == false)
     {
+        m_plugin->notifyRemoteControlRequest(m_connection);
         m_plugin->notifyRemoteControlRequest(m_computerControlInterface);
     }
 

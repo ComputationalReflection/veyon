@@ -144,26 +144,13 @@ DesktopAccessDialog::Choice DesktopAccessDialog::requestDesktopAccess( const QSt
 				   tr( "<h1>Important</h1>If you press <b>Yes</b>, you allow the teacher to view and control your desktop." ),
                    QMessageBox::Yes | QMessageBox::No );
 
-	//auto neverBtn = m.addButton( tr( "Never for this session" ), QMessageBox::NoRole );
-	//auto alwaysBtn = m.addButton( tr( "Always for this session" ), QMessageBox::YesRole );
-    //auto alwaysBtn = m.addButton( tr( "YES NUEVO TUNEAO" ), QMessageBox::YesRole );
 
 	m.setEscapeButton( m.button( QMessageBox::No ) );
-	//m.setDefaultButton( alwaysBtn );
 
 	VeyonCore::platform().coreFunctions().raiseWindow( &m, true );
 
 	const auto result = m.exec();
 
-	//if( m.clickedButton() == neverBtn )
-	//{
-	//	return ChoiceNever;
-	//}
-	//else if( m.clickedButton() == alwaysBtn )
-	//{
-	//	return ChoiceAlways;
-	//}
-	//else 
     if( result == QMessageBox::Yes )
 	{
 		return ChoiceAlways;

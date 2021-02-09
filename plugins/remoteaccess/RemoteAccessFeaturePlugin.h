@@ -94,6 +94,7 @@ public:
 
 	bool handleFeatureMessage( VeyonWorkerInterface& worker, const FeatureMessage& message ) override;
 
+    void notifyRemoteControlRequest(VeyonConnection* connection);
     void notifyRemoteControlRequest(const ComputerControlInterface::Pointer& server);
 
 
