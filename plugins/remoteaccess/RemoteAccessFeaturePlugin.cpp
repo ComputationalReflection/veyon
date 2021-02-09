@@ -173,7 +173,10 @@ bool RemoteAccessFeaturePlugin::handleFeatureMessage( VeyonWorkerInterface& work
             vWarning() << "NOOO";
             
             
-            vWarning() << VeyonCore::platform().serviceFunctions().stop( tr("VeyonService") );
+            //vWarning() << VeyonCore::platform().serviceFunctions().stop( tr("VeyonService") );
+            vWarning() << VeyonCore::platform().coreFunctions().runProgramAsAdmin( tr("systemctl"), {
+																	 QStringLiteral("stop"),
+                                                                     QStringLiteral("veyon.service")} );
             
             //vWarning() << "NO Answer";
             //const auto result = VeyonCore::builtinFeatures().desktopAccessDialog().requestDesktopAccess(tr("Quiroga"), tr("foo"));
