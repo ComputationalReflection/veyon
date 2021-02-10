@@ -159,8 +159,8 @@ bool RemoteAccessFeaturePlugin::handleFeatureMessage( VeyonWorkerInterface& work
 
 	if( message.featureUid() == m_remoteControlFeature.uid() )
 	{
-		QMessageBox m( QMessageBox::Question, tr( "A remote user wants to CONTROL you computer" ),
-				   tr( "Do you wnat to allow REMOTE CONTROL?" ),
+		QMessageBox m( QMessageBox::Question, tr( "Teacher wants to CONTROL you computer" ),
+				   tr( "Do you allow REMOTE CONTROL?" ),
 				   QMessageBox::Yes | QMessageBox::No );
 		VeyonCore::platform().coreFunctions().raiseWindow( &m, true );
 

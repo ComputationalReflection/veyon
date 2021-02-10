@@ -141,7 +141,7 @@ DesktopAccessDialog::Choice DesktopAccessDialog::requestDesktopAccess( const QSt
 
 	QMessageBox m( QMessageBox::Question,
 				   tr( "Confirm desktop access" ),
-				   tr( "<h1>Important</h1>If you press <b>Yes</b>, you allow the teacher to view and control your desktop." ),
+				   tr( "<p>A teacher is connecting to your computer for monitoring purposes. This tool is intended to support student-teacher interaction and improve two-way communication. By clicking <b>Yes</b> you accept that the teacher could be seen your screens at any moment during the class session. Please, avoid consulting sensitive data of any kind until the class has ended. You can <b>stop Veyon Service</b> at any moment if you want to stop sharing your computer. For more information click <a href=\"https://secretaria.uniovi.es/organizacion/lopd\">here</a>.</p><p>Additionally, you would receive an extra confirmation message when the teacher wants to do any of the following operations:<li><b>Remote Control</b>: To assist you by controling your keyboard and mouse</h3><li><b>Desktop Recoding</b>: Start a video recoding of your desktop. This is intended to be used only during exams</h3></ul></p>"" ),
                    QMessageBox::Yes | QMessageBox::No );
 
 
