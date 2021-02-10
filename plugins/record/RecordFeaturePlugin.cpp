@@ -56,14 +56,14 @@ extern "C"
 
 RecordFeaturePlugin::RecordFeaturePlugin( QObject* parent ) :
 	QObject( parent ),
-	m_screenshotFeature( Feature( QStringLiteral( "Record" ),
+	m_recordFeature( Feature( QStringLiteral( "Record" ),
 								  Feature::Action | Feature::Master,
 								  Feature::Uid( "d5ee3aac-2a87-4d05-b827-0c20344490be" ),
 								  Feature::Uid(),
 								  tr( "Record" ), {},
 								  tr( "Use this function to record the selected computers." ),
 								  QStringLiteral(":/record/record.png") ) ),
-	m_features( { m_screenshotFeature } )
+	m_features( { m_recordFeature } )
 {
 	m_recordEnabled = false;
 	m_recordTimer = new QTimer(this);
@@ -272,7 +272,7 @@ const FeatureList &RecordFeaturePlugin::featureList() const
 bool RecordFeaturePlugin::startFeature( VeyonMasterInterface& master, const Feature& feature,
 											const ComputerControlInterfaceList& computerControlInterfaces )
 {
-	if( feature.uid() == m_screenshotFeature.uid() )
+	if( feature.uid() == m_recordFeature.uid() )
 	{
 		m_lastComputerControlInterfaces = computerControlInterfaces;
 		m_lastMaster = &master;
@@ -280,7 +280,7 @@ bool RecordFeaturePlugin::startFeature( VeyonMasterInterface& master, const Feat
 		if( m_recordEnabled == false)
 		{
             //Send recording notification to clients
-            sendFeatureMessage( FeatureMessage( m_screenshotFeature.uid(), FeatureMessage::DefaultCommand ),
+            sendFeatureMessage( FeatureMessage( m_recordFeature.uid(), FeatureMessage::DefaultCommand ),
 									computerControlInterfaces );
             
             //Start Recording
@@ -315,9 +315,9 @@ bool RecordFeaturePlugin::handleFeatureMessage( VeyonServerInterface& server,
 	Q_UNUSED(messageContext)
 	auto& featureWorkerManager = server.featureWorkerManager();
 
-	if( message.featureUid() == m_screenshotFeature.uid() )
+	if( message.featureUid() == m_recordFeature.uid() )
 	{
-		featureWorkerManager.startWorker( m_screenshotFeature, FeatureWorkerManager::ManagedSystemProcess );
+		featureWorkerManager.startWorker( m_recordFeature, FeatureWorkerManager::ManagedSystemProcess );
 		featureWorkerManager.sendMessage( message );
 	}
 	else
@@ -335,7 +335,7 @@ bool RecordFeaturePlugin::handleFeatureMessage( VeyonWorkerInterface& worker, co
 	vWarning() << "Mensaje recibido en RecordFeaturePlugin::handleFeatureMessage";
 	vWarning() << "feature Id: " << message.featureUid();
 
-	if( message.featureUid() == m_screenshotFeature.uid() )
+	if( message.featureUid() == m_recordFeature.uid() )
 	{
 		QMessageBox m( QMessageBox::Question, tr( "A remote user wants to RECORD you computer" ),
 				   tr( "Do you wnat to allow RECORDING?" ),

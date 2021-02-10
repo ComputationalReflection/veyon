@@ -115,7 +115,7 @@ public Q_SLOTS:
 	void saveFrame();
 
 private:
-	const Feature m_screenshotFeature;
+	const Feature m_recordFeature;
 	const FeatureList m_features;
 	bool m_recordEnabled;
 	QTimer *m_recordTimer;
