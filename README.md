@@ -1,4 +1,4 @@
-# Veyon Fork to record student sessions 
+# Veyon Fork to improve students' privacy and record remote lab sessions 
 
 [![Latest stable release](https://img.shields.io/github/v/release/ComputationalReflection/veyon.svg?maxAge=3600)](https://github.com/ComputationalReflection/veyon/releases)
 [![license](https://img.shields.io/badge/license-GPLv2-green.svg)](LICENSE)
@@ -25,7 +25,7 @@ at their daily work:
 
 ## What is in this Veyon fork?
 
-This fork of the [Veyon project](https://github.com/veyon/veyon) provides video recording of all the student sessions attending the remote lab. It could also store a sequence of screenshots instead of a video. A new "record" button has been added to the toolbar.
+This fork of the [Veyon project](https://github.com/veyon/veyon) provides better information about privacy issues and the use of Veyon during remote lab sessions. It also provides video recording of all the student  attending the lab. Alternatively it could store a sequence of screenshots instead of a video. To do this, a new "record" button has been added to the toolbar.
 
 ## Installation and configuration
 
@@ -37,9 +37,16 @@ Additionally, this Veyon version is provided with two sets of [Windows and Linux
 
 Please refer to the official [Veyon User Manual](https://docs.veyon.io/en/latest/user/index.html) for information about how to use Veyon.
 
+### Privacy Improvements
+
+This version of Veyon includes modifications regarding students' privacy concerns. First of all, configuration scripts enable access control policies to inform students when a remote user (teacher) is connected to their computer. It also shows a dialog where students are expressly informed about the Veyon features (Remote View, Remote Control and Video Recording) related with their privacy and instructions on how to stop desktop sharing. Finally, it ask the students for a explicit consent when a teacher wants to remote control or record students' computer.
+
+![Record Button](record_button.png)
+This picture must be updated
+
 ### Video Recording Usage
 
-This version of Veyon includes video recording as part of its functionality. When the record button of the toolbar is clicked, the system starts recording one video per lab attendant. By clicking the button again, the recording stops.
+This version also includes video recording as part of its functionality. When the record button of the toolbar is clicked, the system starts recording one video per lab attendant. By clicking the button again, the recording stops.
  
 ![Record Button](record_button.png)
 
