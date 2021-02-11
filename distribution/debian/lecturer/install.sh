@@ -1,6 +1,6 @@
 #!/bin/bash
 cd app
-sudo dpkg -i veyon_1.0.0_amd64.deb
+sudo dpkg -i veyon_1.1.0_amd64.deb
 sudo veyon-cli config clear
 sudo veyon-cli config import default.config
 sudo veyon-cli config set Authentication/Method 1
