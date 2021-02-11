@@ -24,6 +24,7 @@
 #pragma once
 
 #include "ComputerControlInterface.h"
+#include "RemoteAccessFeaturePlugin.h"
 
 #include <QTimeLine>
 #include <QWidget>
@@ -83,7 +84,7 @@ class RemoteAccessWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit RemoteAccessWidget( const ComputerControlInterface::Pointer& computerControlInterface, bool viewOnly = false );
+	explicit RemoteAccessWidget( const ComputerControlInterface::Pointer& computerControlInterface, RemoteAccessFeaturePlugin* featurePlugin, bool viewOnly = false );
 	~RemoteAccessWidget() override;
 
 	VncView* vncView() const
@@ -107,6 +108,7 @@ private:
 	void updateSize();
 
 	ComputerControlInterface::Pointer m_computerControlInterface;
+    RemoteAccessFeaturePlugin * m_plugin;
 	VncView* m_vncView;
 	VeyonConnection* m_connection;
 	RemoteAccessWidgetToolBar* m_toolBar;

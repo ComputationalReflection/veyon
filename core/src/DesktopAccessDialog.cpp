@@ -139,32 +139,21 @@ DesktopAccessDialog::Choice DesktopAccessDialog::requestDesktopAccess( const QSt
 
 	qApp->setQuitOnLastWindowClosed( false );
 
-	QMessageBox m( QMessageBox::Question,
-				   tr( "Confirm desktop access" ),
-				   tr( "The user %1 at computer %2 wants to access your desktop. Do you want to grant access?" ).
-				   arg( user, hostName ), QMessageBox::Yes | QMessageBox::No );
+	QMessageBox m( QMessageBox::Information,
+				   tr( "Consent to Monitor your Screen" ),
+				   tr( "<p>An instructor is about to connect to your computer to monitor your screen(s). By clicking <b>Yes</b>, you give consent to the instructor to <b>see</b> your screen(s) at any moment during this session. Please, avoid consulting sensitive data of any kind until the session is over. You can <b>stop Veyon service</b> at any moment if you want to stop sharing your screen(s).</p><p>Please, notice that this software will not grant the instructor to control your computer. Screen recording is not allowed either. If either of these two actions is requested by the instructor, you will be asked for explicit consent.<p> <p>For more information, please click <a href=\"https://secretaria.uniovi.es/organizacion/lopd\">here</a>.</p>" ),
+                   QMessageBox::Yes | QMessageBox::No );
 
-	auto neverBtn = m.addButton( tr( "Never for this session" ), QMessageBox::NoRole );
-	auto alwaysBtn = m.addButton( tr( "Always for this session" ), QMessageBox::YesRole );
 
 	m.setEscapeButton( m.button( QMessageBox::No ) );
-	m.setDefaultButton( neverBtn );
 
 	VeyonCore::platform().coreFunctions().raiseWindow( &m, true );
 
 	const auto result = m.exec();
 
-	if( m.clickedButton() == neverBtn )
-	{
-		return ChoiceNever;
-	}
-	else if( m.clickedButton() == alwaysBtn )
+    if( result == QMessageBox::Yes )
 	{
 		return ChoiceAlways;
-	}
-	else if( result == QMessageBox::Yes )
-	{
-		return ChoiceYes;
 	}
 
 	return ChoiceNo;

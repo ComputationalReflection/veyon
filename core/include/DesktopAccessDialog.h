@@ -45,6 +45,21 @@ public:
 		ChoiceCount
 	} ;
 	Q_ENUM(Choice)
+    
+    enum Commands
+	{
+		RequestDesktopAccess,
+		ReportDesktopAccessChoice
+	};
+    Q_ENUM(Commands)
+
+	enum Arguments
+	{
+		UserArgument,
+		HostArgument,
+		ChoiceArgument
+	};
+    Q_ENUM(Arguments)
 
 	explicit DesktopAccessDialog( QObject* parent = nullptr );
 	~DesktopAccessDialog() override = default;
@@ -99,9 +114,10 @@ public:
 							   const FeatureMessage& message ) override;
 
 	bool handleFeatureMessage( VeyonWorkerInterface& worker, const FeatureMessage& message ) override;
+    
+    static Choice requestDesktopAccess( const QString& user, const QString& host );
 
 private:
-	static Choice requestDesktopAccess( const QString& user, const QString& host );
 
 	enum
 	{
@@ -109,18 +125,7 @@ private:
 		SleepTime = 100
 	};
 
-	enum Commands
-	{
-		RequestDesktopAccess,
-		ReportDesktopAccessChoice
-	};
 
-	enum Arguments
-	{
-		UserArgument,
-		HostArgument,
-		ChoiceArgument
-	};
 
 	const Feature m_desktopAccessDialogFeature;
 	const FeatureList m_features;

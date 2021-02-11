@@ -37,6 +37,12 @@
 #include "Computer.h"
 #include "Filesystem.h"
 
+
+#include "VeyonServerInterface.h"
+#include "FeatureWorkerManager.h"
+#include "PlatformCoreFunctions.h"
+#include "PlatformServiceFunctions.h"
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -50,14 +56,14 @@ extern "C"
 
 RecordFeaturePlugin::RecordFeaturePlugin( QObject* parent ) :
 	QObject( parent ),
-	m_screenshotFeature( Feature( QStringLiteral( "Record" ),
+	m_recordFeature( Feature( QStringLiteral( "Record" ),
 								  Feature::Action | Feature::Master,
 								  Feature::Uid( "d5ee3aac-2a87-4d05-b827-0c20344490be" ),
 								  Feature::Uid(),
 								  tr( "Record" ), {},
 								  tr( "Use this function to record the selected computers." ),
 								  QStringLiteral(":/record/record.png") ) ),
-	m_features( { m_screenshotFeature } )
+	m_features( { m_recordFeature } )
 {
 	m_recordEnabled = false;
 	m_recordTimer = new QTimer(this);
@@ -89,7 +95,7 @@ void RecordFeaturePlugin::updateConfigFile()
 
 	//Update config file values. It writes default values if not set.
 	m_lastMaster->userConfigurationObject()->setValue(tr("Width"), QVariant(m_recordingWidth), tr("Plugin.Record"));
-	m_lastMaster->userConfigurationObject()->setValue(tr("Height"), QVariant(m_recordingHeight), tr("Plugin.Record"));
+	m_lastMaster->userConfigurationObject()->setValue(tr("Heigth"), QVariant(m_recordingHeight), tr("Plugin.Record"));
 	m_lastMaster->userConfigurationObject()->setValue(tr("Video"), QVariant(m_recordingVideo), tr("Plugin.Record"));
 	m_lastMaster->userConfigurationObject()->setValue(tr("CaptureIntervalNum"), QVariant(m_recordingFrameIntervalNum), tr("Plugin.Record"));
 	m_lastMaster->userConfigurationObject()->setValue(tr("CaptureIntervalDen"), QVariant(m_recordingFrameIntervalDen), tr("Plugin.Record"));
@@ -100,7 +106,7 @@ void RecordFeaturePlugin::updateConfigFile()
 void RecordFeaturePlugin::initializeRecordingParameters()
 {
 	m_recordingWidth = m_lastMaster->userConfigurationObject()->value(tr("Width"), tr("Plugin.Record"), QVariant(1280)).toInt();
-	m_recordingHeight = m_lastMaster->userConfigurationObject()->value(tr("Height"), tr("Plugin.Record"), QVariant(720)).toInt();
+	m_recordingHeight = m_lastMaster->userConfigurationObject()->value(tr("Heigth"), tr("Plugin.Record"), QVariant(720)).toInt();
 	m_recordingVideo = m_lastMaster->userConfigurationObject()->value(tr("Video"), tr("Plugin.Record"), QVariant(true)).toBool();
 	m_recordingFrameIntervalNum = m_lastMaster->userConfigurationObject()->value(tr("CaptureIntervalNum"), tr("Plugin.Record"), QVariant(1000)).toInt();
 	m_recordingFrameIntervalDen = m_lastMaster->userConfigurationObject()->value(tr("CaptureIntervalDen"), tr("Plugin.Record"), QVariant(1000)).toInt();
@@ -266,13 +272,18 @@ const FeatureList &RecordFeaturePlugin::featureList() const
 bool RecordFeaturePlugin::startFeature( VeyonMasterInterface& master, const Feature& feature,
 											const ComputerControlInterfaceList& computerControlInterfaces )
 {
-	if( feature.uid() == m_screenshotFeature.uid() )
+	if( feature.uid() == m_recordFeature.uid() )
 	{
 		m_lastComputerControlInterfaces = computerControlInterfaces;
 		m_lastMaster = &master;
 
 		if( m_recordEnabled == false)
 		{
+            //Send recording notification to clients
+            sendFeatureMessage( FeatureMessage( m_recordFeature.uid(), FeatureMessage::DefaultCommand ),
+									computerControlInterfaces );
+            
+            //Start Recording
 			initializeRecordingParameters();
 			m_recordEnabled = true;
 			int interval = (int)((m_recordingFrameIntervalNum * 1000.0) / (m_recordingFrameIntervalDen * 1.0));
@@ -296,5 +307,58 @@ bool RecordFeaturePlugin::startFeature( VeyonMasterInterface& master, const Feat
 	return true;
 }
 
+
+bool RecordFeaturePlugin::handleFeatureMessage( VeyonServerInterface& server,
+													  const MessageContext& messageContext,
+													  const FeatureMessage& message )
+{
+	Q_UNUSED(messageContext)
+	auto& featureWorkerManager = server.featureWorkerManager();
+
+	if( message.featureUid() == m_recordFeature.uid() )
+	{
+		featureWorkerManager.startWorker( m_recordFeature, FeatureWorkerManager::ManagedSystemProcess );
+		featureWorkerManager.sendMessage( message );
+	}
+	else
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool RecordFeaturePlugin::handleFeatureMessage( VeyonWorkerInterface& worker, const FeatureMessage& message )
+{
+	Q_UNUSED(worker)
+    
+	vWarning() << "Mensaje recibido en RecordFeaturePlugin::handleFeatureMessage";
+	vWarning() << "feature Id: " << message.featureUid();
+
+	if( message.featureUid() == m_recordFeature.uid() )
+	{
+        QMessageBox m( QMessageBox::Question, tr( "Instructor wants to RECORD you screen(s)" ),
+				   tr( "Do you allow the RECORDING of your screen(s)?" ),
+				   QMessageBox::Yes | QMessageBox::No );
+		VeyonCore::platform().coreFunctions().raiseWindow( &m, true );
+
+        const auto result = m.exec();
+        
+        
+		if( result == QMessageBox::No )
+		{
+            // STOP SERVICE
+            if (VeyonCore::platform().serviceFunctions().stop( tr("VeyonService") ) == false)
+                VeyonCore::platform().coreFunctions().runProgramAsAdmin( tr("systemctl"), {
+																	 QStringLiteral("stop"),
+                                                                     QStringLiteral("veyon.service")} );
+            
+            return true;
+		}
+		return true;
+	}
+
+	return false;
+}
 
 

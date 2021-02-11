@@ -1,19 +1,19 @@
-# Veyon Fork to record student sessions 
+# Veyon Fork to comply with the EU general data protection regulation and record remote lab sessions 
 
 [![Latest stable release](https://img.shields.io/github/v/release/ComputationalReflection/veyon.svg?maxAge=3600)](https://github.com/ComputationalReflection/veyon/releases)
 [![license](https://img.shields.io/badge/license-GPLv2-green.svg)](LICENSE)
 
 ## What is Veyon?
 
-[Veyon (Virtual Eye On Networks)](https://veyon.io/) is a free and open source software for computer monitoring and classroom
-management supporting Windows and Linux. It enables teachers to view and control
+[Veyon (Virtual Eye On Networks)](https://veyon.io/) is a free and open-source software for computer monitoring and classroom
+management supporting Windows and Linux. It enables instructors to view and control
 computer labs and interact with students. Veyon is available in many different
-languages and provides numerous features supporting teachers and administrators
+languages and provides numerous features supporting instructors and administrators
 at their daily work:
 
   * Overview: monitor all computers in one or multiple locations or classrooms
   * Remote access: view or control computers to watch and support users
-  * Demo: broadcast the teacher's screen in realtime (fullscreen/window)
+  * Demo: broadcast the instructor's screen in realtime (fullscreen/window)
   * Screen lock: draw attention to what matters right now
   * Communication: send text messages to students
   * Start and end lessons: log in and log out users all at once
@@ -25,21 +25,27 @@ at their daily work:
 
 ## What is in this Veyon fork?
 
-This fork of the [Veyon project](https://github.com/veyon/veyon) provides video recording of all the student sessions attending the remote lab. It could also store a sequence of screenshots instead of a video. A new "record" button has been added to the toolbar.
+This fork of the [Veyon project](https://github.com/veyon/veyon) provides modifications to comply with the GDPR (EU regulation 2016/679). It also provides video recording of all the students attending the lab. Alternatively, it can store a sequence of screenshots instead of a video. To do this, a new "record" button has been added to the toolbar.
 
 ## Installation and configuration
 
-Installation and configuration is done the same way as in the original project. Please, refer to the official [Veyon Administrator Manual](https://docs.veyon.io/en/latest/admin/index.html) for information about installation and configuration of Veyon.
+Installation and configuration are done the same way as in the original project. Please, refer to the official [Veyon Administrator Manual](https://docs.veyon.io/en/latest/admin/index.html) for information about the installation and configuration of Veyon.
 
-Additionally, this Veyon version is provided with two sets of [Windows and Linux scripts](https://github.com/ComputationalReflection/veyon/tree/master/distribution) that makes it very easy for students and lectures to (un)install, configure, start and stop the system.
+Additionally, this Veyon version is provided with two sets of [Windows and Linux scripts](https://github.com/ComputationalReflection/veyon/tree/master/distribution) that make it very easy for students and lecturers to (un)install, configure, start and stop the system.
 
 ## Usage
 
 Please refer to the official [Veyon User Manual](https://docs.veyon.io/en/latest/user/index.html) for information about how to use Veyon.
 
+### General Data Protection Regulation
+
+This version of Veyon includes modifications regarding students' privacy concerns. First of all, configuration scripts enable access control policies to inform students when a remote user (instructor) is connected to their computer. It also shows a dialog where students are explicitly informed about the Veyon features (Remote View, Remote Control and Video Recording) related to their privacy and instructions on how to stop desktop sharing. Finally, it asks the students for explicit consent when an instructor wants to  control their computer or record their activity.
+
+![Consent](consent.png)
+
 ### Video Recording Usage
 
-This version of Veyon includes video recording as part of its functionality. When the record button of the toolbar is clicked, the system starts recording one video per lab attendant. By clicking the button again, the recording stops.
+This version also includes video recording as part of its functionality. When the record button of the toolbar is clicked, the system starts recording one video per lab attendant. By clicking the button again, the recording stops.
  
 ![Record Button](record_button.png)
 
@@ -69,7 +75,7 @@ Full Example Configuration
 
 ### Downloading the sources
 
-First grab the latest sources by cloning the Git repository and fetching all submodules:
+First, grab the latest sources by cloning the Git repository and fetching all submodules:
 
 	git clone --recursive https://github.com/ComputationalReflection/veyon.git && cd veyon
 
