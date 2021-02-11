@@ -41,8 +41,7 @@ Please refer to the official [Veyon User Manual](https://docs.veyon.io/en/latest
 
 This version of Veyon includes modifications regarding students' privacy concerns. First of all, configuration scripts enable access control policies to inform students when a remote user (instructor) is connected to their computer. It also shows a dialog where students are explicitly informed about the Veyon features (Remote View, Remote Control and Video Recording) related to their privacy and instructions on how to stop desktop sharing. Finally, it asks the students for explicit consent when an instructor wants to  control their computer or record their activity.
 
-![Record Button](record_button.png)
-This picture must be updated
+![Consent](consent.png)
 
 ### Video Recording Usage
 
