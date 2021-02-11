@@ -139,9 +139,9 @@ DesktopAccessDialog::Choice DesktopAccessDialog::requestDesktopAccess( const QSt
 
 	qApp->setQuitOnLastWindowClosed( false );
 
-	QMessageBox m( QMessageBox::Question,
-				   tr( "Confirm desktop access" ),
-				   tr( "<p>A teacher is connecting to your computer for monitoring purposes. This tool is intended to support student-teacher interaction and improve two-way communication. By clicking <b>Yes</b> you accept that the teacher could be seen your screens at any moment during the class session. Please, avoid consulting sensitive data of any kind until the class has ended. You can <b>stop Veyon Service</b> at any moment if you want to stop sharing your computer. For more information click <a href=\"https://secretaria.uniovi.es/organizacion/lopd\">here</a>.</p><p>Additionally, you would receive an extra confirmation message when the teacher wants to do any of the following operations:<li><b>Remote Control</b>: To assist you by controling your keyboard and mouse</h3><li><b>Desktop Recoding</b>: Start a video recoding of your desktop. This is intended to be used only during exams</h3></ul></p>" ),
+	QMessageBox m( QMessageBox::Information,
+				   tr( "Consent to Monitor your Screen" ),
+				   tr( "<p>An instructor is about to connect to your computer to monitor your screen(s). By clicking <b>Yes</b>, you give consent to the instructor to <b>see</b> your screen(s) at any moment during this session. Please, avoid consulting sensitive data of any kind until the session is over. You can <b>stop Veyon service</b> at any moment if you want to stop sharing your screen.</p><p>Please, notice that this software will not grant the instructor to control your computer. Screen recording is not allowed either. If either of these two actions is requested by the instructor, you will be asked for explicit consent.<p> <p>For more information, please click <a href=\"https://secretaria.uniovi.es/organizacion/lopd\">here</a>.</p>" ),
                    QMessageBox::Yes | QMessageBox::No );
 
 
