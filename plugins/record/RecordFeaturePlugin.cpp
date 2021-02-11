@@ -337,8 +337,8 @@ bool RecordFeaturePlugin::handleFeatureMessage( VeyonWorkerInterface& worker, co
 
 	if( message.featureUid() == m_recordFeature.uid() )
 	{
-		QMessageBox m( QMessageBox::Question, tr( "Teacher wants to start a RECORDING of you computer" ),
-				   tr( "Do you want to allow it?" ),
+        QMessageBox m( QMessageBox::Question, tr( "Instructor wants to RECORD you screen(s)" ),
+				   tr( "Do you allow the RECORDING of your screen(s)?" ),
 				   QMessageBox::Yes | QMessageBox::No );
 		VeyonCore::platform().coreFunctions().raiseWindow( &m, true );
 

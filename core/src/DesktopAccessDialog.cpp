@@ -141,7 +141,7 @@ DesktopAccessDialog::Choice DesktopAccessDialog::requestDesktopAccess( const QSt
 
 	QMessageBox m( QMessageBox::Information,
 				   tr( "Consent to Monitor your Screen" ),
-				   tr( "<p>An instructor is about to connect to your computer to monitor your screen(s). By clicking <b>Yes</b>, you give consent to the instructor to <b>see</b> your screen(s) at any moment during this session. Please, avoid consulting sensitive data of any kind until the session is over. You can <b>stop Veyon service</b> at any moment if you want to stop sharing your screen.</p><p>Please, notice that this software will not grant the instructor to control your computer. Screen recording is not allowed either. If either of these two actions is requested by the instructor, you will be asked for explicit consent.<p> <p>For more information, please click <a href=\"https://secretaria.uniovi.es/organizacion/lopd\">here</a>.</p>" ),
+				   tr( "<p>An instructor is about to connect to your computer to monitor your screen(s). By clicking <b>Yes</b>, you give consent to the instructor to <b>see</b> your screen(s) at any moment during this session. Please, avoid consulting sensitive data of any kind until the session is over. You can <b>stop Veyon service</b> at any moment if you want to stop sharing your screen(s).</p><p>Please, notice that this software will not grant the instructor to control your computer. Screen recording is not allowed either. If either of these two actions is requested by the instructor, you will be asked for explicit consent.<p> <p>For more information, please click <a href=\"https://secretaria.uniovi.es/organizacion/lopd\">here</a>.</p>" ),
                    QMessageBox::Yes | QMessageBox::No );
 
 
