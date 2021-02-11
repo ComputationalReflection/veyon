@@ -1,6 +1,6 @@
 # Linux and Windows scripts
 
-These are the Windows and Linux scripts implemented to install, configure and run the remote lab infrastructure described in the article _Synchronous Remote Programming Lab Infrastructure used during the COVID-19 Lockdown_, by [Miguel Garcia](http://www.reflection.uniovi.es/miguel), [Jose Quiroga](http://www.reflection.uniovi.es/quiroga) and [Francisco Ortin](http://www.reflection.uniovi.es/ortin).
+These are the Windows and Linux scripts implemented to install, configure and run the remote lab infrastructure described in the article _An Infrastructure to deliver Synchronous Remote Programming Labs_, by [Miguel Garcia](http://www.reflection.uniovi.es/miguel), [Jose Quiroga](http://www.reflection.uniovi.es/quiroga) and [Francisco Ortin](http://www.reflection.uniovi.es/ortin).
 
 
 ## Students

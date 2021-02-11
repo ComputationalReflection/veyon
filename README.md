@@ -53,7 +53,7 @@ It is possible to specify different video parameters, modifying the VeyonMaster.
 * `video` (default true): recrods video (true) or sequence of screenshots (false).
 * `Height` (default 720): frame height in pixels.
 * `Width` (default 1280): frame width in pixels.
-* `CaptureIntervalNum` and `CaptureIntervalDen` (default 1000/1000): set interval time (in millis) between consecutive frames for screenshots and video recording. By default 1 second (1000).
+* `CaptureIntervalNum` and `CaptureIntervalDen` (default 1000/1000): set interval time (in seconds) between consecutive frames for screenshots and video recording. By default 1 second.
 * `SavePath` (default %APPDATA%/Record): path where the video or screenshots are saved.
 
 Full Example Configuration 
