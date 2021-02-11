@@ -6,5 +6,5 @@ cd ..
 cd ..
 python3 parse.py
 sudo veyon-cli networkobjects clear
-sudo veyon-cli networkobjects import labs.txt format "%name%,%host%,%location%"
+sudo veyon-cli networkobjects import labs.txt format "%name%;%host%;%location%"
 rm input.txt

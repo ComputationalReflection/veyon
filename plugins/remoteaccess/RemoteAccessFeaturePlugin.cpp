@@ -29,6 +29,13 @@
 #include "RemoteAccessFeaturePlugin.h"
 #include "RemoteAccessWidget.h"
 #include "VeyonMasterInterface.h"
+#include "VeyonServerInterface.h"
+#include "FeatureWorkerManager.h"
+#include "PlatformCoreFunctions.h"
+#include "PlatformServiceFunctions.h"
+#include "VeyonConnection.h"
+
+#include "VeyonWorkerInterface.h"
 
 
 RemoteAccessFeaturePlugin::RemoteAccessFeaturePlugin( QObject* parent ) :
@@ -100,13 +107,17 @@ bool RemoteAccessFeaturePlugin::startFeature( VeyonMasterInterface& master, cons
 
 	if( feature.uid() == m_remoteViewFeature.uid() )
 	{
-		new RemoteAccessWidget( remoteAccessComputer, true );
+		sendFeatureMessage( FeatureMessage( m_remoteViewFeature.uid(), FeatureMessage::DefaultCommand ),
+									computerControlInterfaces );
+		new RemoteAccessWidget( remoteAccessComputer, this, true );
 
 		return true;
 	}
 	else if( feature.uid() == m_remoteControlFeature.uid() )
 	{
-		new RemoteAccessWidget( remoteAccessComputer, false );
+		sendFeatureMessage( FeatureMessage( m_remoteControlFeature.uid(), FeatureMessage::DefaultCommand ),
+									computerControlInterfaces );
+		new RemoteAccessWidget( remoteAccessComputer, this, false );
 
 		return true;
 	}
@@ -114,7 +125,63 @@ bool RemoteAccessFeaturePlugin::startFeature( VeyonMasterInterface& master, cons
 	return false;
 }
 
+bool RemoteAccessFeaturePlugin::handleFeatureMessage( VeyonServerInterface& server,
+													  const MessageContext& messageContext,
+													  const FeatureMessage& message )
+{
+	Q_UNUSED(messageContext)
+	auto& featureWorkerManager = server.featureWorkerManager();
 
+	if( message.featureUid() == m_remoteViewFeature.uid() )
+	{
+		featureWorkerManager.startWorker( m_remoteViewFeature, FeatureWorkerManager::ManagedSystemProcess );
+		featureWorkerManager.sendMessage( message );
+	}
+	else if( message.featureUid() == m_remoteControlFeature.uid() )
+	{
+		featureWorkerManager.startWorker( m_remoteControlFeature, FeatureWorkerManager::ManagedSystemProcess );
+		featureWorkerManager.sendMessage( message );
+	}
+	else
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool RemoteAccessFeaturePlugin::handleFeatureMessage( VeyonWorkerInterface& worker, const FeatureMessage& message )
+{
+	Q_UNUSED(worker)
+    
+	vWarning() << "Mensaje recibido en RemoteAccessFeaturePlugin::handleFeatureMessage";
+	vWarning() << "feature Id: " << message.featureUid();
+
+	if( message.featureUid() == m_remoteControlFeature.uid() )
+	{
+        QMessageBox m( QMessageBox::Question, tr( "Instructor wants to CONTROL your computer" ),
+				   tr( "Do you allow the REMOTE CONTROL of your computer?" ),
+				   QMessageBox::Yes | QMessageBox::No );
+		VeyonCore::platform().coreFunctions().raiseWindow( &m, true );
+
+        const auto result = m.exec();
+        
+        
+		if( result == QMessageBox::No )
+		{
+
+            if (VeyonCore::platform().serviceFunctions().stop( tr("VeyonService") ) == false)
+                VeyonCore::platform().coreFunctions().runProgramAsAdmin( tr("systemctl"), {
+																	 QStringLiteral("stop"),
+                                                                     QStringLiteral("veyon.service")} );
+            
+            return true;
+		}
+		return true;
+	}
+
+	return false;
+}
 
 QStringList RemoteAccessFeaturePlugin::commands() const
 {
@@ -196,9 +263,17 @@ bool RemoteAccessFeaturePlugin::remoteAccess( const QString& hostAddress, bool v
 	remoteComputer.setName( hostAddress );
 	remoteComputer.setHostAddress( hostAddress );
 
-	new RemoteAccessWidget( ComputerControlInterface::Pointer::create( remoteComputer ), viewOnly );
+	new RemoteAccessWidget( ComputerControlInterface::Pointer::create( remoteComputer ), this, viewOnly );
 
 	qApp->exec();
 
 	return true;
 }
+
+
+void RemoteAccessFeaturePlugin::notifyRemoteControlRequest(VeyonConnection* connection)
+{
+    connection->sendFeatureMessage( FeatureMessage( m_remoteControlFeature.uid(), FeatureMessage::DefaultCommand ), false);
+}
+
+

@@ -37,7 +37,7 @@
 #include "PlatformCoreFunctions.h"
 #include "ToolButton.h"
 #include "Screenshot.h"
-
+#include "RemoteAccessFeaturePlugin.h"
 
 // toolbar for remote-control-widget
 RemoteAccessWidgetToolBar::RemoteAccessWidgetToolBar( RemoteAccessWidget* parent, bool viewOnly ) :
@@ -257,12 +257,13 @@ void RemoteAccessWidgetToolBar::connectionEstablished()
 
 
 
-RemoteAccessWidget::RemoteAccessWidget( const ComputerControlInterface::Pointer& computerControlInterface, bool viewOnly ) :
+RemoteAccessWidget::RemoteAccessWidget( const ComputerControlInterface::Pointer& computerControlInterface, RemoteAccessFeaturePlugin* featurePlugin, bool viewOnly ) :
 	QWidget( nullptr ),
 	m_computerControlInterface( computerControlInterface ),
 	m_vncView( new VncView( computerControlInterface->computer().hostAddress(), -1, this, VncView::RemoteControlMode ) ),
 	m_connection( new VeyonConnection( m_vncView->vncConnection() ) ),
-	m_toolBar( new RemoteAccessWidgetToolBar( this, viewOnly ) )
+	m_toolBar( new RemoteAccessWidgetToolBar( this, viewOnly ) ),
+	m_plugin( featurePlugin )
 {
 	setWindowTitle( tr( "%1 - %2 Remote Access" ).arg( computerControlInterface->computer().name(),
 													   VeyonCore::applicationName() ) );
@@ -364,6 +365,12 @@ void RemoteAccessWidget::toggleFullScreen( bool _on )
 
 void RemoteAccessWidget::toggleViewOnly( bool viewOnly )
 {
+    if ( viewOnly == false)
+    {
+        vDebug() << "toggleViewOnly: widget notifies a 'remote control' session";
+        m_plugin->notifyRemoteControlRequest(m_connection);
+    }
+
 	m_vncView->setViewOnly( viewOnly );
 	m_toolBar->updateControls( viewOnly );
 	m_toolBar->update();

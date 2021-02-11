@@ -16,19 +16,75 @@ The command completed successfully.
 VPN Server/VPN>Iptable
 IpTable command - Get the IP Address Table Database
 Item        |Value
-------------+----------------------
-ID          |1043154098
-Session Name|SID-SECURENAT-2
+------------+-------------------------
+ID          |585866383
+Session Name|SID-SECURENAT-1
 IP Address  |192.168.30.1
-Created at  |2020-05-16 09:04:01
-Updated at  |2020-05-22 16:42:16
+Created at  |2020-06-25 11:01:19
+Updated at  |2020-06-25 19:26:22
 Location    |On 'Mx-Dev-V2'
-------------+----------------------
-ID          |590878991
-Session Name|SID-UO002517-[L2TP]-14
+------------+-------------------------
+ID          |1714430190
+Session Name|SID-UO269450-[L2TP]-2
 IP Address  |192.168.30.10 (DHCP)
-Created at  |2020-05-22 16:40:37
-Updated at  |2020-05-22 16:42:13
+Created at  |2020-06-25 18:57:42
+Updated at  |2020-06-25 19:26:21
+Location    |On 'Mx-Dev-V2'
+------------+-------------------------
+ID          |3209818723
+Session Name|SID-MASTER-[L2TP]-12
+IP Address  |192.168.30.11 (DHCP)
+Created at  |2020-06-25 19:06:03
+Updated at  |2020-06-25 19:26:22
+Location    |On 'Mx-Dev-V2'
+------------+-------------------------
+ID          |480481656
+Session Name|SID-MASTER-[L2TP]-5
+IP Address  |192.168.30.12 (DHCP)
+Created at  |2020-06-25 19:12:20
+Updated at  |2020-06-25 19:26:17
+Location    |On 'Mx-Dev-V2'
+------------+-------------------------
+ID          |1117302803
+Session Name|SID-MASTER-[L2TP]-9
+IP Address  |192.168.30.14 (DHCP)
+Created at  |2020-06-25 18:55:12
+Updated at  |2020-06-25 19:26:20
+Location    |On 'Mx-Dev-V2'
+------------+-------------------------
+ID          |3583047989
+Session Name|SID-UO269947-[L2TP]-11
+IP Address  |192.168.30.15 (DHCP)
+Created at  |2020-06-25 19:00:10
+Updated at  |2020-06-25 19:26:21
+Location    |On 'Mx-Dev-V2'
+------------+-------------------------
+ID          |1214357344
+Session Name|SID-EXAMEN01-45
+IP Address  |192.168.30.20 (DHCP)
+Created at  |2020-06-25 19:05:21
+Updated at  |2020-06-25 19:26:22
+Location    |On 'Mx-Dev-V2'
+------------+-------------------------
+ID          |3717994737
+Session Name|SID-UO266499-42
+IP Address  |192.168.30.27 (DHCP)
+Created at  |2020-06-25 18:50:43
+Updated at  |2020-06-25 19:26:22
+Location    |On 'Mx-Dev-V2'
+------------+-------------------------
+ID          |2966025100
+Session Name|SID-EXAMEN01-45
+IP Address  |fe80::5c3e:cfff:fe58:944c
+Created at  |2020-06-25 18:05:22
+Updated at  |2020-06-25 19:26:20
+Location    |On 'Mx-Dev-V2'
+------------+-------------------------
+ID          |656977037
+Session Name|SID-UO266499-42
+IP Address  |fe80::70c4:83e4:16c1:1f75
+Created at  |2020-06-25 16:50:43
+Updated at  |2020-06-25 19:26:20
 Location    |On 'Mx-Dev-V2'
 The command completed successfully.
 

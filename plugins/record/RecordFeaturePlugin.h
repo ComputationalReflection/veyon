@@ -1,7 +1,7 @@
 /*
  * ScreenshotFeaturePlugin.h - declaration of ScreenshotFeature class
  *
- * Copyright (c) 2020 Jose Quiroga <quirogajose@uniovi.es>, Miguel Garcia <garciarmiguel@uniovi.es>
+ * Copyright (c) 2017-2020 Tobias Junghans <tobydox@veyon.io>
  *
  * This file is part of Veyon - https://veyon.io
  *
@@ -105,11 +105,17 @@ public:
 	bool startFeature( VeyonMasterInterface& master, const Feature& feature,
 					   const ComputerControlInterfaceList& computerControlInterfaces ) override;
 
+    bool handleFeatureMessage( VeyonServerInterface& server,
+							   const MessageContext& messageContext,
+							   const FeatureMessage& message ) override;
+
+	bool handleFeatureMessage( VeyonWorkerInterface& worker, const FeatureMessage& message ) override;
+
 public Q_SLOTS:
 	void saveFrame();
 
 private:
-	const Feature m_screenshotFeature;
+	const Feature m_recordFeature;
 	const FeatureList m_features;
 	bool m_recordEnabled;
 	QTimer *m_recordTimer;
