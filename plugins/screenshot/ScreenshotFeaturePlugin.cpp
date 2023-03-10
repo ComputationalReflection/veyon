@@ -23,7 +23,6 @@
  */
 
 #include <QMessageBox>
-#include <QTimer>
 
 #include "ScreenshotFeaturePlugin.h"
 #include "ComputerControlInterface.h"
@@ -42,9 +41,6 @@ ScreenshotFeaturePlugin::ScreenshotFeaturePlugin( QObject* parent ) :
 								  QStringLiteral(":/screenshot/camera-photo.png") ) ),
 	m_features( { m_screenshotFeature } )
 {
-	m_autoShotEnabled = false;
-	m_autoTimer = new QTimer(this);
-	connect(m_autoTimer, SIGNAL(timeout()), this, SLOT(saveScreenshots()));
 }
 
 
@@ -55,44 +51,25 @@ const FeatureList &ScreenshotFeaturePlugin::featureList() const
 }
 
 
-void ScreenshotFeaturePlugin::saveScreenshots()
-{
-	if(m_autoShotEnabled)
-	{
-		for( const auto& controlInterface : m_lastComputerControlInterfaces )
-		{
-			Screenshot().take( controlInterface );
-		}
-	}
-}
-
 
 bool ScreenshotFeaturePlugin::startFeature( VeyonMasterInterface& master, const Feature& feature,
 											const ComputerControlInterfaceList& computerControlInterfaces )
 {
 	if( feature.uid() == m_screenshotFeature.uid() )
 	{
-		m_lastComputerControlInterfaces = computerControlInterfaces;
-		if( m_autoShotEnabled == false)
+		for( const auto& controlInterface : computerControlInterfaces )
 		{
-			QMessageBox::information( master.mainWindow(),
-								  tr( "Starting Auto Screenshots" ),
+			Screenshot().take( controlInterface );
+
+		}
+
+		QMessageBox::information( master.mainWindow(),
+								  tr( "Screenshots taken" ),
 								  tr( "Screenshot of %1 computer have been taken successfully." ).
 								  arg( computerControlInterfaces.count() ) );
-			int interval = 1000; //1 second?
-			m_autoTimer->start(interval);
-			m_autoShotEnabled = true;
-		}
-		else
-		{
-			m_autoTimer->stop();
-			m_autoShotEnabled = false;
-			QMessageBox::information(nullptr, tr("Stopping Auto Screenshots"), tr("Screenshots are now disabled"));
-		}
+
 		return true;
 	}
 
 	return true;
 }
-
-
