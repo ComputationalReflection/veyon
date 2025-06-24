@@ -1,4 +1,4 @@
-## 🐋 Setting Up a Veyon Test Environment with Docker
+# 🐋 Setting Up a Veyon Test Environment with Docker
 
 This guide helps you set up an educational monitoring system with a teacher and multiple student machines using Docker containers.
 
