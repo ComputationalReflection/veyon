@@ -6,13 +6,26 @@ This guide helps you set up an educational monitoring system with a teacher and 
 
 ### 📦 Prerequisites
 
-1. **Docker** installed on your system
+**Docker** installed on your system
+
+---
+
+### ⚙️ Included Configuration
+
+- **Lecturer:**
+    - Veyon preconfigured in master mode
+    - 2 predefined students
+    - Integrated VNC server
+- **Students:**
+    - Veyon in client mode
+    - RDP server enabled
+    - Full graphical access
 
 ---
 
 ### 🔨 Building Docker Images
 
-**Teacher Image:**
+**Lecturer Image:**
 
 ```bash
 docker build --target lecturer -t veyon_assistant:lecturer .
@@ -38,7 +51,7 @@ docker network create --driver bridge --subnet 172.20.0.0/24 veyon_vnet
 
 ---
 
-### 👨‍🏫 Running the Teacher Container
+### 👨‍🏫 Running the Lecturer Container
 
 ```bash
 docker run --rm --name lecturer \
@@ -95,32 +108,22 @@ docker run --rm --name student02 \
 
 ### 🔍 Using the System
 
-**Access the Teacher:**
-
-1. Open your browser to: `http://<DOCKER_HOST_IP>:6901/vnc.html`
-2. Username: `ubuntu`
-3. Password: `ubuntu`
-4. Go to: `Education → Veyon Master`
-
 **Access the Students:**
 
 1. Use an RDP client
 2. Connect to:
     - **Student 1:** `<DOCKER_HOST_IP>:3391`
     - **Student 2:** `<DOCKER_HOST_IP>:3392`
+3. Username: `ubuntu`
+4. Password: `ubuntu`
 
----
+**Access the Lecturer:**
 
-### ⚙️ Included Configuration
+1. Open your browser to: `http://<DOCKER_HOST_IP>:6901/vnc.html`
+2. Username: `ubuntu`
+3. Password: `ubuntu`
+4. Go to: `Education → Veyon Master`
 
-- **Teacher:**
-    - Veyon preconfigured in master mode
-    - 2 predefined students
-    - Integrated VNC server
-- **Students:**
-    - Veyon in client mode
-    - RDP server enabled
-    - Full graphical access
 
 ---
 
