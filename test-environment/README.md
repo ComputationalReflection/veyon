@@ -124,6 +124,7 @@ docker run --rm --name student02 \
 3. Password: `ubuntu`
 4. Go to: `Education → Veyon Master`
 
+![Lecturer](lecturer.png)
 
 ---
 
