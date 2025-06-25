@@ -1,0 +1,93 @@
+{
+    "Authentication": {
+        "Method": "1"
+    },
+    "BuiltinDirectory": {
+        "NetworkObjects": {
+            "JsonStoreArray": [
+                {
+                    "Name": "Lab",
+                    "Type": 2,
+                    "Uid": "{06f50a33-e798-4def-a745-81361d796597}"
+                },
+                {
+                    "HostAddress": "172.20.0.21",
+                    "Name": "Student01",
+                    "ParentUid": "{06f50a33-e798-4def-a745-81361d796597}",
+                    "Type": 3,
+                    "Uid": "{578af5e9-a72f-4054-875f-43085b802b27}"
+                },
+                {
+                    "HostAddress": "172.20.0.22",
+                    "Name": "Student02",
+                    "ParentUid": "{06f50a33-e798-4def-a745-81361d796597}",
+                    "Type": 3,
+                    "Uid": "{3a944535-3827-4d44-b199-5ea88a38ef21}"
+                }
+            ]
+        }
+    },
+    "Core": {
+        "ApplicationVersion": "7",
+        "InstallationID": "a1803886-f356-43f8-9e9b-cbee83cf07eb",
+        "PluginVersions": {
+            "JsonStoreObject": {
+                "{14bacaaa-ebe5-449c-b881-5b382f952571}": "1.1",
+                "{1b08265b-348f-4978-acaa-45d4f6b90bd9}": "1.1",
+                "{1baa01e0-02d6-4494-a766-788f5b225991}": "1.1",
+                "{1bdb0d1c-f8eb-4d21-a093-d555a10f3975}": "1.1",
+                "{2917cdeb-ac13-4099-8715-20368254a367}": "1.1",
+                "{2ad98ccb-e9a5-43ef-8c4c-876ac5efbcb1}": "1.1",
+                "{387a0c43-1355-4ff6-9e1f-d098e9ce5127}": "1.1",
+                "{39d7a07f-94db-4912-aa1a-c4df8aee3879}": "1.1",
+                "{4122e8ca-b617-4e36-b851-8e050ed2d82e}": "1.2",
+                "{4790bad8-4c56-40d5-8361-099a68f0c24b}": "1.1",
+                "{63928a8a-4c51-4bfd-888e-9e13c6f3907a}": "1.1",
+                "{67dfc1c1-8f37-4539-a298-16e74e34fd8b}": "1.1",
+                "{6f0a491e-c1c6-4338-8244-f823b0bf8670}": "1.2",
+                "{80580500-2e59-4297-9e35-e53959b028cd}": "1.2",
+                "{85f6c631-e75a-4c78-8cb2-a7f3f502015a}": "1.1",
+                "{8ae6668b-9c12-4b29-9bfc-ff89f6604164}": "1.1",
+                "{a54ee018-42bf-4569-90c7-0d8470125ccf}": "1.1",
+                "{b47bcae0-24ff-4bf5-869c-484d64af5c4c}": "1.1",
+                "{d4bb9c42-9eef-4ecb-8dd5-dfd84b355481}": "1.0",
+                "{e11bee03-b99c-465c-bf90-7e5339b83f6b}": "1.0",
+                "{ee322521-f4fb-482d-b082-82a79003afa7}": "1.1",
+                "{ee322521-f4fb-482d-b082-82a79003afa8}": "1.1"
+            }
+        }
+    },
+    "Directories": {
+        "Screenshots": "/home/ubuntu/veyon-screenshoots"
+    },
+    "LDAP": {
+        "ComputerLocationAttribute": "",
+        "ComputerLocationsByAttribute": "false",
+        "ComputerLocationsByContainer": "false",
+        "LocationNameAttribute": "",
+        "UserLoginNameAttribute": ""
+    },
+    "Master": {
+        "AllowAddingHiddenLocations": "false",
+        "AutoAdjustMonitoringIconSize": "false",
+        "AutoOpenComputerSelectPanel": "false",
+        "AutoSelectCurrentLocation": "false",
+        "ConfirmUnsafeActions": "false",
+        "HideComputerFilter": "false",
+        "HideEmptyLocations": "false",
+        "HideLocalComputer": "false",
+        "ShowCurrentLocationOnly": "false",
+        "widthSS": 240,
+        "heigthSS": 240,
+        "colorSpace": 14,
+        "captureIntervalNum": 1,
+        "CaptureIntervalDen": 1
+    },
+    "Network": {
+        "FirewallExceptionEnabled": "1",
+        "VeyonServerPort": "11100"
+    },
+    "Windows": {
+        "SoftwareSASEnabled": "1"
+    }
+}

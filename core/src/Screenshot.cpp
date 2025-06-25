@@ -49,7 +49,7 @@ Screenshot::Screenshot( const QString &fileName, QObject* parent ) :
 
 
 
-void Screenshot::take( const ComputerControlInterface::Pointer& computerControlInterface )
+void Screenshot::take( const ComputerControlInterface::Pointer& computerControlInterface, int width, int heigth, int colorSpace)
 {
 	auto userLogin = computerControlInterface->userLoginName();
 	if( userLogin.isEmpty() )
@@ -122,13 +122,33 @@ void Screenshot::take( const ComputerControlInterface::Pointer& computerControlI
 	painter.fillRect( rect, QColor( 255, 255, 255, 160 ) );
 	painter.drawPixmap( iconX, iconY, icon );
 	painter.drawText( textX, textY, caption );
+	painter.end();
 
 	m_image.setText( metaDataKey( MetaData::User ), user );
 	m_image.setText( metaDataKey( MetaData::Host ), host );
 	m_image.setText( metaDataKey( MetaData::Date ), date );
 	m_image.setText( metaDataKey( MetaData::Time ), time );
-
+	
+	
 	m_image.save( m_fileName, "PNG", 50 );
+	
+	
+	
+	//Formatos de color que nos pueden interesar (https://doc.qt.io/qt-6/qimage.html#Format-enum)
+	//QImage::Format_Grayscale8			The image is stored using an 8-bit grayscale format. (added in Qt 5.5)
+	//QImage::Format_RGB444				The image is stored using a 16-bit RGB format (4-4-4). The unused bits are always zero.
+	//QImage::Format_RGB555				The image is stored using a 16-bit RGB format (5-5-5). The unused most significant bit is always zero.
+	//QImage::Format_RGB16				The image is stored using a 16-bit RGB format (5-6-5).
+	//QImage::Format_RGB32				The image is stored using a 32-bit RGB format (0xffRRGGBB).
+	QString small = dir + QDir::separator() + tr("_model_") + constructFileName( userLogin, computerControlInterface->computer().hostAddress() );
+
+	QImage m_small = m_image.convertToFormat((QImage::Format)colorSpace); //Flags Qt::AutoColor, Qt::ColorOnly o Qt::MonoOnly
+	if(width == -1 || heigth == -1)
+		m_small = m_small.scaled(240, 240, Qt::IgnoreAspectRatio, Qt::FastTransformation);
+	else
+		m_small = m_small.scaled(width, heigth, Qt::IgnoreAspectRatio, Qt::FastTransformation);
+	m_small.save(small, "PNG", 100 );
+	
 }
 
 

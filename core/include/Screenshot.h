@@ -46,7 +46,7 @@ public:
 
 	explicit Screenshot( const QString &fileName = {}, QObject* parent = nullptr );
 
-	void take( const ComputerControlInterface::Pointer& computerControlInterface );
+	void take( const ComputerControlInterface::Pointer& computerControlInterface, int width = -1, int heigth = -1, int colorSpace = QImage::Format_RGB444); //QImage::Format_RGB444 = 14
 
 	bool isValid() const
 	{
