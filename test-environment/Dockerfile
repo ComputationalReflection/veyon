@@ -9,7 +9,7 @@ RUN apt install -y g++ libc6-dev make cmake qtbase5-dev qtbase5-private-dev \
             libsasl2-dev ninja-build
 RUN apt install -y libavcodec-dev libavformat-dev libswscale-dev file
 RUN apt install -y git
-RUN git clone --branch feature/veyon-assistant --recurse-submodules https://github.com/ComputationalReflection/veyon.git
+RUN git clone --branch 1.1.1 --recurse-submodules https://github.com/ComputationalReflection/veyon.git
 RUN mkdir -p /veyon/build
 WORKDIR /veyon/build
 RUN cmake -DCMAKE_INSTALL_PREFIX=/usr .. 
