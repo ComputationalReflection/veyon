@@ -24,6 +24,7 @@
 
 #pragma once
 
+#include <QTimer>
 #include "Feature.h"
 #include "SimpleFeatureProvider.h"
 
@@ -71,9 +72,23 @@ public:
 	bool startFeature( VeyonMasterInterface& master, const Feature& feature,
 					   const ComputerControlInterfaceList& computerControlInterfaces ) override;
 
+public Q_SLOTS:
+	void saveScreenshots();
 
 private:
 	const Feature m_screenshotFeature;
+
+	//Custom attributes
+	ComputerControlInterfaceList m_lastComputerControlInterfaces;
 	const FeatureList m_features;
+	bool m_autoShotEnabled;
+	QTimer *m_autoTimer;
+	
+	//Pluging configuration parameters
+	int m_modelWidth;
+	int m_modelHeight;
+	int m_modelColorSpace;
+	int m_screenshotInterval;
+
 
 };

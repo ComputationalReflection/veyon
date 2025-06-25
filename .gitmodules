@@ -3,7 +3,7 @@
 	url = https://github.com/veyon/ultravnc.git
 [submodule "3rdparty/kldap"]
 	path = 3rdparty/kldap
-	url = https://anongit.kde.org/kldap.git
+	url = https://invent.kde.org/pim/kldap.git
 [submodule "3rdparty/libvncserver"]
 	path = 3rdparty/libvncserver
 	url = https://github.com/veyon/libvncserver.git
@@ -12,7 +12,7 @@
 	url = https://github.com/veyon/x11vnc.git
 [submodule "3rdparty/kitemmodels"]
 	path = 3rdparty/kitemmodels
-	url = https://anongit.kde.org/kitemmodels.git
+	url = https://invent.kde.org/frameworks/kitemmodels.git
 	branch = master
 [submodule "3rdparty/libfakekey"]
 	path = 3rdparty/libfakekey
